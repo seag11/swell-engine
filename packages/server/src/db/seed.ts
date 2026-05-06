@@ -18,8 +18,8 @@ const STATIONS = [
   { id: '51002', name: 'SW Hawaii',                 lat: 17.094, lon: -157.808 },
   // East Coast
   { id: '44025', name: 'New Jersey Offshore',       lat: 40.251, lon:  -73.164 },
-  { id: '44017', name: 'Montauk Point, NY',         lat: 40.693, lon:  -72.048 },
-  { id: '41048', name: 'W Central Atlantic',        lat: 31.845, lon:  -69.589 },
+  { id: '44097', name: 'Block Island, RI',           lat: 40.967, lon:  -71.124 },
+  { id: '41002', name: 'South Hatteras, NC',        lat: 31.743, lon:  -74.955 },
 ]
 
 export async function seed() {
