@@ -1,0 +1,49 @@
+import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared'
+
+function equirectangularKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const x = toRad(lon2 - lon1) * Math.cos(toRad((lat1 + lat2) / 2))
+  const y = toRad(lat2 - lat1)
+  return R * Math.sqrt(x * x + y * y)
+}
+
+function idwAvg(values: Array<{ val: number | null; weight: number }>): number | null {
+  const valid = values.filter((v): v is { val: number; weight: number } => v.val !== null)
+  if (valid.length === 0) return null
+  const total = valid.reduce((s, v) => s + v.weight, 0)
+  return valid.reduce((s, v) => s + (v.val * v.weight) / total, 0)
+}
+
+
+export function triangulate(
+  target: { lat: number; lon: number },
+  buoys: Array<{ station: BuoyStation; reading: BuoyReading }>
+): TriangulatedConditions {
+  const entries = buoys.map((b) => ({
+    ...b,
+    distanceKm: equirectangularKm(target.lat, target.lon, b.station.lat, b.station.lon),
+  }))
+
+  // IDW power=2: closer buoys get exponentially more weight
+  const weights = entries.map((b) => 1 / b.distanceKm ** 2)
+  const totalWeight = weights.reduce((s, w) => s + w, 0)
+
+  const field = (key: keyof BuoyReading) =>
+    idwAvg(entries.map((b, i) => ({ val: b.reading[key] as number | null, weight: weights[i] })))
+
+  return {
+    waveHeight:     field('waveHeight'),
+    dominantPeriod: field('dominantPeriod'),
+    windSpeed:      field('windSpeed'),
+    windDirection:  entries[weights.indexOf(Math.max(...weights))]?.reading.windDirection ?? null,
+    waterTemp:      field('waterTemp'),
+    sources: entries.map((b, i) => ({
+      stationId:   b.station.id,
+      stationName: b.station.name,
+      distanceKm:  Math.round(b.distanceKm),
+      weight:      parseFloat((weights[i] / totalWeight).toFixed(3)),
+    })),
+    generatedAt: new Date(),
+  }
+}
