@@ -4,7 +4,7 @@ import { config } from './config'
 import { migrate } from './db/migrate'
 import { seed } from './db/seed'
 import { buoyRoutes } from './api/buoy'
-import { startBuoyPoller, scheduleBuoyPoll } from './workers/buoyPoller'
+import { startBuoyPoller, scheduleBuoyPoll, buoyPollQueue } from './workers/buoyPoller'
 
 async function bootstrap() {
   await migrate()
@@ -22,6 +22,7 @@ async function bootstrap() {
 
   const shutdown = async () => {
     await worker.close()
+    await buoyPollQueue.close()
     await app.close()
     process.exit(0)
   }
