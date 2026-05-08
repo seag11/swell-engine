@@ -105,6 +105,14 @@ export async function storeReading(reading: BuoyReading): Promise<void> {
   `
 }
 
+function formatExpiry(timestamp: Date): string {
+  const ms = timestamp.getTime() + config.ndbcDataTtlHours * 3_600_000 - Date.now()
+  const totalMin = Math.max(0, Math.floor(ms / 60_000))
+  const h = Math.floor(totalMin / 60)
+  const m = totalMin % 60
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
+}
+
 export async function getTriangulatedConditions(
   lat: number,
   lon: number
@@ -115,9 +123,15 @@ export async function getTriangulatedConditions(
   const buoysWithReadings = await Promise.all(
     nearest.map(async (station) => {
       let reading = await getLatestReadingFromDb(station.id)
+      const source = reading ? 'cached' : 'live'
       if (!reading) {
         reading = await fetchLatestReading(station.id)
         if (reading) await storeReading(reading)
+      }
+      if (reading) {
+        console.log(`[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.timestamp)}`)
+      } else {
+        console.log(`[conditions] ${station.id} (${station.name}) — no data`)
       }
       return reading ? { station, reading } : null
     })
