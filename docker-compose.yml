@@ -1,8 +1,6 @@
-version: '3.9'
-
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-swell}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swell}
@@ -18,7 +16,7 @@ services:
       retries: 5
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     ports:
       - '127.0.0.1:6379:6379'
     healthcheck:
