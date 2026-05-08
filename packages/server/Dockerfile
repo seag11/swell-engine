@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # Copy workspace manifests for layer caching
@@ -16,7 +16,7 @@ COPY packages/server/ ./packages/server/
 RUN npm run build -w packages/shared
 RUN npm run build -w packages/server
 
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
