@@ -1,8 +1,8 @@
 import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared'
-import { sql } from '../../db/client'
-import { config } from '../../config'
-import { fetchLatestReading } from './ndbcClient'
-import { triangulate } from './triangulation'
+import { sql } from '../../db/client.js'
+import { config } from '../../config.js'
+import { fetchLatestReading } from './ndbcClient.js'
+import { triangulate } from './triangulation.js'
 
 export async function getAllStations(): Promise<BuoyStation[]> {
   return sql<BuoyStation[]>`

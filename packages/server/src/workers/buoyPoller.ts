@@ -1,7 +1,7 @@
 import { Queue, Worker } from 'bullmq'
-import { config } from '../config'
-import { getStaleStations, storeReading } from '../modules/buoy'
-import { fetchLatestReading } from '../modules/buoy/ndbcClient'
+import { config } from '../config.js'
+import { getStaleStations, storeReading } from '../modules/buoy/index.js'
+import { fetchLatestReading } from '../modules/buoy/ndbcClient.js'
 
 const redisUrl = new URL(config.redisUrl)
 const connection = {

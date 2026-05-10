@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { classifyTone } from '@swell-engine/shared'
-import { getAllStations, getTriangulatedConditions } from '../modules/buoy'
+import { getAllStations, getTriangulatedConditions } from '../modules/buoy/index.js'
 
 export async function buoyRoutes(app: FastifyInstance) {
   app.get('/api/buoy/stations', async () => {

@@ -1,6 +1,9 @@
 import { readFileSync } from 'fs'
-import { join } from 'path'
-import { sql } from './client'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { sql } from './client.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export async function migrate() {
   const migration = readFileSync(

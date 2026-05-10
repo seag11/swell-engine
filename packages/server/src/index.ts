@@ -1,10 +1,10 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import { config } from './config'
-import { migrate } from './db/migrate'
-import { seed } from './db/seed'
-import { buoyRoutes } from './api/buoy'
-import { startBuoyPoller, scheduleBuoyPoll, buoyPollQueue } from './workers/buoyPoller'
+import { config } from './config.js'
+import { migrate } from './db/migrate.js'
+import { seed } from './db/seed.js'
+import { buoyRoutes } from './api/buoy.js'
+import { startBuoyPoller, scheduleBuoyPoll, buoyPollQueue } from './workers/buoyPoller.js'
 
 async function bootstrap() {
   await migrate()
