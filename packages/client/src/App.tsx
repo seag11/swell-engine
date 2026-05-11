@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { validateLat, validateLon } from './lib/validateCoords'
 
 interface ConditionSource {
   stationId: string
@@ -55,6 +56,8 @@ export default function App() {
   const [lat, setLat] = useState('')
   const [lon, setLon] = useState('')
   const [conditions, setConditions] = useState<Conditions | null>(null)
+  const [latError, setLatError] = useState<string | null>(null)
+  const [lonError, setLonError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [geolocating, setGeolocating] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -80,6 +83,8 @@ export default function App() {
     const lonStr = String(presetLon)
     setLat(latStr)
     setLon(lonStr)
+    setLatError(null)
+    setLonError(null)
     fetchConditions(latStr, lonStr)
   }
 
@@ -96,6 +101,8 @@ export default function App() {
         const lonStr = pos.coords.longitude.toFixed(4)
         setLat(latStr)
         setLon(lonStr)
+        setLatError(null)
+        setLonError(null)
         setGeolocating(false)
         fetchConditions(latStr, lonStr)
       },
@@ -138,23 +145,31 @@ export default function App() {
 
       {/* Coordinate inputs + actions */}
       <div className="flex flex-wrap gap-3 mb-8">
-        <input
-          type="text"
-          placeholder="Latitude  e.g. 37.76"
-          value={lat}
-          onChange={(e) => setLat(e.target.value)}
-          className="bg-slate-800 border border-slate-600 rounded px-3 py-2 w-44 focus:outline-none focus:border-blue-500"
-        />
-        <input
-          type="text"
-          placeholder="Longitude  e.g. -122.43"
-          value={lon}
-          onChange={(e) => setLon(e.target.value)}
-          className="bg-slate-800 border border-slate-600 rounded px-3 py-2 w-48 focus:outline-none focus:border-blue-500"
-        />
+        <div className="flex flex-col gap-1">
+          <input
+            type="text"
+            placeholder="Latitude  e.g. 37.76"
+            value={lat}
+            onChange={(e) => setLat(e.target.value)}
+            onBlur={() => setLatError(validateLat(lat))}
+            className={`bg-slate-800 border rounded px-3 py-2 w-44 focus:outline-none focus:border-blue-500 ${latError ? 'border-red-500' : 'border-slate-600'}`}
+          />
+          {latError && <span className="text-red-400 text-xs">{latError}</span>}
+        </div>
+        <div className="flex flex-col gap-1">
+          <input
+            type="text"
+            placeholder="Longitude  e.g. -122.43"
+            value={lon}
+            onChange={(e) => setLon(e.target.value)}
+            onBlur={() => setLonError(validateLon(lon))}
+            className={`bg-slate-800 border rounded px-3 py-2 w-48 focus:outline-none focus:border-blue-500 ${lonError ? 'border-red-500' : 'border-slate-600'}`}
+          />
+          {lonError && <span className="text-red-400 text-xs">{lonError}</span>}
+        </div>
         <button
           onClick={() => fetchConditions(lat, lon)}
-          disabled={loading || geolocating || !lat || !lon}
+          disabled={loading || geolocating || !lat || !lon || !!latError || !!lonError}
           className="bg-blue-600 hover:bg-blue-500 disabled:opacity-40 rounded px-4 py-2 font-medium transition-colors"
         >
           {loading ? 'Fetching…' : 'Get Conditions'}
