@@ -123,7 +123,7 @@ export default function App() {
     : []
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 p-8 max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 text-slate-100 p-8 max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-1">Swell Engine</h1>
       <p className="text-slate-400 text-sm mb-8">
         Triangulated buoy conditions via NOAA NDBC inverse-distance weighting
@@ -136,7 +136,7 @@ export default function App() {
             key={p.label}
             onClick={() => handlePreset(p.lat, p.lon)}
             disabled={loading || geolocating}
-            className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded px-3 py-1.5 text-sm transition-colors"
+            className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded-full px-3 py-1.5 text-sm transition-colors"
           >
             {p.label}
           </button>
@@ -152,7 +152,7 @@ export default function App() {
             value={lat}
             onChange={(e) => setLat(e.target.value)}
             onBlur={() => setLatError(validateLat(lat))}
-            className={`bg-slate-800 border rounded px-3 py-2 w-44 focus:outline-none focus:border-blue-500 ${latError ? 'border-red-500' : 'border-slate-600'}`}
+            className={`bg-slate-800 border rounded-lg px-3 py-2 w-44 focus:outline-none focus:border-blue-500 transition-colors ${latError ? 'border-red-500' : 'border-slate-600'}`}
           />
           {latError && <span className="text-red-400 text-xs">{latError}</span>}
         </div>
@@ -163,28 +163,28 @@ export default function App() {
             value={lon}
             onChange={(e) => setLon(e.target.value)}
             onBlur={() => setLonError(validateLon(lon))}
-            className={`bg-slate-800 border rounded px-3 py-2 w-48 focus:outline-none focus:border-blue-500 ${lonError ? 'border-red-500' : 'border-slate-600'}`}
+            className={`bg-slate-800 border rounded-lg px-3 py-2 w-48 focus:outline-none focus:border-blue-500 transition-colors ${lonError ? 'border-red-500' : 'border-slate-600'}`}
           />
           {lonError && <span className="text-red-400 text-xs">{lonError}</span>}
         </div>
         <button
           onClick={() => fetchConditions(lat, lon)}
           disabled={loading || geolocating || !lat || !lon || !!latError || !!lonError}
-          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-40 rounded px-4 py-2 font-medium transition-colors"
+          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-40 rounded-lg px-4 py-2 font-medium transition-colors"
         >
           {loading ? 'Fetching…' : 'Get Conditions'}
         </button>
         <button
           onClick={handleGeolocate}
           disabled={loading || geolocating}
-          className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded px-4 py-2 text-sm transition-colors"
+          className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded-lg px-4 py-2 text-sm transition-colors"
         >
           {geolocating ? 'Locating…' : '⌖ Use my location'}
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-900/40 border border-red-700 rounded p-4 mb-6 text-red-300 text-sm">
+        <div className="bg-red-900/40 border border-red-700 rounded-lg p-4 mb-6 text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -193,21 +193,21 @@ export default function App() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             {stats.map(({ label, value }) => (
-              <div key={label} className="bg-slate-800 rounded-lg p-4">
+              <div key={label} className="bg-slate-800 rounded-xl p-4">
                 <div className="text-slate-400 text-xs uppercase tracking-wide mb-1">{label}</div>
                 <div className="text-lg font-semibold">{value}</div>
               </div>
             ))}
           </div>
 
-          <div className="bg-slate-800 rounded-lg p-4 flex items-center gap-3">
+          <div className="bg-slate-800 rounded-xl p-4 flex items-center gap-3">
             <span className="text-slate-400 text-xs uppercase tracking-wide">Condition</span>
             <span className={`text-xl font-bold capitalize ${TONE_COLORS[conditions.tone] ?? ''}`}>
               {conditions.tone}
             </span>
           </div>
 
-          <div className="bg-slate-800 rounded-lg p-4">
+          <div className="bg-slate-800 rounded-xl p-4">
             <div className="text-slate-400 text-xs uppercase tracking-wide mb-3">Buoy Sources</div>
             <div className="space-y-2">
               {conditions.sources.map((s) => (
