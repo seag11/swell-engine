@@ -20,11 +20,11 @@ interface Conditions {
 }
 
 const PRESETS = [
-  { label: 'Ocean Beach, SF',  lat: 37.757,  lon: -122.510 },
-  { label: 'Mavericks, CA',    lat: 37.495,  lon: -122.497 },
-  { label: 'Trestles, CA',     lat: 33.383,  lon: -117.589 },
-  { label: 'Pipeline, HI',     lat: 21.665,  lon: -158.053 },
-  { label: 'Montauk, NY',      lat: 41.036,  lon:  -71.952 },
+  { label: 'Ocean Beach, SF',  lat: 37.757,  lon: -122.510, facing: 270 },
+  { label: 'Mavericks, CA',    lat: 37.495,  lon: -122.497, facing: 310 },
+  { label: 'Trestles, CA',     lat: 33.383,  lon: -117.589, facing: 230 },
+  { label: 'Pipeline, HI',     lat: 21.665,  lon: -158.053, facing: 345 },
+  { label: 'Montauk, NY',      lat: 41.036,  lon:  -71.952, facing: 160 },
 ]
 
 const WIND_DIRS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
@@ -62,12 +62,15 @@ export default function App() {
   const [geolocating, setGeolocating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchConditions = async (latVal: string, lonVal: string) => {
+  const fetchConditions = async (latVal: string, lonVal: string, facing?: number) => {
     setLoading(true)
     setError(null)
     setConditions(null)
     try {
-      const res = await fetch(`/api/buoy/conditions?lat=${latVal}&lon=${lonVal}`)
+      const url = facing !== undefined
+        ? `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}&facing=${facing}`
+        : `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}`
+      const res = await fetch(url)
       const body = await res.json()
       if (!res.ok) throw new Error(body.error ?? 'Request failed')
       setConditions(body)
@@ -78,14 +81,14 @@ export default function App() {
     }
   }
 
-  const handlePreset = (presetLat: number, presetLon: number) => {
+  const handlePreset = (presetLat: number, presetLon: number, facing?: number) => {
     const latStr = String(presetLat)
     const lonStr = String(presetLon)
     setLat(latStr)
     setLon(lonStr)
     setLatError(null)
     setLonError(null)
-    fetchConditions(latStr, lonStr)
+    fetchConditions(latStr, lonStr, facing)
   }
 
   const handleGeolocate = () => {
@@ -134,7 +137,7 @@ export default function App() {
         {PRESETS.map((p) => (
           <button
             key={p.label}
-            onClick={() => handlePreset(p.lat, p.lon)}
+            onClick={() => handlePreset(p.lat, p.lon, p.facing)}
             disabled={loading || geolocating}
             className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded-full px-3 py-1.5 text-sm transition-colors"
           >

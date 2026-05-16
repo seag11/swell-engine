@@ -18,15 +18,29 @@ function idwAvg(values: Array<{ val: number | null; weight: number }>): number |
 
 export function triangulate(
   target: { lat: number; lon: number },
-  buoys: Array<{ station: BuoyStation; reading: BuoyReading }>
+  buoys: Array<{ station: BuoyStation; reading: BuoyReading }>,
+  facing?: number
 ): TriangulatedConditions {
+  const toRad = (d: number) => d * Math.PI / 180
+
   const entries = buoys.map((b) => ({
     ...b,
     distanceKm: equirectangularKm(target.lat, target.lon, b.station.lat, b.station.lon),
   }))
 
-  // IDW power=2: closer buoys get exponentially more weight
-  const weights = entries.map((b) => 1 / b.distanceKm ** 2)
+  const distanceWeights = entries.map((b) => 1 / b.distanceKm ** 2)
+
+  const directionalWeights = entries.map((b) =>
+    facing !== undefined && b.reading.waveDirection !== null
+      ? Math.max(0, Math.cos(toRad(b.reading.waveDirection - facing)))
+      : 1
+  )
+
+  const combined = distanceWeights.map((dw, i) => dw * directionalWeights[i])
+  const totalCombined = combined.reduce((s, w) => s + w, 0)
+
+  // Fall back to distance-only if all directional weights zero (no relevant swell)
+  const weights = totalCombined > 0 ? combined : distanceWeights
   const totalWeight = weights.reduce((s, w) => s + w, 0)
 
   const field = (key: keyof BuoyReading) =>

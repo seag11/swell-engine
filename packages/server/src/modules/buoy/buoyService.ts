@@ -115,7 +115,8 @@ function formatExpiry(timestamp: Date): string {
 
 export async function getTriangulatedConditions(
   lat: number,
-  lon: number
+  lon: number,
+  facing?: number
 ): Promise<TriangulatedConditions | null> {
   const nearest = await getNearestStations(lat, lon, 3)
   if (nearest.length === 0) return null
@@ -129,7 +130,10 @@ export async function getTriangulatedConditions(
         if (reading) await storeReading(reading)
       }
       if (reading) {
-        console.log(`[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.timestamp)}`)
+        const dirStr = facing !== undefined && reading.waveDirection !== null
+          ? ` | mwd ${reading.waveDirection}° dir ${Math.max(0, Math.cos((reading.waveDirection - facing) * Math.PI / 180)).toFixed(2)}`
+          : ''
+        console.log(`[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.timestamp)}${dirStr}`)
       } else {
         console.log(`[conditions] ${station.id} (${station.name}) — no data`)
       }
@@ -142,5 +146,5 @@ export async function getTriangulatedConditions(
   )
   if (valid.length === 0) return null
 
-  return triangulate({ lat, lon }, valid)
+  return triangulate({ lat, lon }, valid, facing)
 }

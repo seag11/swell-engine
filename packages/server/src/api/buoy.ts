@@ -7,7 +7,7 @@ export async function buoyRoutes(app: FastifyInstance) {
     return getAllStations()
   })
 
-  app.get<{ Querystring: { lat: string; lon: string } }>(
+  app.get<{ Querystring: { lat: string; lon: string; facing?: string } }>(
     '/api/buoy/conditions',
     {
       schema: {
@@ -15,15 +15,17 @@ export async function buoyRoutes(app: FastifyInstance) {
           type: 'object',
           required: ['lat', 'lon'],
           properties: {
-            lat: { type: 'string' },
-            lon: { type: 'string' },
+            lat:    { type: 'string' },
+            lon:    { type: 'string' },
+            facing: { type: 'string' },
           },
         },
       },
     },
     async (request, reply) => {
-      const lat = parseFloat(request.query.lat)
-      const lon = parseFloat(request.query.lon)
+      const lat    = parseFloat(request.query.lat)
+      const lon    = parseFloat(request.query.lon)
+      const facing = request.query.facing !== undefined ? parseFloat(request.query.facing) : undefined
 
       if (isNaN(lat) || isNaN(lon)) {
         return reply.status(400).send({ error: 'lat and lon must be valid numbers' })
@@ -32,7 +34,7 @@ export async function buoyRoutes(app: FastifyInstance) {
         return reply.status(400).send({ error: 'lat/lon out of range' })
       }
 
-      const conditions = await getTriangulatedConditions(lat, lon)
+      const conditions = await getTriangulatedConditions(lat, lon, facing)
       if (!conditions) {
         return reply.status(404).send({ error: 'No buoy data available for this location' })
       }
