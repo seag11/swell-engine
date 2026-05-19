@@ -1,5 +1,12 @@
 node_modules/
 dist/
 .env
-*.tsbuildinfo
+.env.*
+**/*.tsbuildinfo
 .git/
+packages/client/
+docker-compose*.yml
+*.log
+*.md
+.github/
+.vscode/
