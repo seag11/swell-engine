@@ -4,6 +4,8 @@ import { config } from '../../config.js'
 import { fetchLatestReading } from './ndbcClient.js'
 import { triangulate } from './triangulation.js'
 
+const TRIANGULATION_STATION_LIMIT = 3
+
 export async function getAllStations(): Promise<BuoyStation[]> {
   return sql<BuoyStation[]>`
     SELECT id, name, lat::float, lon::float, active
@@ -16,7 +18,7 @@ export async function getAllStations(): Promise<BuoyStation[]> {
 export async function getNearestStations(
   lat: number,
   lon: number,
-  limit = 3
+  limit = TRIANGULATION_STATION_LIMIT
 ): Promise<Array<BuoyStation & { distanceKm: number }>> {
   return sql<Array<BuoyStation & { distanceKm: number }>>`
     SELECT
@@ -118,7 +120,7 @@ export async function getTriangulatedConditions(
   lon: number,
   facing?: number
 ): Promise<TriangulatedConditions | null> {
-  const nearest = await getNearestStations(lat, lon, 3)
+  const nearest = await getNearestStations(lat, lon, TRIANGULATION_STATION_LIMIT)
   if (nearest.length === 0) return null
 
   const buoysWithReadings = await Promise.all(
