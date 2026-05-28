@@ -8,13 +8,13 @@ On request, the server finds the 3 nearest buoy stations to a target coordinate,
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 19 + Vite + Tailwind v4 |
-| Backend | Fastify 5 + TypeScript |
-| Database | PostgreSQL |
-| Queue | Redis + BullMQ |
-| Containerization | Docker + Docker Compose |
+| Layer            | Technology                    |
+| ---------------- | ----------------------------- |
+| Frontend         | React 19 + Vite + Tailwind v4 |
+| Backend          | Fastify 5 + TypeScript        |
+| Database         | PostgreSQL                    |
+| Queue            | Redis + BullMQ                |
+| Containerization | Docker + Docker Compose       |
 
 ## Project structure
 
@@ -44,17 +44,20 @@ swell-engine/
 ## Local development
 
 **1. Bootstrap**
+
 ```bash
 cp .env.example .env
 npm run setup        # install + build shared types
 ```
 
 **2. Start infrastructure**
+
 ```bash
 npm run dev:infra    # postgres + redis in Docker (detached)
 ```
 
 **3. Start dev servers**
+
 ```bash
 npm run dev          # server + client concurrently
 ```
@@ -65,6 +68,7 @@ npm run dev          # server + client concurrently
 On startup the server migrates and seeds the database. The first API request for a location fetches live from NOAA if no fresh data exists, then caches it. Subsequent requests are served from the database.
 
 > If you change anything in `packages/shared`, rebuild before restarting the server:
+>
 > ```bash
 > npm run build -w packages/shared
 > ```
@@ -82,12 +86,12 @@ npm run docker:clean  # stop + wipe volumes (resets DB)
 
 ## Environment variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `DATABASE_URL` | see `.env.example` | PostgreSQL connection string |
-| `REDIS_URL` | `redis://localhost:6379` | Redis connection string |
-| `PORT` | `3000` | Server port |
-| `NDBC_DATA_TTL_HOURS` | `6` | How long a buoy reading is considered fresh — cron interval and staleness threshold both derived from this |
+| Variable              | Default                  | Description                                                                                                |
+| --------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`        | see `.env.example`       | PostgreSQL connection string                                                                               |
+| `REDIS_URL`           | `redis://localhost:6379` | Redis connection string                                                                                    |
+| `PORT`                | `3000`                   | Server port                                                                                                |
+| `NDBC_DATA_TTL_HOURS` | `6`                      | How long a buoy reading is considered fresh — cron interval and staleness threshold both derived from this |
 
 ## API
 
@@ -95,11 +99,17 @@ npm run docker:clean  # stop + wipe volumes (resets DB)
 
 Returns all active buoy stations.
 
-### `GET /api/buoy/conditions?lat={lat}&lon={lon}`
+### `GET /api/buoy/conditions?lat={lat}&lon={lon}[&facing={deg}]`
 
 Returns triangulated conditions for the given coordinate.
 
-**Example:** `GET /api/buoy/conditions?lat=37.76&lon=-122.43`
+| Parameter | Required | Description                                                                                                                                                                                          |
+| --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lat`     | Yes      | Latitude (-90 to 90)                                                                                                                                                                                 |
+| `lon`     | Yes      | Longitude (-180 to 180)                                                                                                                                                                              |
+| `facing`  | No       | Beach facing direction in degrees true (0–360). When provided, buoy contributions are weighted by swell alignment with the beach — a buoy detecting swell from the wrong direction contributes less. |
+
+**Example:** `GET /api/buoy/conditions?lat=37.76&lon=-122.43&facing=270`
 
 ```json
 {
@@ -123,13 +133,13 @@ Returns triangulated conditions for the given coordinate.
 
 **Tone** (derived from wave height):
 
-| Value | Height |
-|---|---|
-| `flat` | < 1 ft |
-| `small` | 1 – 3 ft |
-| `solid` | 3 – 6 ft |
+| Value   | Height    |
+| ------- | --------- |
+| `flat`  | < 1 ft    |
+| `small` | 1 – 3 ft  |
+| `solid` | 3 – 6 ft  |
 | `large` | 6 – 10 ft |
-| `xxl` | > 10 ft |
+| `xxl`   | > 10 ft   |
 
 ## Buoy stations
 
