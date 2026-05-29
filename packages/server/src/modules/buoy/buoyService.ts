@@ -1,8 +1,8 @@
-import type { BuoyStation, BuoyReading, TriangulatedConditions } from "@swell-engine/shared";
-import { sql } from "../../db/client.js";
-import { config } from "../../config.js";
-import { fetchLatestReading } from "./ndbcClient.js";
-import { triangulate } from "./triangulation.js";
+import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared';
+import { sql } from '../../db/client.js';
+import { config } from '../../config.js';
+import { fetchLatestReading } from './ndbcClient.js';
+import { triangulate } from './triangulation.js';
 
 const TRIANGULATION_STATION_LIMIT = 3;
 
@@ -128,7 +128,7 @@ export async function getTriangulatedConditions(
   const buoysWithReadings = await Promise.all(
     nearest.map(async (station) => {
       let reading = await getLatestReadingFromDb(station.id);
-      const source = reading ? "cached" : "live";
+      const source = reading ? 'cached' : 'live';
       if (!reading) {
         reading = await fetchLatestReading(station.id);
         if (reading) await storeReading(reading);
@@ -137,7 +137,7 @@ export async function getTriangulatedConditions(
         const dirStr =
           facing !== undefined && reading.waveDirection !== null
             ? ` | mwd ${reading.waveDirection}° dir ${Math.max(0, Math.cos(((reading.waveDirection - facing) * Math.PI) / 180)).toFixed(2)}`
-            : "";
+            : '';
         console.log(
           `[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.timestamp)}${dirStr}`,
         );

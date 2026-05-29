@@ -5,7 +5,7 @@ export {
   getStaleStations,
   storeReading,
   getTriangulatedConditions,
-} from "./buoyService.js";
+} from './buoyService.js';
 
-export { fetchLatestReading } from "./ndbcClient.js";
-export { triangulate } from "./triangulation.js";
+export { fetchLatestReading } from './ndbcClient.js';
+export { triangulate } from './triangulation.js';
