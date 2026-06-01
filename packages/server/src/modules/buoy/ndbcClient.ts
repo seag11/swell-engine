@@ -29,10 +29,16 @@ function parseStdMet(stationId: string, text: string): BuoyReading | null {
     .split('\n')
     .filter((l) => l.trim().length > 0);
   const dataLine = lines[2];
-  if (!dataLine) return null;
+  if (!dataLine) {
+    console.warn(`NDBC ${stationId}: no data line found`);
+    return null;
+  }
 
   const cols = dataLine.trim().split(/\s+/);
-  if (cols.length < 15) return null;
+  if (cols.length < 15) {
+    console.warn(`NDBC ${stationId}: unexpected column count ${cols.length}`);
+    return null;
+  }
 
   const num = (v: string): number | null => (v === 'MM' ? null : parseFloat(v));
   const int = (v: string): number | null => (v === 'MM' ? null : parseInt(v, 10));
@@ -43,7 +49,10 @@ function parseStdMet(stationId: string, text: string): BuoyReading | null {
   const timestamp = new Date(
     `${cols[0]}-${pad(cols[1])}-${pad(cols[2])}T${pad(cols[3])}:${pad(cols[4])}:00Z`,
   );
-  if (isNaN(timestamp.getTime())) return null;
+  if (isNaN(timestamp.getTime())) {
+    console.warn(`NDBC ${stationId}: unparseable timestamp in "${dataLine}"`);
+    return null;
+  }
 
   return {
     stationId,
