@@ -61,11 +61,13 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [geolocating, setGeolocating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [directionalWeightingApplied, setDirectionalWeightingApplied] = useState(false)
 
   const fetchConditions = async (latVal: string, lonVal: string, facing?: number) => {
     setLoading(true)
     setError(null)
     setConditions(null)
+    setDirectionalWeightingApplied(false)
     try {
       const url = facing !== undefined
         ? `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}&facing=${facing}`
@@ -74,6 +76,7 @@ export default function App() {
       const body = await res.json()
       if (!res.ok) throw new Error(body.error ?? 'Request failed')
       setConditions(body)
+      setDirectionalWeightingApplied(facing !== undefined)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unknown error')
     } finally {
@@ -211,7 +214,12 @@ export default function App() {
           </div>
 
           <div className="bg-slate-800 rounded-xl p-4">
-            <div className="text-slate-400 text-xs uppercase tracking-wide mb-3">Buoy Sources</div>
+            <div className="text-slate-400 text-xs uppercase tracking-wide mb-3 flex items-center gap-2">
+              Buoy Sources
+              {directionalWeightingApplied && (
+                <span className="text-sky-500 normal-case tracking-normal font-medium">↗ directional weighting</span>
+              )}
+            </div>
             <div className="space-y-2">
               {conditions.sources.map((s) => (
                 <div key={s.stationId} className="flex justify-between text-sm">
