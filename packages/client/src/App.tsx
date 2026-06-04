@@ -1,132 +1,157 @@
-import { useState } from 'react'
-import { validateLat, validateLon } from './lib/validateCoords'
+import { useState } from 'react';
+import { validateLat, validateLon } from './lib/validateCoords';
 
 interface ConditionSource {
-  stationId: string
-  stationName: string
-  distanceKm: number
-  weight: number
+  stationId: string;
+  stationName: string;
+  distanceKm: number;
+  weight: number;
 }
 
 interface Conditions {
-  waveHeight: number | null
-  dominantPeriod: number | null
-  windSpeed: number | null
-  windDirection: number | null
-  waterTemp: number | null
-  tone: string
-  sources: ConditionSource[]
-  generatedAt: string
+  waveHeight: number | null;
+  dominantPeriod: number | null;
+  windSpeed: number | null;
+  windDirection: number | null;
+  waterTemp: number | null;
+  tone: string;
+  sources: ConditionSource[];
+  generatedAt: string;
 }
 
 const PRESETS = [
-  { label: 'Ocean Beach, SF',  lat: 37.757,  lon: -122.510, facing: 270 },
-  { label: 'Mavericks, CA',    lat: 37.495,  lon: -122.497, facing: 310 },
-  { label: 'Trestles, CA',     lat: 33.383,  lon: -117.589, facing: 230 },
-  { label: 'Pipeline, HI',     lat: 21.665,  lon: -158.053, facing: 345 },
-  { label: 'Montauk, NY',      lat: 41.036,  lon:  -71.952, facing: 160 },
-]
+  { label: 'Ocean Beach, SF', lat: 37.757, lon: -122.51, facing: 270 },
+  { label: 'Mavericks, CA', lat: 37.495, lon: -122.497, facing: 310 },
+  { label: 'Trestles, CA', lat: 33.383, lon: -117.589, facing: 230 },
+  { label: 'Pipeline, HI', lat: 21.665, lon: -158.053, facing: 345 },
+  { label: 'Montauk, NY', lat: 41.036, lon: -71.952, facing: 160 },
+  { label: 'Cocoa Beach, FL', lat: 28.32, lon: -80.608, facing: 90 },
+];
 
-const WIND_DIRS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
+const WIND_DIRS = [
+  'N',
+  'NNE',
+  'NE',
+  'ENE',
+  'E',
+  'ESE',
+  'SE',
+  'SSE',
+  'S',
+  'SSW',
+  'SW',
+  'WSW',
+  'W',
+  'WNW',
+  'NW',
+  'NNW',
+];
 
 function degToCompass(deg: number | null): string {
-  if (deg === null) return 'N/A'
-  return WIND_DIRS[Math.round(deg / 22.5) % 16]
+  if (deg === null) return 'N/A';
+  return WIND_DIRS[Math.round(deg / 22.5) % 16];
 }
 
 function fmtWaveHeight(m: number | null): string {
-  if (m === null) return 'N/A'
-  return `${m.toFixed(1)}m / ${(m * 3.28084).toFixed(1)}ft`
+  if (m === null) return 'N/A';
+  return `${m.toFixed(1)}m / ${(m * 3.28084).toFixed(1)}ft`;
 }
 
 function fmtWind(mps: number | null, dir: number | null): string {
-  if (mps === null) return 'N/A'
-  return `${(mps * 1.944).toFixed(0)} kts ${degToCompass(dir)}`
+  if (mps === null) return 'N/A';
+  return `${(mps * 1.944).toFixed(0)} kts ${degToCompass(dir)}`;
 }
 
 const TONE_COLORS: Record<string, string> = {
-  flat:  'text-slate-400',
+  flat: 'text-slate-400',
   small: 'text-sky-400',
   solid: 'text-green-400',
   large: 'text-yellow-400',
-  xxl:   'text-red-400',
-}
+  xxl: 'text-red-400',
+};
 
 export default function App() {
-  const [lat, setLat] = useState('')
-  const [lon, setLon] = useState('')
-  const [conditions, setConditions] = useState<Conditions | null>(null)
-  const [latError, setLatError] = useState<string | null>(null)
-  const [lonError, setLonError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [geolocating, setGeolocating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [directionalWeightingApplied, setDirectionalWeightingApplied] = useState(false)
+  const [lat, setLat] = useState('');
+  const [lon, setLon] = useState('');
+  const [conditions, setConditions] = useState<Conditions | null>(null);
+  const [latError, setLatError] = useState<string | null>(null);
+  const [lonError, setLonError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [geolocating, setGeolocating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [directionalWeightingApplied, setDirectionalWeightingApplied] = useState(false);
 
   const fetchConditions = async (latVal: string, lonVal: string, facing?: number) => {
-    setLoading(true)
-    setError(null)
-    setConditions(null)
-    setDirectionalWeightingApplied(false)
+    setLoading(true);
+    setError(null);
+    setConditions(null);
+    setDirectionalWeightingApplied(false);
     try {
-      const url = facing !== undefined
-        ? `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}&facing=${facing}`
-        : `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}`
-      const res = await fetch(url)
-      const body = await res.json()
-      if (!res.ok) throw new Error(body.error ?? 'Request failed')
-      setConditions(body)
-      setDirectionalWeightingApplied(facing !== undefined)
+      const url =
+        facing !== undefined
+          ? `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}&facing=${facing}`
+          : `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}`;
+      const res = await fetch(url);
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? 'Request failed');
+      setConditions(body);
+      setDirectionalWeightingApplied(facing !== undefined);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Unknown error')
+      setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handlePreset = (presetLat: number, presetLon: number, facing?: number) => {
-    const latStr = String(presetLat)
-    const lonStr = String(presetLon)
-    setLat(latStr)
-    setLon(lonStr)
-    setLatError(null)
-    setLonError(null)
-    fetchConditions(latStr, lonStr, facing)
-  }
+    const latStr = String(presetLat);
+    const lonStr = String(presetLon);
+    setLat(latStr);
+    setLon(lonStr);
+    setLatError(null);
+    setLonError(null);
+    fetchConditions(latStr, lonStr, facing);
+  };
 
   const handleGeolocate = () => {
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser')
-      return
+      setError('Geolocation is not supported by your browser');
+      return;
     }
-    setGeolocating(true)
-    setError(null)
+    setGeolocating(true);
+    setError(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const latStr = pos.coords.latitude.toFixed(4)
-        const lonStr = pos.coords.longitude.toFixed(4)
-        setLat(latStr)
-        setLon(lonStr)
-        setLatError(null)
-        setLonError(null)
-        setGeolocating(false)
-        fetchConditions(latStr, lonStr)
+        const latStr = pos.coords.latitude.toFixed(4);
+        const lonStr = pos.coords.longitude.toFixed(4);
+        setLat(latStr);
+        setLon(lonStr);
+        setLatError(null);
+        setLonError(null);
+        setGeolocating(false);
+        fetchConditions(latStr, lonStr);
       },
       () => {
-        setError('Location access denied or unavailable')
-        setGeolocating(false)
-      }
-    )
-  }
+        setError('Location access denied or unavailable');
+        setGeolocating(false);
+      },
+    );
+  };
 
   const stats = conditions
     ? [
-        { label: 'Wave Height',     value: fmtWaveHeight(conditions.waveHeight) },
-        { label: 'Dominant Period', value: conditions.dominantPeriod ? `${conditions.dominantPeriod.toFixed(1)}s` : 'N/A' },
-        { label: 'Wind',            value: fmtWind(conditions.windSpeed, conditions.windDirection) },
-        { label: 'Water Temp',      value: conditions.waterTemp ? `${conditions.waterTemp.toFixed(1)}°C` : 'N/A' },
+        { label: 'Wave Height', value: fmtWaveHeight(conditions.waveHeight) },
+        {
+          label: 'Dominant Period',
+          value: conditions.dominantPeriod ? `${conditions.dominantPeriod.toFixed(1)}s` : 'N/A',
+        },
+        { label: 'Wind', value: fmtWind(conditions.windSpeed, conditions.windDirection) },
+        {
+          label: 'Water Temp',
+          value: conditions.waterTemp ? `${conditions.waterTemp.toFixed(1)}°C` : 'N/A',
+        },
       ]
-    : []
+    : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 text-slate-100 p-8 max-w-2xl mx-auto">
@@ -217,7 +242,9 @@ export default function App() {
             <div className="text-slate-400 text-xs uppercase tracking-wide mb-3 flex items-center gap-2">
               Buoy Sources
               {directionalWeightingApplied && (
-                <span className="text-sky-500 normal-case tracking-normal font-medium">↗ directional weighting</span>
+                <span className="text-sky-500 normal-case tracking-normal font-medium">
+                  ↗ directional weighting
+                </span>
               )}
             </div>
             <div className="space-y-2">
@@ -241,5 +268,5 @@ export default function App() {
         </div>
       )}
     </div>
-  )
+  );
 }
