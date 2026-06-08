@@ -8,7 +8,8 @@ export interface BuoyStation {
 
 export interface BuoyReading {
   stationId: string
-  timestamp: Date
+  observedAt: Date
+  createdAt: Date
   waveHeight: number | null      // meters
   dominantPeriod: number | null  // seconds
   avgPeriod: number | null       // seconds
@@ -30,6 +31,7 @@ export interface TriangulatedConditions {
     distanceKm: number
     weight: number
   }>
+  observedAt: Date
   generatedAt: Date
 }
 

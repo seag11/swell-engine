@@ -5,6 +5,7 @@ import { fetchLatestReading } from './ndbcClient.js';
 import { triangulate } from './triangulation.js';
 
 const TRIANGULATION_STATION_LIMIT = 3;
+const STALE_READING_THRESHOLD_MS = 4 * 3_600_000;
 
 export async function getAllStations(): Promise<BuoyStation[]> {
   return sql<BuoyStation[]>`
@@ -41,6 +42,7 @@ export async function getLatestReadingFromDb(stationId: string): Promise<BuoyRea
     Array<{
       station_id: string;
       observed_at: Date;
+      created_at: Date;
       wave_height: string | null;
       dominant_period: string | null;
       avg_period: string | null;
@@ -50,7 +52,7 @@ export async function getLatestReadingFromDb(stationId: string): Promise<BuoyRea
       water_temp: string | null;
     }>
   >`
-    SELECT station_id, observed_at, wave_height, dominant_period, avg_period,
+    SELECT station_id, observed_at, created_at, wave_height, dominant_period, avg_period,
            wave_direction, wind_speed, wind_direction, water_temp
     FROM buoy_readings
     WHERE station_id = ${stationId}
@@ -62,7 +64,8 @@ export async function getLatestReadingFromDb(stationId: string): Promise<BuoyRea
   const r = rows[0];
   return {
     stationId: r.station_id,
-    timestamp: r.observed_at,
+    observedAt: r.observed_at,
+    createdAt: r.created_at,
     waveHeight: r.wave_height ? parseFloat(r.wave_height) : null,
     dominantPeriod: r.dominant_period ? parseFloat(r.dominant_period) : null,
     avgPeriod: r.avg_period ? parseFloat(r.avg_period) : null,
@@ -96,7 +99,7 @@ export async function storeReading(reading: BuoyReading): Promise<void> {
       wave_direction, wind_speed, wind_direction, water_temp
     ) VALUES (
       ${reading.stationId},
-      ${reading.timestamp},
+      ${reading.observedAt},
       ${reading.waveHeight},
       ${reading.dominantPeriod},
       ${reading.avgPeriod},
@@ -109,8 +112,8 @@ export async function storeReading(reading: BuoyReading): Promise<void> {
   `;
 }
 
-function formatExpiry(timestamp: Date): string {
-  const ms = timestamp.getTime() + config.ndbcDataTtlHours * 3_600_000 - Date.now();
+function formatExpiry(observedAt: Date): string {
+  const ms = observedAt.getTime() + config.ndbcDataTtlHours * 3_600_000 - Date.now();
   const totalMin = Math.max(0, Math.floor(ms / 60_000));
   const h = Math.floor(totalMin / 60);
   const m = totalMin % 60;
@@ -134,12 +137,18 @@ export async function getTriangulatedConditions(
         if (reading) await storeReading(reading);
       }
       if (reading) {
+        const ageMs = Date.now() - reading.observedAt.getTime();
+        if (ageMs > STALE_READING_THRESHOLD_MS) {
+          console.warn(
+            `[conditions] ${station.id} (${station.name}) — stale reading observed ${(ageMs / 3_600_000).toFixed(1)}h ago`,
+          );
+        }
         const dirStr =
           facing !== undefined && reading.waveDirection !== null
             ? ` | mwd ${reading.waveDirection}° dir ${Math.max(0, Math.cos(((reading.waveDirection - facing) * Math.PI) / 180)).toFixed(2)}`
             : '';
         console.log(
-          `[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.timestamp)}${dirStr}`,
+          `[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.observedAt)}${dirStr}`,
         );
       } else {
         console.log(`[conditions] ${station.id} (${station.name}) — no data`);

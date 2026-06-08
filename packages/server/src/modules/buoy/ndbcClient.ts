@@ -56,7 +56,8 @@ function parseStdMet(stationId: string, text: string): BuoyReading | null {
 
   return {
     stationId,
-    timestamp,
+    observedAt: timestamp,
+    createdAt: new Date(),
     windDirection: int(cols[5]),
     windSpeed: num(cols[6]),
     waveHeight: num(cols[8]),

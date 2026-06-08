@@ -32,7 +32,7 @@ export function triangulate(
   const directionalWeights = entries.map((b) =>
     facing !== undefined && b.reading.waveDirection !== null
       ? Math.max(0, Math.cos(toRad(b.reading.waveDirection - facing)))
-      : 1,
+      : 1
   );
 
   const combined = distanceWeights.map((dw, i) => dw * directionalWeights[i]);
@@ -50,6 +50,8 @@ export function triangulate(
       })),
     );
 
+  const observedAt = new Date(Math.min(...entries.map((b) => b.reading.observedAt.getTime())));
+
   return {
     waveHeight: field('waveHeight'),
     dominantPeriod: field('dominantPeriod'),
@@ -62,6 +64,7 @@ export function triangulate(
       distanceKm: Math.round(b.distanceKm),
       weight: parseFloat((weights[i] / totalWeight).toFixed(3)),
     })),
+    observedAt,
     generatedAt: new Date(),
   };
 }

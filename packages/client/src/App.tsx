@@ -16,6 +16,7 @@ interface Conditions {
   waterTemp: number | null;
   tone: string;
   sources: ConditionSource[];
+  observedAt: string;
   generatedAt: string;
 }
 
@@ -263,7 +264,7 @@ export default function App() {
           </div>
 
           <p className="text-slate-600 text-xs text-right">
-            Generated {new Date(conditions.generatedAt).toLocaleString()}
+            Data as of {new Date(conditions.observedAt).toLocaleString()}
           </p>
         </div>
       )}
