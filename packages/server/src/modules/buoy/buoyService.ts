@@ -112,6 +112,28 @@ export async function storeReading(reading: BuoyReading): Promise<void> {
   `;
 }
 
+function logStationReading(
+  stationId: string,
+  stationName: string,
+  reading: BuoyReading,
+  source: string,
+  facing?: number,
+): void {
+  const ageMs = Date.now() - reading.observedAt.getTime();
+  if (ageMs > STALE_READING_THRESHOLD_MS) {
+    console.warn(
+      `[conditions] ${stationId} (${stationName}) — stale reading observed ${(ageMs / 3_600_000).toFixed(1)}h ago`,
+    );
+  }
+  const dirStr =
+    facing !== undefined && reading.waveDirection !== null
+      ? ` | mwd ${reading.waveDirection}° dir ${Math.max(0, Math.cos(((reading.waveDirection - facing) * Math.PI) / 180)).toFixed(2)}`
+      : '';
+  console.log(
+    `[conditions] ${stationId} (${stationName}) — ${source}, expires in ${formatExpiry(reading.observedAt)}${dirStr}`,
+  );
+}
+
 function formatExpiry(observedAt: Date): string {
   const ms = observedAt.getTime() + config.ndbcDataTtlHours * 3_600_000 - Date.now();
   const totalMin = Math.max(0, Math.floor(ms / 60_000));
@@ -137,19 +159,7 @@ export async function getTriangulatedConditions(
         if (reading) await storeReading(reading);
       }
       if (reading) {
-        const ageMs = Date.now() - reading.observedAt.getTime();
-        if (ageMs > STALE_READING_THRESHOLD_MS) {
-          console.warn(
-            `[conditions] ${station.id} (${station.name}) — stale reading observed ${(ageMs / 3_600_000).toFixed(1)}h ago`,
-          );
-        }
-        const dirStr =
-          facing !== undefined && reading.waveDirection !== null
-            ? ` | mwd ${reading.waveDirection}° dir ${Math.max(0, Math.cos(((reading.waveDirection - facing) * Math.PI) / 180)).toFixed(2)}`
-            : '';
-        console.log(
-          `[conditions] ${station.id} (${station.name}) — ${source}, expires in ${formatExpiry(reading.observedAt)}${dirStr}`,
-        );
+        logStationReading(station.id, station.name, reading, source, facing);
       } else {
         console.log(`[conditions] ${station.id} (${station.name}) — no data`);
       }
