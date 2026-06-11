@@ -40,7 +40,7 @@ export async function buoyRoutes(app: FastifyInstance) {
         return reply.status(404).send({ error: 'No buoy data available for this location' });
       }
 
-      return { ...conditions, tone: classifyTone(conditions.waveHeight) };
+      return { ...conditions, tone: classifyTone(conditions.waveHeight, conditions.swellPower) };
     },
   );
 }

@@ -1,4 +1,5 @@
 import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared';
+import { computeSwellPower } from '@swell-engine/shared';
 
 function equirectangularKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
@@ -52,9 +53,13 @@ export function triangulate(
 
   const observedAt = new Date(Math.min(...entries.map((b) => b.reading.observedAt.getTime())));
 
+  const waveHeight = field('waveHeight');
+  const dominantPeriod = field('dominantPeriod');
+
   return {
-    waveHeight: field('waveHeight'),
-    dominantPeriod: field('dominantPeriod'),
+    waveHeight,
+    dominantPeriod,
+    swellPower: computeSwellPower(waveHeight, dominantPeriod),
     windSpeed: field('windSpeed'),
     windDirection: entries[weights.indexOf(Math.max(...weights))]?.reading.windDirection ?? null,
     waterTemp: field('waterTemp'),

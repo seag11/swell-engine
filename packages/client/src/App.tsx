@@ -11,6 +11,7 @@ interface ConditionSource {
 interface Conditions {
   waveHeight: number | null;
   dominantPeriod: number | null;
+  swellPower: number | null;
   windSpeed: number | null;
   windDirection: number | null;
   waterTemp: number | null;
