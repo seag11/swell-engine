@@ -83,17 +83,20 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [directionalWeightingApplied, setDirectionalWeightingApplied] = useState(false);
 
+  const clearErrors = () => {
+    setLatError(null);
+    setLonError(null);
+  };
+
   const fetchConditions = async (latVal: string, lonVal: string, facing?: number) => {
     setLoading(true);
     setError(null);
     setConditions(null);
     setDirectionalWeightingApplied(false);
     try {
-      const url =
-        facing !== undefined
-          ? `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}&facing=${facing}`
-          : `/api/buoy/conditions?lat=${latVal}&lon=${lonVal}`;
-      const res = await fetch(url);
+      const params = new URLSearchParams({ lat: latVal, lon: lonVal });
+      if (facing !== undefined) params.set('facing', String(facing));
+      const res = await fetch(`/api/buoy/conditions?${params}`);
       const body = await res.json();
       if (!res.ok) throw new Error(body.error ?? 'Request failed');
       setConditions(body);
@@ -110,8 +113,7 @@ export default function App() {
     const lonStr = String(presetLon);
     setLat(latStr);
     setLon(lonStr);
-    setLatError(null);
-    setLonError(null);
+    clearErrors();
     fetchConditions(latStr, lonStr, facing);
   };
 
@@ -128,8 +130,7 @@ export default function App() {
         const lonStr = pos.coords.longitude.toFixed(4);
         setLat(latStr);
         setLon(lonStr);
-        setLatError(null);
-        setLonError(null);
+        clearErrors();
         setGeolocating(false);
         fetchConditions(latStr, lonStr);
       },
