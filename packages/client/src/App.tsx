@@ -30,24 +30,8 @@ const PRESETS = [
   { label: 'Cocoa Beach, FL', lat: 28.32, lon: -80.608, facing: 90 },
 ];
 
-const WIND_DIRS = [
-  'N',
-  'NNE',
-  'NE',
-  'ENE',
-  'E',
-  'ESE',
-  'SE',
-  'SSE',
-  'S',
-  'SSW',
-  'SW',
-  'WSW',
-  'W',
-  'WNW',
-  'NW',
-  'NNW',
-];
+// prettier-ignore
+const WIND_DIRS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
 function degToCompass(deg: number | null): string {
   if (deg === null) return 'N/A';
