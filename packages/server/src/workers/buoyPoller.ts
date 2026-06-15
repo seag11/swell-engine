@@ -31,8 +31,13 @@ export function startBuoyPoller(): Worker {
         }),
       );
 
-      const failed = results.filter((r) => r.status === 'rejected').length;
-      console.log(`[poller] done — ${results.length - failed} ok, ${failed} failed`);
+      results.forEach((result, i) => {
+        if (result.status === 'rejected') {
+          console.error(`[poller] ${stale[i].id} (${stale[i].name}) failed:`, result.reason);
+        }
+      });
+      const failedCount = results.filter((r) => r.status === 'rejected').length;
+      console.log(`[poller] done — ${results.length - failedCount} ok, ${failedCount} failed`);
     },
     { connection },
   );
