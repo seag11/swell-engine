@@ -33,3 +33,47 @@ export function computeSwellPower(
   if (waveHeight === null || dominantPeriod === null) return null;
   return waveHeight ** 2 * dominantPeriod;
 }
+
+/**
+ * Condition Tone Classifier
+ *
+ * Maps triangulated wave conditions to a human-readable surf quality label.
+ * NDBC reports significant wave height in metres; thresholds are expressed in
+ * feet to match the conventions used by surfers and forecasting services.
+ *
+ * Base thresholds (height only):
+ *   < 1 ft  → flat
+ *   1–3 ft  → small
+ *   3–6 ft  → solid
+ *   6–10 ft → large
+ *   10+ ft  → xxl
+ *
+ * Swell power upgrade:
+ *   When swellPower (H² × T) exceeds HIGH_POWER_THRESHOLD, the tone is bumped
+ *   one level upward. This reflects the physical reality that long-period ground
+ *   swell delivers significantly more energy per wave than wind chop of the same
+ *   height — a 4 ft swell at 18s breaks with the force of a much larger
+ *   short-period wave and should be rated accordingly.
+ *
+ *   Threshold P > 20 captures meaningful ground swell (e.g. 1.5m @ 9s,
+ *   1m @ 14s) while leaving short-period wind chop unaffected.
+ */
+export type ConditionTone = 'flat' | 'small' | 'solid' | 'large' | 'xxl';
+
+const HIGH_POWER_THRESHOLD = 20;
+
+export function classifyTone(
+  waveHeightMeters: number | null,
+  swellPower?: number | null,
+): ConditionTone {
+  if (waveHeightMeters === null) return 'flat';
+  const ft = waveHeightMeters * 3.28084;
+  if (ft < 1) return 'flat';
+
+  const highPower = swellPower != null && swellPower > HIGH_POWER_THRESHOLD;
+
+  if (ft < 3) return highPower ? 'solid' : 'small';
+  if (ft < 6) return highPower ? 'large' : 'solid';
+  if (ft < 10) return highPower ? 'xxl' : 'large';
+  return 'xxl';
+}
