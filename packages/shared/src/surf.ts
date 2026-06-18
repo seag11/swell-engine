@@ -3,32 +3,14 @@
  */
 
 /**
- * Wave Power Index
+ * Wave power index: P ∝ H² × T
  *
- * In linear wave theory, wave power (energy flux per unit crest width) in deep
- * water is:
+ * Derived from P = (ρg²H²T) / 32π — with ρ and g as constants, the relative
+ * index reduces to H² × T. Energy density scales as H²; group velocity scales
+ * with T, so longer-period swell transports energy faster to the break.
  *
- *   P = (ρg²H²T) / 32π
- *
- * where ρ is seawater density (~1025 kg/m³), g is gravitational acceleration
- * (9.81 m/s²), H is significant wave height (metres), and T is dominant period
- * (seconds).
- *
- * Because ρ and g are physical constants, the relative power index reduces to:
- *
- *   P ∝ H² × T
- *
- * This captures two effects:
- *   1. Energy density scales as H² — doubling height quadruples stored energy.
- *   2. Group velocity in deep water = gT/4π, so longer-period swell transports
- *      its energy faster, delivering more joules per second to a breaking wave.
- *
- * Example: a 2m swell at 18s (index ≈ 72) carries ~8× the power of a 3m swell
- * at 4s (index ≈ 36), despite the lower height — consistent with the felt
- * difference between ground swell and wind chop at the break.
- *
- * The index is dimensionless (constants dropped) and suited for relative
- * comparisons between readings, not absolute power calculations.
+ * Dimensionless — suited for relative comparisons, not absolute power.
+ * Example: 2m @ 18s (≈72) carries ~8× the power of 3m @ 4s (≈36).
  */
 export function computeSwellPower(
   waveHeight: number | null,
@@ -39,28 +21,13 @@ export function computeSwellPower(
 }
 
 /**
- * Condition Tone Classifier
+ * Classifies conditions into a surf quality label using height (in ft) as the
+ * base, with a one-level upgrade when swellPower exceeds HIGH_POWER_THRESHOLD.
+ * The upgrade reflects that long-period ground swell breaks with significantly
+ * more force than wind chop at the same height.
  *
- * Maps triangulated wave conditions to a human-readable surf quality label.
- * NDBC reports significant wave height in metres; thresholds are expressed in
- * feet to match the conventions used by surfers and forecasting services.
- *
- * Base thresholds (height only):
- *   < 1 ft  → flat
- *   1–3 ft  → small
- *   3–6 ft  → solid
- *   6–10 ft → large
- *   10+ ft  → xxl
- *
- * Swell power upgrade:
- *   When swellPower (H² × T) exceeds HIGH_POWER_THRESHOLD, the tone is bumped
- *   one level upward. This reflects the physical reality that long-period ground
- *   swell delivers significantly more energy per wave than wind chop of the same
- *   height — a 4 ft swell at 18s breaks with the force of a much larger
- *   short-period wave and should be rated accordingly.
- *
- *   Threshold P > 20 captures meaningful ground swell (e.g. 1.5m @ 9s,
- *   1m @ 14s) while leaving short-period wind chop unaffected.
+ * Thresholds: <1ft flat · 1–3ft small · 3–6ft solid · 6–10ft large · 10ft+ xxl
+ * Power upgrade (P > 20): small→solid · solid→large · large→xxl
  */
 export type ConditionTone = 'flat' | 'small' | 'solid' | 'large' | 'xxl';
 
