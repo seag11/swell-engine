@@ -1,4 +1,8 @@
 /**
+ * surf.ts — wave physics and condition classification (swellKit)
+ */
+
+/**
  * Wave Power Index
  *
  * In linear wave theory, wave power (energy flux per unit crest width) in deep

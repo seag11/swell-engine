@@ -36,5 +36,5 @@ export interface TriangulatedConditions {
   generatedAt: Date
 }
 
-export { computeSwellPower, classifyTone } from './waveDynamics.js'
-export type { ConditionTone } from './waveDynamics.js'
+export { computeSwellPower, classifyTone } from './surf.js'
+export type { ConditionTone } from './surf.js'
