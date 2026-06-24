@@ -3,7 +3,11 @@ import { config } from '../config.js';
 import { getStaleStations, storeReading } from '../modules/buoy/index.js';
 import { fetchLatestReading } from '../modules/buoy/ndbcClient.js';
 
-const QUEUE_NAME = 'buoy-poll';
+const QUEUE = {
+  NAME: 'buoy-poll',
+  SCHEDULER_ID: 'recurring-poll',
+  JOB_NAME: 'poll-all-stations',
+} as const;
 
 const redisUrl = new URL(config.redisUrl);
 const connection = {
@@ -11,11 +15,16 @@ const connection = {
   port: parseInt(redisUrl.port || '6379', 10),
 };
 
-export const buoyPollQueue = new Queue(QUEUE_NAME, { connection });
+// Holds its own Redis connection — must be closed on shutdown alongside the Worker.
+export const buoyPollQueue = new Queue(QUEUE.NAME, { connection });
 
+/**
+ * Processes a single poll job — fetches fresh readings for any stale stations
+ * and stores them. Station failures are isolated and logged individually.
+ */
 export function startBuoyPoller(): Worker {
   const worker = new Worker(
-    QUEUE_NAME,
+    QUEUE.NAME,
     async () => {
       const stale = await getStaleStations();
       if (stale.length === 0) {
@@ -49,11 +58,15 @@ export function startBuoyPoller(): Worker {
   return worker;
 }
 
+/**
+ * Registers the recurring poll schedule. Idempotent across restarts — the
+ * interval is tied to the NDBC data TTL so stations refresh as they expire.
+ */
 export async function scheduleBuoyPoll(): Promise<void> {
   await buoyPollQueue.upsertJobScheduler(
-    'recurring-poll',
+    QUEUE.SCHEDULER_ID,
     { every: config.ndbcPollIntervalMs },
-    { name: 'poll-all-stations', data: {} },
+    { name: QUEUE.JOB_NAME, data: {} },
   );
   console.log(`[poller] scheduled every ${config.ndbcDataTtlHours}h (TTL match)`);
 }
