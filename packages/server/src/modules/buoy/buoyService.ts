@@ -134,6 +134,7 @@ function logStationReading(
   );
 }
 
+/** Returns a cached reading if within TTL, otherwise fetches live from NDBC. */
 async function resolveReading(
   stationId: string,
 ): Promise<{ reading: BuoyReading; source: 'cached' | 'live' } | null> {
