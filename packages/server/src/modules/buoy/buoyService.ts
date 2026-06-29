@@ -134,6 +134,21 @@ function logStationReading(
   );
 }
 
+async function resolveReading(
+  stationId: string,
+): Promise<{ reading: BuoyReading; source: 'cached' | 'live' } | null> {
+  const cached = await getLatestReadingFromDb(stationId);
+  if (cached) return { reading: cached, source: 'cached' };
+
+  const live = await fetchLatestReading(stationId);
+  if (live) {
+    await storeReading(live);
+    return { reading: live, source: 'live' };
+  }
+
+  return null;
+}
+
 function formatExpiry(observedAt: Date): string {
   const ms = observedAt.getTime() + config.ndbcDataTtlHours * 3_600_000 - Date.now();
   const totalMin = Math.max(0, Math.floor(ms / 60_000));
@@ -152,18 +167,13 @@ export async function getTriangulatedConditions(
 
   const buoysWithReadings = await Promise.all(
     nearest.map(async (station) => {
-      let reading = await getLatestReadingFromDb(station.id);
-      const source = reading ? 'cached' : 'live';
-      if (!reading) {
-        reading = await fetchLatestReading(station.id);
-        if (reading) await storeReading(reading);
+      const result = await resolveReading(station.id);
+      if (result) {
+        logStationReading(station.id, station.name, result.reading, result.source, facing);
+        return { station, reading: result.reading };
       }
-      if (reading) {
-        logStationReading(station.id, station.name, reading, source, facing);
-      } else {
-        console.log(`[conditions] ${station.id} (${station.name}) — no data`);
-      }
-      return reading ? { station, reading } : null;
+      console.log(`[conditions] ${station.id} (${station.name}) — no data`);
+      return null;
     }),
   );
 
