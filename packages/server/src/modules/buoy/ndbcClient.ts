@@ -1,12 +1,13 @@
 import type { BuoyReading } from '@swell-engine/shared';
 
 const NDBC_BASE = 'https://www.ndbc.noaa.gov/data/realtime2';
+const NDBC_FETCH_TIMEOUT_MS = 5_000;
 
 export async function fetchLatestReading(stationId: string): Promise<BuoyReading | null> {
   const url = `${NDBC_BASE}/${stationId}.txt`;
   let text: string;
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(NDBC_FETCH_TIMEOUT_MS) });
     if (!res.ok) {
       console.warn(`NDBC ${stationId}: HTTP ${res.status}`);
       return null;
