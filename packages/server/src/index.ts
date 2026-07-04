@@ -12,7 +12,7 @@ async function bootstrap() {
 
   const app = Fastify({ logger: true, requestTimeout: 10_000, ignoreTrailingSlash: true });
 
-  await app.register(cors, { origin: true });
+  await app.register(cors, { origin: true, methods: ['GET'] });
   await app.register(buoyRoutes);
 
   const worker = startBuoyPoller();
