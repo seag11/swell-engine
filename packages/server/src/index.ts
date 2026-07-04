@@ -18,7 +18,7 @@ async function bootstrap() {
   const worker = startBuoyPoller();
   await scheduleBuoyPoll();
 
-  await app.listen({ port: config.port, host: '0.0.0.0' });
+  await app.listen({ port: config.port, host: config.host });
 
   const shutdown = async () => {
     await worker.close();
