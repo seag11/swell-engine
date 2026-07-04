@@ -32,7 +32,7 @@ services:
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-swell}:${POSTGRES_PASSWORD:-swell}@postgres:5432/${POSTGRES_DB:-swell_engine}
       REDIS_URL: redis://redis:6379
-      HOST: 0.0.0.0
+      SERVER_HOST: 0.0.0.0
       PORT: 3000
     ports:
       - '3000:3000'
