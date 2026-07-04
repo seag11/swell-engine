@@ -21,9 +21,11 @@ async function bootstrap() {
   await app.listen({ port: config.port, host: config.host });
 
   const shutdown = async () => {
+    console.log('[shutdown] signal received, closing gracefully');
     await worker.close();
     await buoyPollQueue.close();
     await app.close();
+    console.log('[shutdown] complete');
     process.exit(0);
   };
   process.on('SIGTERM', shutdown);
