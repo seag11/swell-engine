@@ -1,3 +1,4 @@
+// Coordinates are in decimal degrees (DD), not degrees/minutes/seconds (DMS).
 export function validateLat(lat: string): string | null {
   const n = parseFloat(lat)
   if (isNaN(n))          return 'Must be a valid number'
