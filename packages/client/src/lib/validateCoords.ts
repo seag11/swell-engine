@@ -12,6 +12,3 @@ export function validateLon(lon: string): string | null {
   return null
 }
 
-export function validateCoords(lat: string, lon: string): string | null {
-  return validateLat(lat) ?? validateLon(lon)
-}
