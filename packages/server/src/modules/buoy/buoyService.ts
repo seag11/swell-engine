@@ -164,7 +164,10 @@ export async function getTriangulatedConditions(
   facing?: number,
 ): Promise<TriangulatedConditions | null> {
   const nearest = await getNearestStations(lat, lon, TRIANGULATION_STATION_LIMIT);
-  if (nearest.length === 0) return null;
+  if (nearest.length === 0) {
+    console.warn(`[conditions] no active stations found near (${lat}, ${lon})`);
+    return null;
+  }
 
   const buoysWithReadings = await Promise.all(
     nearest.map(async (station) => {
