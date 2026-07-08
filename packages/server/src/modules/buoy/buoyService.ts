@@ -186,7 +186,10 @@ export async function getTriangulatedConditions(
       reading: BuoyReading;
     } => b !== null,
   );
-  if (valid.length === 0) return null;
+  if (valid.length === 0) {
+    console.warn(`[conditions] no readable data for any station near (${lat}, ${lon})`);
+    return null;
+  }
 
   return triangulate({ lat, lon }, valid, facing);
 }
