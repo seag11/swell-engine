@@ -15,6 +15,7 @@ COPY packages/server/ ./packages/server/
 
 RUN npm run build -w packages/shared
 RUN npm run build -w packages/server
+RUN npm prune --omit=dev
 
 FROM node:24-alpine AS runner
 WORKDIR /app
