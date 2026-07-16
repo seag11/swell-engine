@@ -1,26 +1,7 @@
 import { useState } from 'react';
 import { validateLat, validateLon } from './lib/validateCoords';
 import { PRESETS } from './lib/presets';
-
-interface ConditionSource {
-  stationId: string;
-  stationName: string;
-  distanceKm: number;
-  weight: number;
-}
-
-interface Conditions {
-  waveHeight: number | null;
-  dominantPeriod: number | null;
-  swellPower: number | null;
-  windSpeed: number | null;
-  windDirection: number | null;
-  waterTemp: number | null;
-  tone: string;
-  sources: ConditionSource[];
-  observedAt: string;
-  generatedAt: string;
-}
+import type { Conditions } from './lib/api';
 
 
 // prettier-ignore
