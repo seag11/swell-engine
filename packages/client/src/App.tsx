@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { validateLat, validateLon } from './lib/validateCoords';
-import { PRESETS } from './lib/presets';
-import type { Conditions } from './lib/api';
+import { validateLat, validateLon } from '@/lib/validateCoords';
+import { PRESETS } from '@/lib/presets';
+import type { Conditions } from '@/lib/api';
 
 
 // prettier-ignore
