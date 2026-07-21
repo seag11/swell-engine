@@ -20,6 +20,16 @@ function fmtWaveHeight(m: number | null): string {
   return `${m.toFixed(1)}m / ${(m * M_TO_FT).toFixed(1)}ft`;
 }
 
+function fmtPeriod(s: number | null): string {
+  if (s === null) return 'N/A';
+  return `${s.toFixed(1)}s`;
+}
+
+function fmtTemp(c: number | null): string {
+  if (c === null) return 'N/A';
+  return `${c.toFixed(1)}°C`;
+}
+
 function fmtWind(mps: number | null, dir: number | null): string {
   if (mps === null) return 'N/A';
   return `${(mps * MPS_TO_KNOTS).toFixed(0)} kts ${degToCompass(dir)}`;
@@ -105,15 +115,9 @@ export default function App() {
   const stats = conditions
     ? [
         { label: 'Wave Height', value: fmtWaveHeight(conditions.waveHeight) },
-        {
-          label: 'Dominant Period',
-          value: conditions.dominantPeriod ? `${conditions.dominantPeriod.toFixed(1)}s` : 'N/A',
-        },
+        { label: 'Dominant Period', value: fmtPeriod(conditions.dominantPeriod) },
         { label: 'Wind', value: fmtWind(conditions.windSpeed, conditions.windDirection) },
-        {
-          label: 'Water Temp',
-          value: conditions.waterTemp ? `${conditions.waterTemp.toFixed(1)}°C` : 'N/A',
-        },
+        { label: 'Water Temp', value: fmtTemp(conditions.waterTemp) },
       ]
     : [];
 
