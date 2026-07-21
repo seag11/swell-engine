@@ -4,6 +4,9 @@ import { PRESETS } from '@/lib/presets';
 import type { Conditions } from '@/lib/api';
 
 
+const M_TO_FT = 3.28084;
+const MPS_TO_KNOTS = 1.944;
+
 // prettier-ignore
 const WIND_DIRS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
@@ -14,12 +17,12 @@ function degToCompass(deg: number | null): string {
 
 function fmtWaveHeight(m: number | null): string {
   if (m === null) return 'N/A';
-  return `${m.toFixed(1)}m / ${(m * 3.28084).toFixed(1)}ft`;
+  return `${m.toFixed(1)}m / ${(m * M_TO_FT).toFixed(1)}ft`;
 }
 
 function fmtWind(mps: number | null, dir: number | null): string {
   if (mps === null) return 'N/A';
-  return `${(mps * 1.944).toFixed(0)} kts ${degToCompass(dir)}`;
+  return `${(mps * MPS_TO_KNOTS).toFixed(0)} kts ${degToCompass(dir)}`;
 }
 
 const TONE_COLORS: Record<string, string> = {
