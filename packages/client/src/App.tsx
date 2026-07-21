@@ -3,7 +3,6 @@ import { validateLat, validateLon } from '@/lib/validateCoords';
 import { PRESETS } from '@/lib/presets';
 import type { Conditions } from '@/lib/api';
 
-
 const M_TO_FT = 3.28084;
 const MPS_TO_KNOTS = 1.944;
 
