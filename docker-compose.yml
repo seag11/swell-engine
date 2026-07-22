@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:18-alpine
+    restart: on-failure
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-swell}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swell}
