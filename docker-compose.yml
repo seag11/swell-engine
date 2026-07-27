@@ -1,8 +1,15 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
 services:
   postgres:
     image: postgres:18-alpine
     container_name: swell-postgres
     restart: on-failure
+    logging: *default-logging
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-swell}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swell}
@@ -20,6 +27,7 @@ services:
   redis:
     image: redis:8-alpine
     container_name: swell-redis
+    logging: *default-logging
     ports:
       - '127.0.0.1:6379:6379'
     healthcheck:
@@ -30,6 +38,7 @@ services:
 
   server:
     container_name: swell-server
+    logging: *default-logging
     build:
       context: .
       dockerfile: packages/server/Dockerfile
@@ -48,6 +57,7 @@ services:
 
   client:
     container_name: swell-client
+    logging: *default-logging
     build:
       context: .
       dockerfile: packages/client/Dockerfile
