@@ -26,5 +26,6 @@ COPY --from=builder --chown=node:node /app/packages/server/src/db/migrations ./d
 COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node packages/server/package.json ./
 
+EXPOSE 3000
 USER node
 CMD ["node", "dist/index.js"]
