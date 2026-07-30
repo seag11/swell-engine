@@ -13,7 +13,7 @@ COPY packages/client/ ./packages/client/
 
 RUN npm run build -w packages/client
 
-FROM nginx:alpine
+FROM nginx:1.27-alpine
 COPY --from=builder /app/packages/client/dist /usr/share/nginx/html
 COPY packages/client/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
