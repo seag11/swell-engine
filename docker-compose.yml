@@ -20,7 +20,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-swell}']
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
@@ -33,7 +33,7 @@ services:
       - '127.0.0.1:6379:6379'
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
       start_period: 5s
