@@ -7,7 +7,7 @@ export async function buoyRoutes(app: FastifyInstance) {
     return getAllStations();
   });
 
-  app.get<{ Querystring: { lat: string; lon: string; facing?: string } }>(
+  app.get<{ Querystring: { lat: number; lon: number; facing?: number } }>(
     '/api/buoy/conditions',
     {
       schema: {
@@ -15,25 +15,15 @@ export async function buoyRoutes(app: FastifyInstance) {
           type: 'object',
           required: ['lat', 'lon'],
           properties: {
-            lat: { type: 'string' },
-            lon: { type: 'string' },
-            facing: { type: 'string' },
+            lat: { type: 'number', minimum: -90, maximum: 90 },
+            lon: { type: 'number', minimum: -180, maximum: 180 },
+            facing: { type: 'number', minimum: 0, maximum: 360 },
           },
         },
       },
     },
     async (request, reply) => {
-      const lat = parseFloat(request.query.lat);
-      const lon = parseFloat(request.query.lon);
-      const facing =
-        request.query.facing !== undefined ? parseFloat(request.query.facing) : undefined;
-
-      if (isNaN(lat) || isNaN(lon)) {
-        return reply.status(400).send({ error: 'lat and lon must be valid numbers' });
-      }
-      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-        return reply.status(400).send({ error: 'lat/lon out of range' });
-      }
+      const { lat, lon, facing } = request.query;
 
       const conditions = await getTriangulatedConditions(lat, lon, facing);
       if (!conditions) {
