@@ -19,6 +19,7 @@ export async function buoyRoutes(app: FastifyInstance) {
             lon: { type: 'number', minimum: -180, maximum: 180 },
             facing: { type: 'number', minimum: 0, maximum: 360 },
           },
+          additionalProperties: false,
         },
       },
     },
