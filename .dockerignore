@@ -4,7 +4,6 @@ dist/
 .env.*
 **/*.tsbuildinfo
 .git/
-packages/client/
 docker-compose*.yml
 *.log
 *.md
