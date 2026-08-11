@@ -11,6 +11,7 @@ COPY tsconfig.base.json ./
 COPY packages/shared/ ./packages/shared/
 COPY packages/client/ ./packages/client/
 
+RUN npm run build -w packages/shared
 RUN npm run build -w packages/client
 
 FROM nginx:1.27-alpine
