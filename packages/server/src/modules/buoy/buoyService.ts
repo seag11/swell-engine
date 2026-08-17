@@ -7,6 +7,8 @@ import { triangulate } from './triangulation.js';
 const TRIANGULATION_STATION_LIMIT = 3;
 const STALE_READING_THRESHOLD_MS = 4 * 3_600_000;
 
+type ReadingSource = 'cached' | 'live';
+
 export async function getAllStations(): Promise<BuoyStation[]> {
   return sql<BuoyStation[]>`
     SELECT id, name, lat::float, lon::float, active
@@ -116,7 +118,7 @@ function logStationReading(
   stationId: string,
   stationName: string,
   reading: BuoyReading,
-  source: string,
+  source: ReadingSource,
   facing?: number,
 ): void {
   const ageMs = Date.now() - reading.observedAt.getTime();
@@ -137,7 +139,7 @@ function logStationReading(
 /** Returns a cached reading if within TTL, otherwise fetches live from NDBC. */
 async function resolveReading(
   stationId: string,
-): Promise<{ reading: BuoyReading; source: 'cached' | 'live' } | null> {
+): Promise<{ reading: BuoyReading; source: ReadingSource } | null> {
   const cached = await getLatestReadingFromDb(stationId);
   if (cached) return { reading: cached, source: 'cached' };
 
