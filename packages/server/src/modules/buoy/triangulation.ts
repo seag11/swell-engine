@@ -1,8 +1,10 @@
 import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared';
 import { computeSwellPower } from '@swell-engine/shared';
 
+const EARTH_RADIUS_KM = 6371;
+
 function equirectangularKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
+  const R = EARTH_RADIUS_KM;
   const toRad = (d: number) => (d * Math.PI) / 180;
   const x = toRad(lon2 - lon1) * Math.cos(toRad((lat1 + lat2) / 2));
   const y = toRad(lat2 - lat1);

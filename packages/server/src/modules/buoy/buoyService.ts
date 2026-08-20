@@ -4,6 +4,7 @@ import { config } from '../../config.js';
 import { fetchLatestReading } from './ndbcClient.js';
 import { triangulate } from './triangulation.js';
 
+const EARTH_RADIUS_KM = 6371;
 const TRIANGULATION_STATION_LIMIT = 3;
 const STALE_READING_THRESHOLD_MS = 4 * 3_600_000;
 
@@ -32,7 +33,7 @@ export async function getNearestStations(
     SELECT
       id, name, lat::float, lon::float, active,
       (
-        6371 * SQRT(
+        ${EARTH_RADIUS_KM} * SQRT(
           POWER((RADIANS(${lon}) - RADIANS(lon)) * COS(RADIANS((${lat} + lat) / 2)), 2) +
           POWER(RADIANS(${lat}) - RADIANS(lat), 2)
         )
