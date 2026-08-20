@@ -9,6 +9,11 @@ const STALE_READING_THRESHOLD_MS = 4 * 3_600_000;
 
 type ReadingSource = 'cached' | 'live';
 
+type StationWithReading = {
+  station: BuoyStation & { distanceKm: number };
+  reading: BuoyReading;
+};
+
 export async function getAllStations(): Promise<BuoyStation[]> {
   return sql<BuoyStation[]>`
     SELECT id, name, lat::float, lon::float, active
@@ -183,14 +188,7 @@ export async function getTriangulatedConditions(
     }),
   );
 
-  const valid = buoysWithReadings.filter(
-    (
-      b,
-    ): b is {
-      station: BuoyStation & { distanceKm: number };
-      reading: BuoyReading;
-    } => b !== null,
-  );
+  const valid = buoysWithReadings.filter((b): b is StationWithReading => b !== null);
   if (valid.length === 0) {
     console.warn(`[conditions] no readable data for any station near (${lat}, ${lon})`);
     return null;

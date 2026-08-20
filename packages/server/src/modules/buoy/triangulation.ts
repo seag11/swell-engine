@@ -18,7 +18,7 @@ function idwAvg(values: Array<{ val: number | null; weight: number }>): number |
 
 export function triangulate(
   target: { lat: number; lon: number },
-  buoys: Array<{ station: BuoyStation; reading: BuoyReading }>,
+  buoys: Array<{ station: BuoyStation & { distanceKm: number }; reading: BuoyReading }>,
   facing?: number,
 ): TriangulatedConditions {
   const toRad = (d: number) => (d * Math.PI) / 180;
