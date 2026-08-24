@@ -2,6 +2,10 @@
  * surf.ts — wave physics and condition classification (swellKit)
  */
 
+export type ConditionTone = 'flat' | 'small' | 'solid' | 'large' | 'xxl';
+
+const HIGH_POWER_THRESHOLD = 16;
+
 /**
  * Wave power index: P ∝ H² × T
  *
@@ -29,10 +33,6 @@ export function computeSwellPower(
  * Thresholds: <1ft flat · 1–3ft small · 3–6ft solid · 6–10ft large · 10ft+ xxl
  * Power upgrade (P > 16): small→solid · solid→large · large→xxl
  */
-export type ConditionTone = 'flat' | 'small' | 'solid' | 'large' | 'xxl';
-
-const HIGH_POWER_THRESHOLD = 16;
-
 export function classifyTone(
   waveHeightMeters: number | null,
   swellPower?: number | null,
