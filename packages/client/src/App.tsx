@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { validateLat, validateLon } from '@/lib/validateCoords';
 import { PRESETS } from '@/lib/presets';
+import { useTheme } from '@/lib/useTheme';
 import type { Conditions } from '@/lib/api';
 
 const M_TO_FT = 3.28084;
@@ -35,14 +36,15 @@ function fmtWind(mps: number | null, dir: number | null): string {
 }
 
 const TONE_COLORS: Record<string, string> = {
-  flat: 'text-slate-400',
-  small: 'text-sky-400',
-  solid: 'text-green-400',
-  large: 'text-yellow-400',
-  xxl: 'text-red-400',
+  flat:  'text-sw-muted dark:text-sw-dark-muted',
+  small: 'text-sw-blue',
+  solid: 'text-sw-green',
+  large: 'text-sw-amber',
+  xxl:   'text-sw-red',
 };
 
 export default function App() {
+  const { theme, toggle } = useTheme();
   const [lat, setLat] = useState('');
   const [lon, setLon] = useState('');
   const [conditions, setConditions] = useState<Conditions | null>(null);
@@ -121,9 +123,18 @@ export default function App() {
     : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 text-slate-100 p-8 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-1">Swell Engine</h1>
-      <p className="text-slate-400 text-sm mb-8">
+    <div className="min-h-screen bg-gradient-to-b from-sw-bg to-sw-card dark:from-sw-dark-bg dark:to-sw-dark-card text-sw-strong dark:text-sw-dark-strong p-8 max-w-2xl mx-auto">
+      <div className="flex justify-between items-start mb-1">
+        <h1 className="text-3xl font-bold">Swell Engine</h1>
+        <button
+          onClick={toggle}
+          className="text-sw-muted dark:text-sw-dark-muted hover:text-sw-strong dark:hover:text-sw-dark-strong transition-colors text-lg"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? '☀' : '☾'}
+        </button>
+      </div>
+      <p className="text-sw-muted dark:text-sw-dark-muted text-sm mb-8">
         Triangulated buoy conditions via NOAA NDBC inverse-distance weighting
       </p>
 
@@ -134,7 +145,7 @@ export default function App() {
             key={p.label}
             onClick={() => handlePreset(p.lat, p.lon, p.facing)}
             disabled={loading || geolocating}
-            className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded-full px-3 py-1.5 text-sm transition-colors"
+            className="bg-sw-card hover:bg-sw-border dark:bg-sw-dark-card dark:hover:bg-sw-dark-border text-sw-text dark:text-sw-dark-text disabled:opacity-40 rounded-full px-3 py-1.5 text-sm transition-colors"
           >
             {p.label}
           </button>
@@ -150,9 +161,9 @@ export default function App() {
             value={lat}
             onChange={(e) => setLat(e.target.value)}
             onBlur={() => setLatError(validateLat(lat))}
-            className={`bg-slate-800 border rounded-lg px-3 py-2 w-44 focus:outline-none focus:border-blue-500 transition-colors ${latError ? 'border-red-500' : 'border-slate-600'}`}
+            className={`bg-sw-bg dark:bg-sw-dark-bg text-sw-strong dark:text-sw-dark-strong placeholder:text-sw-muted dark:placeholder:text-sw-dark-muted border rounded-lg px-3 py-2 w-44 focus:outline-none focus:border-sw-blue transition-colors ${latError ? 'border-sw-red' : 'border-sw-border dark:border-sw-dark-border'}`}
           />
-          {latError && <span className="text-red-400 text-xs">{latError}</span>}
+          {latError && <span className="text-sw-red text-xs">{latError}</span>}
         </div>
         <div className="flex flex-col gap-1">
           <input
@@ -161,28 +172,28 @@ export default function App() {
             value={lon}
             onChange={(e) => setLon(e.target.value)}
             onBlur={() => setLonError(validateLon(lon))}
-            className={`bg-slate-800 border rounded-lg px-3 py-2 w-48 focus:outline-none focus:border-blue-500 transition-colors ${lonError ? 'border-red-500' : 'border-slate-600'}`}
+            className={`bg-sw-bg dark:bg-sw-dark-bg text-sw-strong dark:text-sw-dark-strong placeholder:text-sw-muted dark:placeholder:text-sw-dark-muted border rounded-lg px-3 py-2 w-48 focus:outline-none focus:border-sw-blue transition-colors ${lonError ? 'border-sw-red' : 'border-sw-border dark:border-sw-dark-border'}`}
           />
-          {lonError && <span className="text-red-400 text-xs">{lonError}</span>}
+          {lonError && <span className="text-sw-red text-xs">{lonError}</span>}
         </div>
         <button
           onClick={() => fetchConditions(lat, lon)}
           disabled={loading || geolocating || !lat || !lon || !!latError || !!lonError}
-          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-40 rounded-lg px-4 py-2 font-medium transition-colors"
+          className="bg-sw-blue hover:bg-[#2580B8] text-white disabled:opacity-40 rounded-lg px-4 py-2 font-medium transition-colors"
         >
           {loading ? 'Fetching…' : 'Get Conditions'}
         </button>
         <button
           onClick={handleGeolocate}
           disabled={loading || geolocating}
-          className="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 rounded-lg px-4 py-2 text-sm transition-colors"
+          className="bg-sw-card hover:bg-sw-border dark:bg-sw-dark-card dark:hover:bg-sw-dark-border text-sw-text dark:text-sw-dark-text disabled:opacity-40 rounded-lg px-4 py-2 text-sm transition-colors"
         >
           {geolocating ? 'Locating…' : '⌖ Use my location'}
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-900/40 border border-red-700 rounded-lg p-4 mb-6 text-red-300 text-sm">
+        <div className="bg-sw-red/10 border border-sw-red rounded-lg p-4 mb-6 text-sw-red text-sm">
           {error}
         </div>
       )}
@@ -191,25 +202,25 @@ export default function App() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             {stats.map(({ label, value }) => (
-              <div key={label} className="bg-slate-800 rounded-xl p-4">
-                <div className="text-slate-400 text-xs uppercase tracking-wide mb-1">{label}</div>
+              <div key={label} className="bg-sw-card dark:bg-sw-dark-card rounded-xl p-4">
+                <div className="text-sw-muted dark:text-sw-dark-muted text-xs uppercase tracking-wide mb-1">{label}</div>
                 <div className="text-lg font-semibold">{value}</div>
               </div>
             ))}
           </div>
 
-          <div className="bg-slate-800 rounded-xl p-4 flex items-center gap-3">
-            <span className="text-slate-400 text-xs uppercase tracking-wide">Condition</span>
+          <div className="bg-sw-card dark:bg-sw-dark-card rounded-xl p-4 flex items-center gap-3">
+            <span className="text-sw-muted dark:text-sw-dark-muted text-xs uppercase tracking-wide">Condition</span>
             <span className={`text-xl font-bold capitalize ${TONE_COLORS[conditions.tone] ?? ''}`}>
               {conditions.tone}
             </span>
           </div>
 
-          <div className="bg-slate-800 rounded-xl p-4">
-            <div className="text-slate-400 text-xs uppercase tracking-wide mb-3 flex items-center gap-2">
+          <div className="bg-sw-card dark:bg-sw-dark-card rounded-xl p-4">
+            <div className="text-sw-muted dark:text-sw-dark-muted text-xs uppercase tracking-wide mb-3 flex items-center gap-2">
               Buoy Sources
               {directionalWeightingApplied && (
-                <span className="text-sky-500 normal-case tracking-normal font-medium">
+                <span className="text-sw-blue normal-case tracking-normal font-medium">
                   ↗ directional weighting
                 </span>
               )}
@@ -217,11 +228,11 @@ export default function App() {
             <div className="space-y-2">
               {conditions.sources.map((s) => (
                 <div key={s.stationId} className="flex justify-between text-sm">
-                  <span className="text-slate-200">
+                  <span className="text-sw-strong dark:text-sw-dark-strong">
                     {s.stationName}
-                    <span className="text-slate-500 ml-1">({s.stationId})</span>
+                    <span className="text-sw-muted dark:text-sw-dark-muted ml-1">({s.stationId})</span>
                   </span>
-                  <span className="text-slate-400">
+                  <span className="text-sw-muted dark:text-sw-dark-muted">
                     {s.distanceKm} km &mdash; {(s.weight * 100).toFixed(0)}%
                   </span>
                 </div>
@@ -229,7 +240,7 @@ export default function App() {
             </div>
           </div>
 
-          <p className="text-slate-600 text-xs text-right">
+          <p className="text-sw-muted dark:text-sw-dark-muted text-xs text-right">
             Data as of {new Date(conditions.observedAt).toLocaleString()}
           </p>
         </div>
