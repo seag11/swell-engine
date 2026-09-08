@@ -40,6 +40,7 @@ services:
 
   server:
     container_name: swell-server
+    restart: on-failure
     logging: *default-logging
     build:
       context: .
@@ -59,6 +60,7 @@ services:
 
   client:
     container_name: swell-client
+    restart: on-failure
     logging: *default-logging
     build:
       context: .
