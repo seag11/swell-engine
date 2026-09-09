@@ -10,7 +10,7 @@ async function bootstrap() {
   await migrate();
   await seed();
 
-  const app = Fastify({ logger: true, requestTimeout: 10_000, ignoreTrailingSlash: true });
+  const app = Fastify({ logger: true, requestTimeout: 10_000, ignoreTrailingSlash: true, trustProxy: true });
 
   await app.register(cors, { origin: true, methods: ['GET'] });
   await app.register(buoyRoutes);
