@@ -1,3 +1,7 @@
+export function apiFetch(url: string, options?: RequestInit): Promise<Response> {
+  return fetch(url, { ...options, credentials: 'include' });
+}
+
 export interface ConditionSource {
   stationId: string;
   stationName: string;

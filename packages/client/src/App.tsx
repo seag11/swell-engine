@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { validateLat, validateLon } from '@/lib/validateCoords';
 import { PRESETS } from '@/lib/presets';
 import { useTheme } from '@/lib/useTheme';
-import type { Conditions } from '@/lib/api';
+import { apiFetch, type Conditions } from '@/lib/api';
 
 const M_TO_FT = 3.28084;
 const MPS_TO_KNOTS = 1.944;
@@ -68,7 +68,7 @@ export default function App() {
     try {
       const params = new URLSearchParams({ lat: latVal, lon: lonVal });
       if (facing !== undefined) params.set('facing', String(facing));
-      const res = await fetch(`/api/buoy/conditions?${params}`);
+      const res = await apiFetch(`/api/buoy/conditions?${params}`);
       const body = await res.json();
       if (!res.ok) throw new Error(body.error ?? 'Request failed');
       setConditions(body);

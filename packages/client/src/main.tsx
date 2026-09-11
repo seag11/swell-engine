@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@/index.css'
 import App from '@/App'
+import LoginPage from '@/pages/LoginPage'
+import AuthGuard from '@/components/AuthGuard'
 
 // Apply theme before first render to prevent flash
 const saved = localStorage.getItem('theme');
@@ -13,11 +15,19 @@ if (saved === 'dark' || (!saved && prefersDark)) {
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element #root not found');
 
+const isLoginPage = window.location.pathname === '/login';
+
 createRoot(root, {
   onUncaughtError: (err) => console.error('[react] uncaught', err),
   onRecoverableError: (err) => console.error('[react] recoverable', err),
 }).render(
   <StrictMode>
-    <App />
+    {isLoginPage ? (
+      <LoginPage />
+    ) : (
+      <AuthGuard>
+        <App />
+      </AuthGuard>
+    )}
   </StrictMode>
 )
