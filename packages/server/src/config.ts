@@ -48,7 +48,7 @@ export const config = {
   ndbcDataTtlHours,
   ndbcPollIntervalMs: ndbcDataTtlHours * 60 * 60 * 1000,
   authEnabled,
-  jwtSecret: process.env.JWT_SECRET ?? 'local-dev-jwt-placeholder',
+  jwtSecret: process.env.JWT_SECRET || 'local-dev-jwt-placeholder',
   betaTokens: parseBetaTokens(process.env.BETA_TOKENS),
   cookieSecure: process.env.COOKIE_SECURE === 'true',
 };
