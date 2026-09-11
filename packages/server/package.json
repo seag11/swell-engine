@@ -15,6 +15,7 @@
     "@swell-engine/shared": "*",
     "bullmq": "^6.3.3",
     "fastify": "^5.0.0",
+    "ioredis": "^6.0.0",
     "postgres": "^3.4.4"
   },
   "devDependencies": {
