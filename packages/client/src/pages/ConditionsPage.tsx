@@ -43,7 +43,7 @@ const TONE_COLORS: Record<string, string> = {
   xxl:   'text-sw-red',
 };
 
-export default function App() {
+export default function ConditionsPage() {
   const { theme, toggle } = useTheme();
   const [lat, setLat] = useState('');
   const [lon, setLon] = useState('');
