@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { validateLat, validateLon } from '@/lib/validateCoords';
 import { PRESETS } from '@/lib/presets';
-import { useTheme } from '@/lib/useTheme';
 import { apiFetch, type Conditions } from '@/lib/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const M_TO_FT = 3.28084;
 const MPS_TO_KNOTS = 1.944;
@@ -44,7 +44,6 @@ const TONE_COLORS: Record<string, string> = {
 };
 
 export default function ConditionsPage() {
-  const { theme, toggle } = useTheme();
   const [lat, setLat] = useState('');
   const [lon, setLon] = useState('');
   const [conditions, setConditions] = useState<Conditions | null>(null);
@@ -126,13 +125,7 @@ export default function ConditionsPage() {
     <div className="min-h-screen bg-gradient-to-b from-sw-bg to-sw-card dark:from-sw-dark-bg dark:to-sw-dark-card text-sw-strong dark:text-sw-dark-strong p-8 max-w-2xl mx-auto">
       <div className="flex justify-between items-start mb-1">
         <h1 className="text-3xl font-bold">Swell Engine</h1>
-        <button
-          onClick={toggle}
-          className="text-sw-muted dark:text-sw-dark-muted hover:text-sw-strong dark:hover:text-sw-dark-strong transition-colors text-lg"
-          aria-label="Toggle theme"
-        >
-          {theme === 'dark' ? '☀' : '☾'}
-        </button>
+        <ThemeToggle />
       </div>
       <p className="text-sw-muted dark:text-sw-dark-muted text-sm mb-8">
         Triangulated buoy conditions via NOAA NDBC inverse-distance weighting

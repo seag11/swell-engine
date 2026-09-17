@@ -1,9 +1,8 @@
 import { useState, type SubmitEvent } from 'react';
-import { useTheme } from '@/lib/useTheme';
 import { apiFetch } from '@/lib/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function LoginPage() {
-  const { theme, toggle } = useTheme();
   const [token, setToken] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,13 +38,7 @@ export default function LoginPage() {
             <h1 className="text-3xl font-bold">Swell Engine</h1>
             <p className="text-sw-muted dark:text-sw-dark-muted text-sm mt-1">Beta access</p>
           </div>
-          <button
-            onClick={toggle}
-            className="text-sw-muted dark:text-sw-dark-muted hover:text-sw-strong dark:hover:text-sw-dark-strong transition-colors text-lg"
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? '☀' : '☾'}
-          </button>
+          <ThemeToggle />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
