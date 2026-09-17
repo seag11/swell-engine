@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 type Theme = 'light' | 'dark';
 
-function getInitialTheme(): Theme {
+export function getInitialTheme(): Theme {
   const saved = localStorage.getItem('theme') as Theme | null;
   if (saved === 'light' || saved === 'dark') return saved;
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

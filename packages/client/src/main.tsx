@@ -4,13 +4,10 @@ import '@/index.css'
 import ConditionsPage from '@/pages/ConditionsPage'
 import LoginPage from '@/pages/LoginPage'
 import AuthGuard from '@/components/AuthGuard'
+import { getInitialTheme } from '@/lib/useTheme'
 
 // Apply theme before first render to prevent flash
-const saved = localStorage.getItem('theme');
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-if (saved === 'dark' || (!saved && prefersDark)) {
-  document.documentElement.classList.add('dark');
-}
+document.documentElement.classList.toggle('dark', getInitialTheme() === 'dark');
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element #root not found');
