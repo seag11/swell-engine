@@ -7,6 +7,7 @@ import { migrate } from './db/migrate.js';
 import { seed } from './db/seed.js';
 import { authRoutes } from './api/auth.js';
 import { buoyRoutes } from './api/buoy.js';
+import { tideRoutes } from './api/tide.js';
 import { requireAuth } from './plugins/requireAuth.js';
 import { startBuoyPoller, scheduleBuoyPoll, buoyPollQueue } from './workers/buoyPoller.js';
 
@@ -34,6 +35,7 @@ async function bootstrap() {
   await app.register(async (instance) => {
     instance.addHook('onRequest', requireAuth);
     await instance.register(buoyRoutes);
+    await instance.register(tideRoutes);
   });
 
   const worker = startBuoyPoller();
