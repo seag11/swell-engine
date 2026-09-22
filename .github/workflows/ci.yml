@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      # `ci` rather than `install` so a stale lockfile fails the build instead of
+      # being silently rewritten.
+      - run: npm ci
+
+      - name: Typecheck and build all packages
+        run: npm run build
