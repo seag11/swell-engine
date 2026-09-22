@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file-if-exists=../../.env src/index.ts",
-    "build": "tsc --build",
+    "build": "tsc --build && mkdir -p dist/db && cp -R src/db/migrations dist/db/",
     "start": "node dist/index.js"
   },
   "dependencies": {
