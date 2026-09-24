@@ -8,8 +8,9 @@ const HOURS_AHEAD = 12;
 const BRACKET_HOURS = 24;
 const TREND_PROBE_MS = 15 * 60_000;
 
-// Stub: calls CO-OPS on every request with no caching or persistence. No response
-// schema either, so exploratory fields are visible rather than silently stripped.
+// Stations come from Postgres; extremes are still fetched per request until the
+// caching step lands. No response schema yet, so exploratory fields stay visible
+// rather than being silently stripped.
 export async function tideRoutes(app: FastifyInstance) {
   app.get<{ Querystring: { lat: number; lon: number } }>(
     '/api/tide',

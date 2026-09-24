@@ -1,7 +1,9 @@
 export {
+  seedTideStations,
   findNearestStation,
-  fetchTideExtremes,
   MAX_STATION_DISTANCE_KM,
-} from './coopsClient.js';
+} from './tideService.js';
 
-export type { TideStation } from './coopsClient.js';
+export type { TideStation } from './tideService.js';
+
+export { fetchTideExtremes } from './coopsClient.js';

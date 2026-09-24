@@ -8,12 +8,14 @@ import { seed } from './db/seed.js';
 import { authRoutes } from './api/auth.js';
 import { buoyRoutes } from './api/buoy.js';
 import { tideRoutes } from './api/tide.js';
+import { seedTideStations } from './modules/tide/index.js';
 import { requireAuth } from './plugins/requireAuth.js';
 import { startBuoyPoller, scheduleBuoyPoll, buoyPollQueue } from './workers/buoyPoller.js';
 
 async function bootstrap() {
   await migrate();
   await seed();
+  await seedTideStations();
 
   const app = Fastify({ logger: true, requestTimeout: 10_000, ignoreTrailingSlash: true, trustProxy: true });
 
