@@ -38,3 +38,6 @@ export interface TriangulatedConditions {
 
 export { computeSwellPower, classifyTone } from './surf.js'
 export type { ConditionTone } from './surf.js'
+
+export { tideLevelAt, sampleTideCurve } from './tide.js'
+export type { TideExtreme, TideExtremeKind } from './tide.js'

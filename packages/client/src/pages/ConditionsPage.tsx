@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { validateLat, validateLon } from '@/lib/validateCoords';
 import { PRESETS } from '@/lib/presets';
-import { apiFetch, type Conditions } from '@/lib/api';
+import { apiFetch, type Conditions, type Tide } from '@/lib/api';
+import { M_TO_FT, MPS_TO_KNOTS } from '@/lib/units';
 import ThemeToggle from '@/components/ThemeToggle';
-
-const M_TO_FT = 3.28084;
-const MPS_TO_KNOTS = 1.944;
+import TideChart from '@/components/TideChart';
 
 // prettier-ignore
 const WIND_DIRS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
@@ -47,6 +46,7 @@ export default function ConditionsPage() {
   const [lat, setLat] = useState('');
   const [lon, setLon] = useState('');
   const [conditions, setConditions] = useState<Conditions | null>(null);
+  const [tide, setTide] = useState<Tide | null>(null);
   const [latError, setLatError] = useState<string | null>(null);
   const [lonError, setLonError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,18 @@ export default function ConditionsPage() {
     setLoading(true);
     setError(null);
     setConditions(null);
+    setTide(null);
     setDirectionalWeightingApplied(false);
+
+    // Tide is supplementary and has its own failure modes — no station within
+    // range, or NOAA being down — so it resolves separately and just goes missing
+    // rather than failing the whole lookup.
+    const tideParams = new URLSearchParams({ lat: latVal, lon: lonVal });
+    apiFetch(`/api/tide?${tideParams}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setTide)
+      .catch(() => setTide(null));
+
     try {
       const params = new URLSearchParams({ lat: latVal, lon: lonVal });
       if (facing !== undefined) params.set('facing', String(facing));
@@ -208,6 +219,8 @@ export default function ConditionsPage() {
               {conditions.tone}
             </span>
           </div>
+
+          {tide && <TideChart tide={tide} />}
 
           <div className="bg-sw-card dark:bg-sw-dark-card rounded-xl p-4">
             <div className="text-sw-muted dark:text-sw-dark-muted text-xs uppercase tracking-wide mb-3 flex items-center gap-2">

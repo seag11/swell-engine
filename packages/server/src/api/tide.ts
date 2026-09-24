@@ -1,8 +1,12 @@
 import type { FastifyInstance } from 'fastify';
-import { findNearestStation, fetchTideWindow } from '../modules/tide/index.js';
+import { tideLevelAt } from '@swell-engine/shared';
+import { findNearestStation, fetchTideExtremes } from '../modules/tide/index.js';
 
 const HOURS_BEHIND = 3;
 const HOURS_AHEAD = 12;
+// Extremes are ~6h apart, so a day either side guarantees the window is bracketed.
+const BRACKET_HOURS = 24;
+const TREND_PROBE_MS = 15 * 60_000;
 
 // Stub: calls CO-OPS on every request with no caching or persistence. No response
 // schema either, so exploratory fields are visible rather than silently stripped.
@@ -30,18 +34,43 @@ export async function tideRoutes(app: FastifyInstance) {
         return reply.status(404).send({ error: 'No tide station near this location' });
       }
 
-      const now = new Date();
-      const from = new Date(now.getTime() - HOURS_BEHIND * 3600_000);
-      const to = new Date(now.getTime() + HOURS_AHEAD * 3600_000);
-      const { curve, extremes } = await fetchTideWindow(station.id, from, to);
+      const nowMs = Date.now();
+      const from = new Date(nowMs - HOURS_BEHIND * 3600_000);
+      const to = new Date(nowMs + HOURS_AHEAD * 3600_000);
+
+      const extremes = await fetchTideExtremes(
+        station.id,
+        new Date(from.getTime() - BRACKET_HOURS * 3600_000),
+        new Date(to.getTime() + BRACKET_HOURS * 3600_000),
+      );
+
+      const level = tideLevelAt(extremes, nowMs);
+      if (level === null) {
+        return reply.status(502).send({ error: 'Tide predictions unavailable for this time' });
+      }
+
+      const ahead = tideLevelAt(extremes, nowMs + TREND_PROBE_MS);
+      const next = extremes.find((e) => Date.parse(e.t) > nowMs);
 
       return {
         station,
         datum: 'MLLW',
         units: 'm',
         window: { from: from.toISOString(), to: to.toISOString() },
+        now: {
+          at: new Date(nowMs).toISOString(),
+          level: Math.round(level * 1000) / 1000,
+          trend: ahead !== null && ahead < level ? 'falling' : 'rising',
+        },
+        next: next
+          ? {
+              kind: next.kind,
+              at: next.t,
+              level: next.level,
+              inMinutes: Math.round((Date.parse(next.t) - nowMs) / 60_000),
+            }
+          : null,
         extremes,
-        curve,
       };
     },
   );
