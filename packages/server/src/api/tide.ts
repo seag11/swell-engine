@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { tideLevelAt } from '@swell-engine/shared';
-import { findNearestStation, fetchTideExtremes } from '../modules/tide/index.js';
+import { findNearestStation, ensureCoverage, getExtremes } from '../modules/tide/index.js';
 
 const HOURS_BEHIND = 3;
 const HOURS_AHEAD = 12;
@@ -39,11 +39,11 @@ export async function tideRoutes(app: FastifyInstance) {
       const from = new Date(nowMs - HOURS_BEHIND * 3600_000);
       const to = new Date(nowMs + HOURS_AHEAD * 3600_000);
 
-      const extremes = await fetchTideExtremes(
-        station.id,
-        new Date(from.getTime() - BRACKET_HOURS * 3600_000),
-        new Date(to.getTime() + BRACKET_HOURS * 3600_000),
-      );
+      const bracketFrom = new Date(from.getTime() - BRACKET_HOURS * 3600_000);
+      const bracketTo = new Date(to.getTime() + BRACKET_HOURS * 3600_000);
+
+      await ensureCoverage(station.id, bracketTo.getTime());
+      const extremes = await getExtremes(station.id, bracketFrom, bracketTo);
 
       const level = tideLevelAt(extremes, nowMs);
       if (level === null) {
