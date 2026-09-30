@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/seag11/swell-engine/contract.schema.json",
+  "title": "Surf model contract",
+  "description": "The boundary between the application and the surf model. Shared by packages/model (TypeScript) and swellkit (Python); both sides validate against this file so a field rename cannot drift silently. Everything is plain JSON — no dates, no language-specific types — because the model is intended to be reachable over a pipe.",
+  "type": "object",
+  "$defs": {
+    "tone": {
+      "description": "Condition label. Ordered from smallest to largest.",
+      "enum": ["flat", "small", "solid", "large", "xxl"]
+    },
+    "isoUtc": {
+      "type": "string",
+      "description": "ISO 8601 in UTC with milliseconds, as JavaScript's toISOString emits.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "nullableNumber": {
+      "type": ["number", "null"],
+      "description": "Null means the instrument reported no value. It is never a zero."
+    },
+    "bearing": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 360,
+      "description": "Degrees true."
+    },
+    "observation": {
+      "type": "object",
+      "description": "One buoy reading. Wave direction is whence the swell comes, not where it goes.",
+      "required": ["stationId", "lat", "lon", "observedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "stationId": { "type": "string" },
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180 },
+        "observedAt": { "$ref": "#/$defs/isoUtc" },
+        "waveHeight": { "$ref": "#/$defs/nullableNumber", "description": "Metres, significant wave height." },
+        "dominantPeriod": { "$ref": "#/$defs/nullableNumber", "description": "Seconds." },
+        "avgPeriod": { "$ref": "#/$defs/nullableNumber", "description": "Seconds." },
+        "waveDirection": { "$ref": "#/$defs/bearing" },
+        "windSpeed": { "$ref": "#/$defs/nullableNumber", "description": "Metres per second." },
+        "windDirection": { "$ref": "#/$defs/bearing" },
+        "waterTemp": { "$ref": "#/$defs/nullableNumber", "description": "Degrees Celsius." }
+      }
+    },
+    "weight": {
+      "type": "object",
+      "description": "How much one observation contributed. Carries no station name — attribution is the application's job.",
+      "required": ["stationId", "distanceKm", "weight"],
+      "additionalProperties": false,
+      "properties": {
+        "stationId": { "type": "string" },
+        "distanceKm": { "type": "integer", "minimum": 0 },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "request": {
+      "type": "object",
+      "required": ["target", "observations"],
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "object",
+          "required": ["lat", "lon"],
+          "additionalProperties": false,
+          "properties": {
+            "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+            "lon": { "type": "number", "minimum": -180, "maximum": 180 }
+          }
+        },
+        "observations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/observation" }
+        },
+        "facing": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 360,
+          "description": "Degrees true the break faces. Absent means no directional weighting."
+        }
+      }
+    },
+    "forecast": {
+      "type": "object",
+      "required": [
+        "waveHeight",
+        "dominantPeriod",
+        "swellPower",
+        "windSpeed",
+        "windDirection",
+        "waterTemp",
+        "tone",
+        "weights",
+        "observedAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "waveHeight": { "$ref": "#/$defs/nullableNumber", "description": "Metres." },
+        "dominantPeriod": { "$ref": "#/$defs/nullableNumber", "description": "Seconds." },
+        "swellPower": { "$ref": "#/$defs/nullableNumber", "description": "Dimensionless index, H squared times T." },
+        "windSpeed": { "$ref": "#/$defs/nullableNumber", "description": "Metres per second." },
+        "windDirection": { "$ref": "#/$defs/bearing" },
+        "waterTemp": { "$ref": "#/$defs/nullableNumber", "description": "Degrees Celsius." },
+        "tone": { "$ref": "#/$defs/tone" },
+        "weights": { "type": "array", "items": { "$ref": "#/$defs/weight" } },
+        "observedAt": {
+          "$ref": "#/$defs/isoUtc",
+          "description": "Earliest observation in the set. A forecast is only as fresh as this."
+        }
+      }
+    }
+  },
+  "oneOf": [{ "$ref": "#/$defs/request" }, { "$ref": "#/$defs/forecast" }]
+}
