@@ -8,4 +8,3 @@ export {
 } from './buoyService.js';
 
 export { fetchLatestReading } from './ndbcClient.js';
-export { triangulate } from './triangulation.js';

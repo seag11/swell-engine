@@ -2,9 +2,12 @@
  * surf.ts — wave physics and condition classification (swellKit)
  */
 
-export type ConditionTone = 'flat' | 'small' | 'solid' | 'large' | 'xxl';
+import type { ConditionTone } from './contract.js';
 
 const HIGH_POWER_THRESHOLD = 16;
+
+// Thresholds below are in feet, so classification depends on this value.
+const M_TO_FT = 3.28084;
 
 /**
  * Wave power index: P ∝ H² × T
@@ -38,7 +41,7 @@ export function classifyTone(
   swellPower?: number | null,
 ): ConditionTone {
   if (waveHeightMeters === null) return 'flat';
-  const ft = waveHeightMeters * 3.28084;
+  const ft = waveHeightMeters * M_TO_FT;
   if (ft < 1) return 'flat';
 
   const highPower = swellPower != null && swellPower > HIGH_POWER_THRESHOLD;

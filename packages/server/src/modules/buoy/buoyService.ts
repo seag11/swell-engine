@@ -1,11 +1,10 @@
 import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared';
+import { triangulate, OBSERVATION_LIMIT } from '@swell-engine/model';
 import { sql } from '../../db/client.js';
 import { config } from '../../config.js';
 import { fetchLatestReading } from './ndbcClient.js';
-import { triangulate } from './triangulation.js';
 
 const EARTH_RADIUS_KM = 6371;
-const TRIANGULATION_STATION_LIMIT = 3;
 const STALE_READING_THRESHOLD_MS = 4 * 3_600_000;
 
 type ReadingSource = 'cached' | 'live';
@@ -27,7 +26,7 @@ export async function getAllStations(): Promise<BuoyStation[]> {
 export async function getNearestStations(
   lat: number,
   lon: number,
-  limit = TRIANGULATION_STATION_LIMIT,
+  limit = OBSERVATION_LIMIT,
 ): Promise<Array<BuoyStation & { distanceKm: number }>> {
   return sql<Array<BuoyStation & { distanceKm: number }>>`
     SELECT
@@ -171,7 +170,7 @@ export async function getTriangulatedConditions(
   lon: number,
   facing?: number,
 ): Promise<TriangulatedConditions | null> {
-  const nearest = await getNearestStations(lat, lon, TRIANGULATION_STATION_LIMIT);
+  const nearest = await getNearestStations(lat, lon, OBSERVATION_LIMIT);
   if (nearest.length === 0) {
     console.warn(`[conditions] no active stations found near (${lat}, ${lon})`);
     return null;
@@ -195,5 +194,36 @@ export async function getTriangulatedConditions(
     return null;
   }
 
-  return triangulate({ lat, lon }, valid, facing);
+  // The model takes no station names and no Date objects, so it stays portable
+  // across a JSON boundary. Attribution is rejoined here.
+  const { weights, ...forecast } = triangulate({
+    target: { lat, lon },
+    facing,
+    observations: valid.map(({ station, reading }) => ({
+      stationId: station.id,
+      lat: station.lat,
+      lon: station.lon,
+      observedAt: reading.observedAt.toISOString(),
+      waveHeight: reading.waveHeight,
+      dominantPeriod: reading.dominantPeriod,
+      avgPeriod: reading.avgPeriod,
+      waveDirection: reading.waveDirection,
+      windSpeed: reading.windSpeed,
+      windDirection: reading.windDirection,
+      waterTemp: reading.waterTemp,
+    })),
+  });
+
+  const stationNames = new Map(valid.map(({ station }) => [station.id, station.name]));
+
+  return {
+    ...forecast,
+    sources: weights.map((w) => ({
+      stationId: w.stationId,
+      stationName: stationNames.get(w.stationId) ?? w.stationId,
+      distanceKm: w.distanceKm,
+      weight: w.weight,
+    })),
+    generatedAt: new Date().toISOString(),
+  };
 }

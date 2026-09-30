@@ -19,6 +19,7 @@ export interface BuoyReading {
   waterTemp: number | null       // °C
 }
 
+/** The API response shape: a forecast plus the attribution the model omits. */
 export interface TriangulatedConditions {
   waveHeight: number | null
   dominantPeriod: number | null
@@ -26,18 +27,16 @@ export interface TriangulatedConditions {
   windSpeed: number | null
   windDirection: number | null
   waterTemp: number | null
+  tone: string
   sources: Array<{
     stationId: string
     stationName: string
     distanceKm: number
     weight: number
   }>
-  observedAt: Date
-  generatedAt: Date
+  observedAt: string
+  generatedAt: string
 }
-
-export { computeSwellPower, classifyTone } from './surf.js'
-export type { ConditionTone } from './surf.js'
 
 export { tideLevelAt, sampleTideCurve } from './tide.js'
 export type { TideExtreme, TideExtremeKind } from './tide.js'
