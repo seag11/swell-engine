@@ -1,0 +1,65 @@
+"""The Python port must reproduce the TypeScript model exactly.
+
+Fixtures in ``fixtures/golden.json`` are reference outputs captured from
+``@swell-engine/model``. Regenerate them only when the TypeScript model changes
+deliberately, never to make a failing test pass — that would erase the baseline
+these tests exist to protect.
+
+Once the ports agree, improvements are attributable: any later change in output
+comes from new physics rather than a translation error.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+
+from swellkit.contract import ForecastRequest
+from swellkit.triangulate import triangulate
+
+FIXTURES = json.loads((Path(__file__).parent / "fixtures" / "golden.json").read_text())
+CASES = FIXTURES["cases"]
+
+SCALAR_FIELDS = [
+    "waveHeight",
+    "dominantPeriod",
+    "swellPower",
+    "windSpeed",
+    "windDirection",
+    "waterTemp",
+]
+
+
+def _ids() -> list[str]:
+    return [c["name"] for c in CASES]
+
+
+@pytest.mark.parametrize("case", CASES, ids=_ids())
+def test_matches_typescript(case: dict) -> None:
+    actual = triangulate(ForecastRequest.from_json(case["request"])).to_json()
+    expected = case["expected"]
+
+    for key in SCALAR_FIELDS:
+        got, want = actual[key], expected[key]
+        if want is None or got is None:
+            assert got == want, f"{key}: {got!r} != {want!r}"
+        else:
+            # Both sides compute in IEEE doubles, so agreement should be near
+            # exact; the tolerance covers summation order only.
+            assert got == pytest.approx(want, rel=0, abs=1e-12), f"{key}: {got} != {want}"
+
+    assert actual["tone"] == expected["tone"]
+    assert actual["observedAt"] == expected["observedAt"]
+    assert actual["weights"] == expected["weights"]
+
+
+def test_fixture_coverage() -> None:
+    """Guard against the corpus silently losing the cases that matter."""
+    tones = {c["expected"]["tone"] for c in CASES}
+    assert tones == {"flat", "small", "solid", "large", "xxl"}
+
+    assert any(c["expected"]["waveHeight"] is None for c in CASES), "no null-wave cases"
+    assert any("facing" in c["request"] for c in CASES), "no directional cases"
+    assert any(len(c["request"]["observations"]) == 3 for c in CASES), "no 3-buoy cases"

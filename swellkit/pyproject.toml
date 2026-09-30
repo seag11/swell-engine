@@ -1,0 +1,35 @@
+[project]
+name = "swell-kit"
+version = "0.1.0"
+description = "Surf condition modelling from buoy observations"
+requires-python = ">=3.13"
+# Phase 1 is a dependency-free port so it can run anywhere, including a bare
+# system Python. Scientific dependencies arrive with the spectral work.
+dependencies = []
+
+[project.scripts]
+swellkit = "swellkit.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/swellkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 96
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
