@@ -70,8 +70,10 @@ services:
     build:
       context: .
       dockerfile: packages/client/Dockerfile
-    ports:
-      - '80:80'
+    # No published port: a TLS terminator proxies to this container over the
+    # internal network. Local dev publishes 8080 via docker-compose.override.yml.
+    expose:
+      - '80'
     depends_on:
       - server
 
