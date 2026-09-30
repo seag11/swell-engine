@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import math
-from datetime import datetime, timezone
-from typing import Optional, Sequence
+from collections.abc import Sequence
+from datetime import UTC, datetime
 
 from .contract import (
-    BuoyObservation,
     Forecast,
     ForecastRequest,
     ObservationWeight,
@@ -42,8 +41,8 @@ def _distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def _weighted_mean(
-    samples: Sequence[tuple[Optional[float], float]]
-) -> Optional[float]:
+    samples: Sequence[tuple[float | None, float]]
+) -> float | None:
     present = [(v, w) for v, w in samples if v is not None]
     if not present:
         return None
@@ -67,7 +66,7 @@ def _parse_iso_ms(value: str) -> int:
 
 def _format_iso_ms(ms: int) -> str:
     """Render as JavaScript's toISOString does: always milliseconds, always Z."""
-    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
+    dt = datetime.fromtimestamp(ms / 1000, tz=UTC)
     return f"{dt:%Y-%m-%dT%H:%M:%S}.{dt.microsecond // 1000:03d}Z"
 
 
@@ -111,13 +110,15 @@ def triangulate(request: ForecastRequest) -> Forecast:
         for o in observations
     ]
 
-    combined = [d * dir_ for d, dir_ in zip(by_distance, by_direction)]
+    # strict=True throughout: these lists are all per-observation, so a length
+    # mismatch is a bug rather than something to silently truncate.
+    combined = [d * dir_ for d, dir_ in zip(by_distance, by_direction, strict=True)]
     weights = combined if sum(combined) > 0 else by_distance
     total_weight = sum(weights)
 
-    def field(attr: str) -> Optional[float]:
+    def field(attr: str) -> float | None:
         return _weighted_mean(
-            [(getattr(o, attr), w) for o, w in zip(observations, weights)]
+            [(getattr(o, attr), w) for o, w in zip(observations, weights, strict=True)]
         )
 
     wave_height = field("wave_height")
@@ -134,7 +135,7 @@ def triangulate(request: ForecastRequest) -> Forecast:
             distance_km=_js_round(d),
             weight=_js_fixed(w / total_weight, 3),
         )
-        for o, d, w in zip(observations, distances, weights)
+        for o, d, w in zip(observations, distances, weights, strict=True)
     ]
 
     observed_at = _format_iso_ms(

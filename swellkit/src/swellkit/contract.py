@@ -10,7 +10,7 @@ belong in this module.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 ConditionTone = Literal["flat", "small", "solid", "large", "xxl"]
 
@@ -23,16 +23,16 @@ class BuoyObservation:
     lat: float
     lon: float
     observed_at: str  # ISO 8601, UTC
-    wave_height: Optional[float] = None  # metres
-    dominant_period: Optional[float] = None  # seconds
-    avg_period: Optional[float] = None  # seconds
-    wave_direction: Optional[float] = None  # degrees true, whence the swell comes
-    wind_speed: Optional[float] = None  # m/s
-    wind_direction: Optional[float] = None  # degrees true
-    water_temp: Optional[float] = None  # degrees C
+    wave_height: float | None = None  # metres
+    dominant_period: float | None = None  # seconds
+    avg_period: float | None = None  # seconds
+    wave_direction: float | None = None  # degrees true, whence the swell comes
+    wind_speed: float | None = None  # m/s
+    wind_direction: float | None = None  # degrees true
+    water_temp: float | None = None  # degrees C
 
     @staticmethod
-    def from_json(raw: dict[str, Any]) -> "BuoyObservation":
+    def from_json(raw: dict[str, Any]) -> BuoyObservation:
         return BuoyObservation(
             station_id=raw["stationId"],
             lat=raw["lat"],
@@ -54,10 +54,10 @@ class ForecastRequest:
     target_lon: float
     observations: list[BuoyObservation] = field(default_factory=list)
     # Degrees true the break faces. None means no directional weighting.
-    facing: Optional[float] = None
+    facing: float | None = None
 
     @staticmethod
-    def from_json(raw: dict[str, Any]) -> "ForecastRequest":
+    def from_json(raw: dict[str, Any]) -> ForecastRequest:
         return ForecastRequest(
             target_lat=raw["target"]["lat"],
             target_lon=raw["target"]["lon"],
@@ -84,12 +84,12 @@ class ObservationWeight:
 
 @dataclass(frozen=True)
 class Forecast:
-    wave_height: Optional[float]
-    dominant_period: Optional[float]
-    swell_power: Optional[float]
-    wind_speed: Optional[float]
-    wind_direction: Optional[float]
-    water_temp: Optional[float]
+    wave_height: float | None
+    dominant_period: float | None
+    swell_power: float | None
+    wind_speed: float | None
+    wind_direction: float | None
+    water_temp: float | None
     tone: ConditionTone
     weights: list[ObservationWeight]
     # Earliest observation in the set — a forecast is only as fresh as this.

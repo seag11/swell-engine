@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from .contract import ConditionTone
 
 HIGH_POWER_THRESHOLD = 16.0
@@ -13,8 +11,8 @@ M_TO_FT = 3.28084
 
 
 def compute_swell_power(
-    wave_height: Optional[float], dominant_period: Optional[float]
-) -> Optional[float]:
+    wave_height: float | None, dominant_period: float | None
+) -> float | None:
     """Wave power index: P is proportional to H squared times T.
 
     Derived from P = (rho * g^2 * H^2 * T) / 32*pi. With rho and g constant the
@@ -31,7 +29,7 @@ def compute_swell_power(
 
 
 def classify_tone(
-    wave_height_m: Optional[float], swell_power: Optional[float] = None
+    wave_height_m: float | None, swell_power: float | None = None
 ) -> ConditionTone:
     """Label conditions by height in feet, upgraded one level for high power.
 

@@ -33,6 +33,12 @@ COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node packages/server/package.json ./
 COPY --chown=node:node swellkit/src ./swellkit/src
 
+# node_modules/@swell-engine/shared is a workspace symlink to
+# ../../packages/shared, so the target has to exist here or every import of it
+# fails at startup with ERR_MODULE_NOT_FOUND.
+COPY --from=builder --chown=node:node /app/packages/shared/package.json ./packages/shared/
+COPY --from=builder --chown=node:node /app/packages/shared/dist ./packages/shared/dist
+
 EXPOSE 3000
 USER node
 CMD ["node", "dist/index.js"]

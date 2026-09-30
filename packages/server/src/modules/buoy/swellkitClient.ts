@@ -1,4 +1,6 @@
 import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { config } from '../../config.js';
 
@@ -55,11 +57,23 @@ export interface ModelForecast {
 // overrides it because swellkit sits beside dist rather than five levels up.
 const defaultSwellkitSrc = fileURLToPath(new URL('../../../../../swellkit/src', import.meta.url));
 
+/**
+ * swellkit needs a modern interpreter, and a Mac's `python3` is typically an
+ * old system build. Prefer the project's uv-managed virtualenv when it is
+ * present, which is the local-development case; the container has no venv and
+ * falls through to the interpreter on PATH.
+ */
+function resolveInterpreter(swellkitSrc: string): string {
+  if (config.pythonBin) return config.pythonBin;
+  const venvPython = join(swellkitSrc, '..', '.venv', 'bin', 'python');
+  return existsSync(venvPython) ? venvPython : 'python3';
+}
+
 export class ModelError extends Error {}
 
 export async function forecast(request: ModelRequest): Promise<ModelForecast> {
-  const python = config.pythonBin;
   const swellkitSrc = config.swellkitSrc ?? defaultSwellkitSrc;
+  const python = resolveInterpreter(swellkitSrc);
 
   return new Promise((resolve, reject) => {
     const child = spawn(python, ['-m', 'swellkit'], {
