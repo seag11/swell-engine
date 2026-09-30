@@ -27,7 +27,7 @@ def compute_swell_power(
     """
     if wave_height is None or dominant_period is None:
         return None
-    return wave_height**2 * dominant_period
+    return wave_height * wave_height * dominant_period
 
 
 def classify_tone(

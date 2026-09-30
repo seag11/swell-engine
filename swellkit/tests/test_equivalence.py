@@ -46,9 +46,13 @@ def test_matches_typescript(case: dict) -> None:
         if want is None or got is None:
             assert got == want, f"{key}: {got!r} != {want!r}"
         else:
-            # Both sides compute in IEEE doubles, so agreement should be near
-            # exact; the tolerance covers summation order only.
-            assert got == pytest.approx(want, rel=0, abs=1e-12), f"{key}: {got} != {want}"
+            # 126 of these 128 cases are bit-identical. The tolerance exists for
+            # `cos`, which is not bit-reproducible across runtimes: V8 ships its
+            # own fdlibm port while CPython calls the platform libm, and they
+            # agree to about one unit in the last place. Arithmetic ordering,
+            # degree conversion and rounding are all matched exactly, so this is
+            # deliberately tight enough that any real drift still fails.
+            assert got == pytest.approx(want, rel=1e-15), f"{key}: {got!r} != {want!r}"
 
     assert actual["tone"] == expected["tone"]
     assert actual["observedAt"] == expected["observedAt"]

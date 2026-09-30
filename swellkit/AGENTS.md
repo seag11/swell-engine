@@ -119,11 +119,23 @@ output within the range of its inputs, no overshoot past the extremes,
 monotonic response to monotonic input, null in yields null out, and a weight set
 that sums to one. These catch what fixtures cannot.
 
-**Cross-language rounding.** `_js_round` and `_js_fixed` in `triangulate.py`
-exist because JavaScript's `Math.round` breaks ties upward while Python's
-`round` breaks to even, and `toFixed` differs likewise. Any new numeric output
-crossing the boundary needs the same care, or equivalence will fail in ways that
-look like physics errors.
+**Cross-language numerics.** Achieving equivalence surfaced four hazards, all of
+which look like physics errors when they fail:
+
+- `Math.round` breaks ties upward; Python's `round` breaks to even. See
+  `_js_round`.
+- `toFixed` rounds likewise. See `_js_fixed`.
+- `math.radians(x)` multiplies by a precomputed pi/180, where the reference
+  computes `(x * pi) / 180`. Different last bit. See `_to_rad` — this alone
+  accounted for 42 of 128 fixtures.
+- `x**2` and `x * x` disagree for some doubles in Python (251 in 200,000
+  sampled), while JS engines fold `**2` into a multiply. Always write the
+  multiply.
+
+`cos` is the one that cannot be fixed: it is not bit-reproducible across
+runtimes, so 2 of 128 fixtures differ by about one unit in the last place. That
+is why the equivalence test uses `rel=1e-15` rather than exact equality. Keep
+that tolerance tight — it is sized for transcendentals, not for sloppiness.
 
 ## The contract
 

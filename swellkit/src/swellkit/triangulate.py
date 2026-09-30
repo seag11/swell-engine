@@ -20,14 +20,24 @@ EARTH_RADIUS_KM = 6371.0
 OBSERVATION_LIMIT = 3
 
 
+def _to_rad(degrees: float) -> float:
+    """Degrees to radians, multiplying before dividing.
+
+    Not `math.radians`, which multiplies by a precomputed pi/180 and therefore
+    rounds differently in the last bit. Matching the reference implementation's
+    order keeps the fixtures exact, so they still detect drift at full precision.
+    """
+    return (degrees * math.pi) / 180
+
+
 def _distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Equirectangular approximation.
 
     Cheaper than haversine and accurate to well under a percent at the distances
     between a break and its nearby buoys.
     """
-    x = math.radians(lon2 - lon1) * math.cos(math.radians((lat1 + lat2) / 2))
-    y = math.radians(lat2 - lat1)
+    x = _to_rad(lon2 - lon1) * math.cos(_to_rad((lat1 + lat2) / 2))
+    y = _to_rad(lat2 - lat1)
     return EARTH_RADIUS_KM * math.sqrt(x * x + y * y)
 
 
@@ -37,7 +47,10 @@ def _weighted_mean(
     present = [(v, w) for v, w in samples if v is not None]
     if not present:
         return None
-    total = math.fsum(w for _, w in present)
+    # Plain summation, matching the reference implementation's reduce order.
+    # fsum would be marginally more accurate but differ in the last bit,
+    # which would blunt the fixtures as a drift detector.
+    total = sum(w for _, w in present)
     # Every contributing weight can be zero once directional clamping applies.
     # Dividing here would yield NaN, which then fails every comparison in
     # classify_tone and silently reports the largest possible surf.
@@ -87,10 +100,12 @@ def triangulate(request: ForecastRequest) -> Forecast:
         _distance_km(request.target_lat, request.target_lon, o.lat, o.lon)
         for o in observations
     ]
-    by_distance = [1 / d**2 for d in distances]
+    # d * d rather than d**2: Python's pow and multiplication disagree in the
+    # last bit for some doubles, where JS engines fold **2 into a multiply.
+    by_distance = [1 / (d * d) for d in distances]
 
     by_direction = [
-        max(0.0, math.cos(math.radians(o.wave_direction - facing)))
+        max(0.0, math.cos(_to_rad(o.wave_direction - facing)))
         if facing is not None and o.wave_direction is not None
         else 1.0
         for o in observations
@@ -98,7 +113,7 @@ def triangulate(request: ForecastRequest) -> Forecast:
 
     combined = [d * dir_ for d, dir_ in zip(by_distance, by_direction)]
     weights = combined if sum(combined) > 0 else by_distance
-    total_weight = math.fsum(weights)
+    total_weight = sum(weights)
 
     def field(attr: str) -> Optional[float]:
         return _weighted_mean(

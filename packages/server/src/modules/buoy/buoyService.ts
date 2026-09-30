@@ -1,8 +1,12 @@
 import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared';
-import { triangulate, OBSERVATION_LIMIT } from '@swell-engine/model';
 import { sql } from '../../db/client.js';
 import { config } from '../../config.js';
 import { fetchLatestReading } from './ndbcClient.js';
+import { forecast } from './swellkitClient.js';
+
+// How many buoys the model blends. Candidate selection happens here; the
+// weighting happens in swellkit.
+const OBSERVATION_LIMIT = 3;
 
 const EARTH_RADIUS_KM = 6371;
 const STALE_READING_THRESHOLD_MS = 4 * 3_600_000;
@@ -196,7 +200,7 @@ export async function getTriangulatedConditions(
 
   // The model takes no station names and no Date objects, so it stays portable
   // across a JSON boundary. Attribution is rejoined here.
-  const { weights, ...forecast } = triangulate({
+  const { weights, ...blended } = await forecast({
     target: { lat, lon },
     facing,
     observations: valid.map(({ station, reading }) => ({
@@ -217,7 +221,7 @@ export async function getTriangulatedConditions(
   const stationNames = new Map(valid.map(({ station }) => [station.id, station.name]));
 
   return {
-    ...forecast,
+    ...blended,
     sources: weights.map((w) => ({
       stationId: w.stationId,
       stationName: stationNames.get(w.stationId) ?? w.stationId,

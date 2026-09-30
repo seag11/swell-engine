@@ -51,4 +51,8 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'local-dev-jwt-placeholder',
   betaTokens: parseBetaTokens(process.env.BETA_TOKENS),
   cookieSecure: process.env.COOKIE_SECURE === 'true',
+  pythonBin: process.env.PYTHON_BIN || 'python3',
+  // Set in the container, where swellkit sits beside dist rather than in the
+  // monorepo layout the client resolves by default.
+  swellkitSrc: process.env.SWELLKIT_SRC || undefined,
 };
