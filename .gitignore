@@ -5,3 +5,11 @@ dist/
 **/*.tsbuildinfo
 *.log
 DIRECTION.md
+
+# Python. uv.lock is committed deliberately — it is the reproducibility
+# guarantee, the same role package-lock.json plays.
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
