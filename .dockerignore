@@ -3,6 +3,13 @@ dist/
 .env
 .env.*
 **/*.tsbuildinfo
+# A host virtualenv holds binaries for the wrong platform; the image builds
+# its own with uv sync. The ** prefix matters — a bare `.venv/` would only
+# match the context root, not swellkit/.venv.
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
 .git/
 docker-compose*.yml
 *.log

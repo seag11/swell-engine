@@ -51,9 +51,7 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'local-dev-jwt-placeholder',
   betaTokens: parseBetaTokens(process.env.BETA_TOKENS),
   cookieSecure: process.env.COOKIE_SECURE === 'true',
-  // Unset means "work it out": the uv virtualenv locally, python3 in the image.
-  pythonBin: process.env.PYTHON_BIN || undefined,
-  // Set in the container, where swellkit sits beside dist rather than in the
-  // monorepo layout the client resolves by default.
-  swellkitSrc: process.env.SWELLKIT_SRC || undefined,
+  // The surf model executable. Unset resolves to swellkit's virtualenv in the
+  // monorepo layout; the container sets it because the image flattens that.
+  swellkitBin: process.env.SWELLKIT_BIN || undefined,
 };

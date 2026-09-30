@@ -1,6 +1,4 @@
 import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { config } from '../../config.js';
 
@@ -55,31 +53,27 @@ export interface ModelForecast {
 
 // Resolved from this file so dev and the built output agree; the container
 // overrides it because swellkit sits beside dist rather than five levels up.
-const defaultSwellkitSrc = fileURLToPath(new URL('../../../../../swellkit/src', import.meta.url));
-
 /**
- * swellkit needs a modern interpreter, and a Mac's `python3` is typically an
- * old system build. Prefer the project's uv-managed virtualenv when it is
- * present, which is the local-development case; the container has no venv and
- * falls through to the interpreter on PATH.
+ * The model is one executable: the console script `uv sync` installs into
+ * swellkit's virtualenv.
+ *
+ * Running it rather than `python -m swellkit` means no interpreter to locate, no
+ * PYTHONPATH, and no working-directory assumptions. It also has to be the venv's
+ * script rather than anything on PATH, because swellkit's dependencies are
+ * installed there — a system interpreter cannot import numpy once the spectral
+ * work lands, whatever its version.
  */
-function resolveInterpreter(swellkitSrc: string): string {
-  if (config.pythonBin) return config.pythonBin;
-  const venvPython = join(swellkitSrc, '..', '.venv', 'bin', 'python');
-  return existsSync(venvPython) ? venvPython : 'python3';
-}
+const defaultSwellkitBin = fileURLToPath(
+  new URL('../../../../../swellkit/.venv/bin/swellkit', import.meta.url),
+);
 
 export class ModelError extends Error {}
 
 export async function forecast(request: ModelRequest): Promise<ModelForecast> {
-  const swellkitSrc = config.swellkitSrc ?? defaultSwellkitSrc;
-  const python = resolveInterpreter(swellkitSrc);
+  const bin = config.swellkitBin ?? defaultSwellkitBin;
 
   return new Promise((resolve, reject) => {
-    const child = spawn(python, ['-m', 'swellkit'], {
-      env: { ...process.env, PYTHONPATH: swellkitSrc },
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
+    const child = spawn(bin, [], { stdio: ['pipe', 'pipe', 'pipe'] });
 
     let stdout = '';
     let stderr = '';
@@ -101,7 +95,9 @@ export async function forecast(request: ModelRequest): Promise<ModelForecast> {
     child.stdout.on('data', (chunk) => (stdout += chunk));
     child.stderr.on('data', (chunk) => (stderr += chunk));
 
-    child.on('error', (err) => fail(`could not start model (${python}): ${err.message}`));
+    child.on('error', (err) =>
+      fail(`could not start model (${bin}): ${err.message} — has uv sync been run?`),
+    );
 
     child.on('close', (code) => {
       if (settled) return;
