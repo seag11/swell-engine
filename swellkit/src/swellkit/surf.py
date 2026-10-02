@@ -17,11 +17,7 @@ HIGHEST_TENTH_RATIO = 1.27
 # Breaking face height in feet, read as "below this ceiling, this label".
 #
 # Face height — trough to crest of the breaking wave — is the convention surf
-# forecasters agree on. NWS Honolulu publishes full face height, and Surfline
-# reports it everywhere except Australia and New Zealand. Note that Hawaii,
-# Australia and parts of South Africa conventionally speak in the Hawaiian
-# scale, roughly half of face height; swellkit does not yet express that, so a
-# reading for those regions is understated by a factor of two in local terms.
+# forecasters agree on.
 #
 # Anchors, in face height: 6ft is head high, 9ft is well overhead, 12ft is
 # double overhead. Those are vernacular facts rather than fitted values.

@@ -45,11 +45,9 @@ These cost hours if you get them wrong, and nothing in the code will stop you.
   with Komar & Gaughan (1972); refraction and bathymetry are still ignored.
 - **Face height is the reporting convention** — trough to crest of the breaking
   wave, which is what NWS Honolulu publishes and Surfline reports outside
-  Australia and New Zealand. **The Hawaiian scale is roughly half of it** and is
-  the working convention in Hawaii, Australia and parts of South Africa.
-  swellkit does not express it, so a Hawaii reading understates by 2x in local
-  terms. Being wrong by a factor of two on a big-wave break is the worst error
-  this model can make; treat it as open rather than solved.
+  Australia and New Zealand. Other scales exist and differ by large factors;
+  which regions are reported in which convention is an open product question,
+  so do not encode an answer to it here.
 - **Surf is reported as a range**, because significant height is already a
   distribution. `face_height` is the mean of the highest third and
   `face_height_max` the highest tenth, about 1.27x, from Rayleigh statistics.

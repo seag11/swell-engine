@@ -1,9 +1,13 @@
 import { sql } from './client.js';
 
 const STATIONS = [
-  // Pacific Northwest
-  { id: '46041', name: 'Cape Elizabeth, WA', lat: 47.353, lon: -124.731 },
-  { id: '46029', name: 'Columbia River Bar, OR', lat: 46.143, lon: -124.511 },
+  // Pacific Northwest. Coordinates from NDBC's station table; five stations so
+  // the coast still triangulates when one drops out.
+  { id: '46041', name: 'Cape Elizabeth, WA', lat: 47.351, lon: -124.741 },
+  { id: '46029', name: 'Columbia River Bar, OR', lat: 46.148, lon: -124.508 },
+  { id: '46089', name: 'Tillamook, OR', lat: 45.928, lon: -125.815 },
+  { id: '46050', name: 'Stonewall Bank, OR', lat: 44.679, lon: -124.535 },
+  { id: '46015', name: 'Port Orford, OR', lat: 42.754, lon: -124.839 },
   // Northern California
   { id: '46022', name: 'Eel River, CA', lat: 40.749, lon: -124.577 },
   { id: '46026', name: 'San Francisco, CA', lat: 37.759, lon: -122.833 },
