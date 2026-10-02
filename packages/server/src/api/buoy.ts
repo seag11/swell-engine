@@ -49,6 +49,8 @@ export async function buoyRoutes(app: FastifyInstance) {
               waveHeight: nullable('number'),
               dominantPeriod: nullable('number'),
               swellPower: nullable('number'),
+              faceHeight: nullable('number'),
+              faceHeightMax: nullable('number'),
               windSpeed: nullable('number'),
               windDirection: nullable('number'),
               waterTemp: nullable('number'),

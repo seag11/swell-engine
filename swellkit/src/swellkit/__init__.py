@@ -7,7 +7,13 @@ from .contract import (
     ForecastRequest,
     ObservationWeight,
 )
-from .surf import classify_tone, compute_swell_power
+from .surf import (
+    TONE_BANDS,
+    breaking_height,
+    classify_tone,
+    compute_swell_power,
+    highest_tenth,
+)
 from .triangulate import OBSERVATION_LIMIT, triangulate
 
 __all__ = [
@@ -17,7 +23,10 @@ __all__ = [
     "ForecastRequest",
     "ObservationWeight",
     "OBSERVATION_LIMIT",
+    "TONE_BANDS",
+    "breaking_height",
     "classify_tone",
     "compute_swell_power",
+    "highest_tenth",
     "triangulate",
 ]

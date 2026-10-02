@@ -6,8 +6,8 @@
   "type": "object",
   "$defs": {
     "tone": {
-      "description": "Condition label. Ordered from smallest to largest.",
-      "enum": ["flat", "small", "solid", "large", "xxl"]
+      "description": "Condition label, ordered smallest to largest. Banded on breaking face height in feet: flat under 2, small to 4, solid to 6, large to 9, xl to 12, xxl above. 6ft is head high, 12ft double overhead.",
+      "enum": ["flat", "small", "solid", "large", "xl", "xxl"]
     },
     "isoUtc": {
       "type": "string",
@@ -87,6 +87,8 @@
         "waveHeight",
         "dominantPeriod",
         "swellPower",
+        "faceHeight",
+        "faceHeightMax",
         "windSpeed",
         "windDirection",
         "waterTemp",
@@ -98,7 +100,15 @@
       "properties": {
         "waveHeight": { "$ref": "#/$defs/nullableNumber", "description": "Metres." },
         "dominantPeriod": { "$ref": "#/$defs/nullableNumber", "description": "Seconds." },
-        "swellPower": { "$ref": "#/$defs/nullableNumber", "description": "Dimensionless index, H squared times T." },
+        "swellPower": { "$ref": "#/$defs/nullableNumber", "description": "Dimensionless index, H squared times T. Also the input to the breaking-height estimate." },
+        "faceHeight": {
+          "$ref": "#/$defs/nullableNumber",
+          "description": "Metres. Estimated breaking face height, trough to crest, which is the convention surf reports use. Derived from the offshore height and period, so it differs from waveHeight by roughly 1.25 to 2.0 depending on period."
+        },
+        "faceHeightMax": {
+          "$ref": "#/$defs/nullableNumber",
+          "description": "Metres. The highest tenth of breaking waves, about 1.27 times faceHeight. Pair with faceHeight to report a range, since significant height is already a distribution."
+        },
         "windSpeed": { "$ref": "#/$defs/nullableNumber", "description": "Metres per second." },
         "windDirection": { "$ref": "#/$defs/bearing" },
         "waterTemp": { "$ref": "#/$defs/nullableNumber", "description": "Degrees Celsius." },

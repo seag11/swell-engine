@@ -1,0 +1,5356 @@
+{
+  "generatedBy": "tests/generate_fixtures.py",
+  "asserts": [
+    "waveHeight",
+    "dominantPeriod",
+    "swellPower",
+    "windSpeed",
+    "windDirection",
+    "waterTemp",
+    "weights",
+    "observedAt"
+  ],
+  "note": "Blend mechanics only. Breaking height and the condition label are excluded on purpose \u2014 see test_bands.py.",
+  "cases": [
+    {
+      "name": "single observation",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "every field null",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": null,
+        "windDirection": null,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "facing into the swell",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "facing": 270,
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "facing away, weight clamps to zero",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "facing": 90,
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "zero total weight, the old NaN path",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "facing": 90,
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          },
+          {
+            "stationId": "B",
+            "lat": 37.9,
+            "lon": -122.7,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 95.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 12.0,
+        "swellPower": null,
+        "windSpeed": 4.999999999999999,
+        "windDirection": 280.0,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 0.0
+          },
+          {
+            "stationId": "B",
+            "distanceKm": 23,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "three observations, directional",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "facing": 270,
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          },
+          {
+            "stationId": "B",
+            "lat": 37.363,
+            "lon": -122.882,
+            "observedAt": "2026-10-02T11:30:00.000Z",
+            "waveHeight": 3.1,
+            "dominantPeriod": 16.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 285.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          },
+          {
+            "stationId": "C",
+            "lat": 35.774,
+            "lon": -121.858,
+            "observedAt": "2026-10-02T11:00:00.000Z",
+            "waveHeight": 1.2,
+            "dominantPeriod": 6.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 180.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.014338473980386,
+        "dominantPeriod": 12.052139905383221,
+        "swellPower": 48.90227462087004,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 0.987
+          },
+          {
+            "stationId": "B",
+            "distanceKm": 55,
+            "weight": 0.013
+          },
+          {
+            "stationId": "C",
+            "distanceKm": 228,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-02T11:00:00.000Z"
+      }
+    },
+    {
+      "name": "partial nulls across the set",
+      "request": {
+        "target": {
+          "lat": 40.0,
+          "lon": -73.0
+        },
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 40.25,
+            "lon": -73.16,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "B",
+            "lat": 40.96,
+            "lon": -71.12,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": null,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 31,
+            "weight": 0.975
+          },
+          {
+            "stationId": "B",
+            "distanceKm": 192,
+            "weight": 0.025
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "random 0",
+      "request": {
+        "target": {
+          "lat": -55.606277,
+          "lon": 64.552302
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -54.333077,
+            "lon": 64.059828,
+            "observedAt": "2026-10-13T16:50:00.000Z",
+            "waveHeight": 1.515249,
+            "dominantPeriod": 7.305476,
+            "avgPeriod": 15.456228,
+            "waveDirection": 35.0,
+            "windSpeed": 0.020636,
+            "windDirection": null,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": -54.502372,
+            "lon": 65.388502,
+            "observedAt": "2026-10-05T17:47:00.000Z",
+            "waveHeight": 5.512186,
+            "dominantPeriod": 7.02056,
+            "avgPeriod": 10.417623,
+            "waveDirection": 238.0,
+            "windSpeed": null,
+            "windDirection": 176.0,
+            "waterTemp": 18.072214
+          }
+        ],
+        "facing": 88.0
+      },
+      "expected": {
+        "waveHeight": 1.515249,
+        "dominantPeriod": 7.305476,
+        "swellPower": 16.773223367524537,
+        "windSpeed": 0.020636,
+        "windDirection": null,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 145,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 134,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-05T17:47:00.000Z"
+      }
+    },
+    {
+      "name": "random 1",
+      "request": {
+        "target": {
+          "lat": -46.769521,
+          "lon": -131.59877
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -47.374682,
+            "lon": -130.296001,
+            "observedAt": "2026-10-13T06:34:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 17.025782,
+            "avgPeriod": 5.611549,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": 347.0,
+            "waterTemp": 22.81684
+          },
+          {
+            "stationId": "S1",
+            "lat": -47.407309,
+            "lon": -130.726508,
+            "observedAt": "2026-10-23T04:11:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 2.969379,
+            "avgPeriod": 12.634563,
+            "waveDirection": null,
+            "windSpeed": 22.638747,
+            "windDirection": null,
+            "waterTemp": 7.712553
+          },
+          {
+            "stationId": "S2",
+            "lat": -46.157015,
+            "lon": -130.245026,
+            "observedAt": "2026-10-12T18:51:00.000Z",
+            "waveHeight": 3.968497,
+            "dominantPeriod": 10.899204,
+            "avgPeriod": null,
+            "waveDirection": 66.0,
+            "windSpeed": 15.728672,
+            "windDirection": 124.0,
+            "waterTemp": 28.537129
+          }
+        ],
+        "facing": 115.0
+      },
+      "expected": {
+        "waveHeight": 3.968497,
+        "dominantPeriod": 9.006797904960845,
+        "swellPower": 141.84777594176074,
+        "windSpeed": 20.66333309350457,
+        "windDirection": null,
+        "waterTemp": 16.59244523582427,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 119,
+            "weight": 0.32
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 97,
+            "weight": 0.486
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 124,
+            "weight": 0.194
+          }
+        ],
+        "observedAt": "2026-10-12T18:51:00.000Z"
+      }
+    },
+    {
+      "name": "random 2",
+      "request": {
+        "target": {
+          "lat": 5.22083,
+          "lon": 82.645697
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 4.433331,
+            "lon": 82.023499,
+            "observedAt": "2026-10-01T05:00:00.000Z",
+            "waveHeight": 1.272292,
+            "dominantPeriod": null,
+            "avgPeriod": 13.099935,
+            "waveDirection": 92.0,
+            "windSpeed": 14.546273,
+            "windDirection": 132.0,
+            "waterTemp": 9.498378
+          },
+          {
+            "stationId": "S1",
+            "lat": 4.90075,
+            "lon": 84.098203,
+            "observedAt": "2026-10-14T00:04:00.000Z",
+            "waveHeight": 5.02298,
+            "dominantPeriod": 12.242771,
+            "avgPeriod": 7.583769,
+            "waveDirection": 262.0,
+            "windSpeed": 17.269186,
+            "windDirection": 191.0,
+            "waterTemp": 20.490309
+          },
+          {
+            "stationId": "S2",
+            "lat": 5.862736,
+            "lon": 81.865073,
+            "observedAt": "2026-10-12T07:18:00.000Z",
+            "waveHeight": 3.937355,
+            "dominantPeriod": null,
+            "avgPeriod": 15.605091,
+            "waveDirection": 8.0,
+            "windSpeed": 22.70522,
+            "windDirection": 133.0,
+            "waterTemp": 15.435034
+          }
+        ],
+        "facing": 228.0
+      },
+      "expected": {
+        "waveHeight": 5.02298,
+        "dominantPeriod": 12.242771,
+        "swellPower": 308.88912894320674,
+        "windSpeed": 17.269186,
+        "windDirection": 191.0,
+        "waterTemp": 20.490309,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 111,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 165,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 112,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-01T05:00:00.000Z"
+      }
+    },
+    {
+      "name": "random 3",
+      "request": {
+        "target": {
+          "lat": -59.123943,
+          "lon": 33.04966
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -59.219358,
+            "lon": 32.823851,
+            "observedAt": "2026-10-08T02:15:00.000Z",
+            "waveHeight": 4.212743,
+            "dominantPeriod": null,
+            "avgPeriod": 3.377334,
+            "waveDirection": 57.0,
+            "windSpeed": 20.775581,
+            "windDirection": 318.0,
+            "waterTemp": 15.792702
+          },
+          {
+            "stationId": "S1",
+            "lat": -58.146099,
+            "lon": 33.740545,
+            "observedAt": "2026-10-07T18:31:00.000Z",
+            "waveHeight": 0.953086,
+            "dominantPeriod": 6.065518,
+            "avgPeriod": 3.777393,
+            "waveDirection": 347.0,
+            "windSpeed": 1.307631,
+            "windDirection": 21.0,
+            "waterTemp": 23.994171
+          },
+          {
+            "stationId": "S2",
+            "lat": -58.814593,
+            "lon": 32.623058,
+            "observedAt": "2026-10-06T03:04:00.000Z",
+            "waveHeight": 5.272314,
+            "dominantPeriod": 14.515667,
+            "avgPeriod": 14.681486,
+            "waveDirection": 58.0,
+            "windSpeed": null,
+            "windDirection": 289.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.295931807628171,
+        "dominantPeriod": 13.525612900866903,
+        "swellPower": 249.6155931495237,
+        "windSpeed": 20.380328446470156,
+        "windDirection": 318.0,
+        "waterTemp": 15.95921421956836,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 17,
+            "weight": 0.85
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 116,
+            "weight": 0.018
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 42,
+            "weight": 0.133
+          }
+        ],
+        "observedAt": "2026-10-06T03:04:00.000Z"
+      }
+    },
+    {
+      "name": "random 4",
+      "request": {
+        "target": {
+          "lat": -56.392405,
+          "lon": -171.129389
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -57.553786,
+            "lon": -172.435674,
+            "observedAt": "2026-10-24T22:21:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 14.397763,
+            "avgPeriod": 16.421948,
+            "waveDirection": null,
+            "windSpeed": 21.297565,
+            "windDirection": 201.0,
+            "waterTemp": 8.560827
+          },
+          {
+            "stationId": "S1",
+            "lat": -55.154242,
+            "lon": -171.973708,
+            "observedAt": "2026-10-09T06:15:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 4.951402,
+            "avgPeriod": 3.321054,
+            "waveDirection": 199.0,
+            "windSpeed": null,
+            "windDirection": 322.0,
+            "waterTemp": 9.921097
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 9.547659644446583,
+        "swellPower": null,
+        "windSpeed": 21.297565,
+        "windDirection": 322.0,
+        "waterTemp": 9.259238810797685,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 151,
+            "weight": 0.487
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 147,
+            "weight": 0.513
+          }
+        ],
+        "observedAt": "2026-10-09T06:15:00.000Z"
+      }
+    },
+    {
+      "name": "random 5",
+      "request": {
+        "target": {
+          "lat": -57.144854,
+          "lon": 31.925313
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -58.551177,
+            "lon": 32.305979,
+            "observedAt": "2026-10-01T09:40:00.000Z",
+            "waveHeight": 3.044479,
+            "dominantPeriod": 18.560969,
+            "avgPeriod": 4.629571,
+            "waveDirection": 117.0,
+            "windSpeed": 12.23963,
+            "windDirection": 305.0,
+            "waterTemp": 18.853557
+          },
+          {
+            "stationId": "S1",
+            "lat": -58.50377,
+            "lon": 30.620151,
+            "observedAt": "2026-10-07T00:43:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": null,
+            "waveDirection": 154.0,
+            "windSpeed": 18.345847,
+            "windDirection": null,
+            "waterTemp": 5.013874
+          },
+          {
+            "stationId": "S2",
+            "lat": -56.497815,
+            "lon": 30.468202,
+            "observedAt": "2026-10-15T11:33:00.000Z",
+            "waveHeight": 5.865352,
+            "dominantPeriod": 18.876776,
+            "avgPeriod": 6.988274,
+            "waveDirection": 294.0,
+            "windSpeed": 3.720663,
+            "windDirection": 314.0,
+            "waterTemp": 12.392142
+          }
+        ],
+        "facing": 113.0
+      },
+      "expected": {
+        "waveHeight": 3.044479,
+        "dominantPeriod": 18.560969,
+        "swellPower": 172.0388817175026,
+        "windSpeed": 14.65758754314955,
+        "windDirection": 305.0,
+        "waterTemp": 13.3732791283409,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 158,
+            "weight": 0.604
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 170,
+            "weight": 0.396
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 114,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-01T09:40:00.000Z"
+      }
+    },
+    {
+      "name": "random 6",
+      "request": {
+        "target": {
+          "lat": 19.943585,
+          "lon": -149.701343
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 20.413996,
+            "lon": -148.981257,
+            "observedAt": "2026-10-11T09:43:00.000Z",
+            "waveHeight": 4.124187,
+            "dominantPeriod": 8.914136,
+            "avgPeriod": 9.487012,
+            "waveDirection": 180.0,
+            "windSpeed": 17.560587,
+            "windDirection": 85.0,
+            "waterTemp": 12.993173
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.124187,
+        "dominantPeriod": 8.914136,
+        "swellPower": 151.61981192828154,
+        "windSpeed": 17.560587,
+        "windDirection": 85.0,
+        "waterTemp": 12.993173,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 92,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-11T09:43:00.000Z"
+      }
+    },
+    {
+      "name": "random 7",
+      "request": {
+        "target": {
+          "lat": 32.138809,
+          "lon": -151.493754
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 31.968645,
+            "lon": -150.897868,
+            "observedAt": "2026-10-02T18:26:00.000Z",
+            "waveHeight": 5.689606,
+            "dominantPeriod": 15.159366,
+            "avgPeriod": 3.399631,
+            "waveDirection": 256.0,
+            "windSpeed": 3.271109,
+            "windDirection": 336.0,
+            "waterTemp": 9.077659
+          },
+          {
+            "stationId": "S1",
+            "lat": 33.565592,
+            "lon": -152.346701,
+            "observedAt": "2026-10-04T01:35:00.000Z",
+            "waveHeight": 2.563355,
+            "dominantPeriod": 15.469944,
+            "avgPeriod": 15.646982,
+            "waveDirection": 7.0,
+            "windSpeed": 19.667305,
+            "windDirection": 90.0,
+            "waterTemp": 17.288941
+          },
+          {
+            "stationId": "S2",
+            "lat": 32.348561,
+            "lon": -152.54713,
+            "observedAt": "2026-10-04T12:18:00.000Z",
+            "waveHeight": 0.501362,
+            "dominantPeriod": 16.801271,
+            "avgPeriod": 15.959983,
+            "waveDirection": 295.0,
+            "windSpeed": 20.740522,
+            "windDirection": 274.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.236745393958288,
+        "dominantPeriod": 15.56700574277163,
+        "swellPower": 279.4279326205581,
+        "windSpeed": 8.61395707713762,
+        "windDirection": 336.0,
+        "waterTemp": 9.900841575120669,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 59,
+            "weight": 0.689
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 178,
+            "weight": 0.077
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 102,
+            "weight": 0.234
+          }
+        ],
+        "observedAt": "2026-10-02T18:26:00.000Z"
+      }
+    },
+    {
+      "name": "random 8",
+      "request": {
+        "target": {
+          "lat": -39.636878,
+          "lon": 29.238356
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -39.884819,
+            "lon": 28.536244,
+            "observedAt": "2026-10-14T14:42:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 20.577925,
+            "avgPeriod": 4.252376,
+            "waveDirection": 199.0,
+            "windSpeed": 14.292127,
+            "windDirection": null,
+            "waterTemp": 23.146967
+          },
+          {
+            "stationId": "S1",
+            "lat": -40.249083,
+            "lon": 27.750698,
+            "observedAt": "2026-10-06T02:26:00.000Z",
+            "waveHeight": 0.454123,
+            "dominantPeriod": 12.709099,
+            "avgPeriod": 10.337317,
+            "waveDirection": null,
+            "windSpeed": 18.024922,
+            "windDirection": 11.0,
+            "waterTemp": 1.172829
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 0.454123,
+        "dominantPeriod": 19.209412676018122,
+        "swellPower": 3.961512977794664,
+        "windSpeed": 14.94131862787409,
+        "windDirection": null,
+        "waterTemp": 19.325319569763444,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 66,
+            "weight": 0.826
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 144,
+            "weight": 0.174
+          }
+        ],
+        "observedAt": "2026-10-06T02:26:00.000Z"
+      }
+    },
+    {
+      "name": "random 9",
+      "request": {
+        "target": {
+          "lat": -17.784304,
+          "lon": 173.172762
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -18.959048,
+            "lon": 172.043274,
+            "observedAt": "2026-10-12T14:12:00.000Z",
+            "waveHeight": 1.054755,
+            "dominantPeriod": null,
+            "avgPeriod": 9.91143,
+            "waveDirection": 110.0,
+            "windSpeed": 16.94328,
+            "windDirection": 211.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": -18.197965,
+            "lon": 172.223609,
+            "observedAt": "2026-10-04T10:15:00.000Z",
+            "waveHeight": 1.954449,
+            "dominantPeriod": 2.833563,
+            "avgPeriod": null,
+            "waveDirection": 195.0,
+            "windSpeed": null,
+            "windDirection": 99.0,
+            "waterTemp": 11.074104
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.7020652787162271,
+        "dominantPeriod": 2.833563,
+        "swellPower": 8.208906287219074,
+        "windSpeed": 16.94328,
+        "windDirection": 99.0,
+        "waterTemp": 11.074104,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 177,
+            "weight": 0.281
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 110,
+            "weight": 0.719
+          }
+        ],
+        "observedAt": "2026-10-04T10:15:00.000Z"
+      }
+    },
+    {
+      "name": "random 10",
+      "request": {
+        "target": {
+          "lat": 14.370115,
+          "lon": -102.560674
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 14.996898,
+            "lon": -101.388593,
+            "observedAt": "2026-10-06T00:58:00.000Z",
+            "waveHeight": 4.125492,
+            "dominantPeriod": 19.280538,
+            "avgPeriod": 5.885322,
+            "waveDirection": null,
+            "windSpeed": 1.193296,
+            "windDirection": 119.0,
+            "waterTemp": 25.5907
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.125492,
+        "dominantPeriod": 19.280538,
+        "swellPower": 328.1486687771162,
+        "windSpeed": 1.193296,
+        "windDirection": 119.0,
+        "waterTemp": 25.5907,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 144,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-06T00:58:00.000Z"
+      }
+    },
+    {
+      "name": "random 11",
+      "request": {
+        "target": {
+          "lat": -43.939781,
+          "lon": 178.689051
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -44.358214,
+            "lon": 180.177388,
+            "observedAt": "2026-10-03T09:29:00.000Z",
+            "waveHeight": 4.763187,
+            "dominantPeriod": 18.201734,
+            "avgPeriod": null,
+            "waveDirection": 359.0,
+            "windSpeed": 8.658937,
+            "windDirection": 335.0,
+            "waterTemp": 16.842964
+          },
+          {
+            "stationId": "S1",
+            "lat": -45.285333,
+            "lon": 178.923975,
+            "observedAt": "2026-10-03T04:20:00.000Z",
+            "waveHeight": 4.492956,
+            "dominantPeriod": 13.892852,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 24.536844,
+            "windDirection": 184.0,
+            "waterTemp": 29.01708
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.650472930357182,
+        "dominantPeriod": 16.404487844560077,
+        "swellPower": 354.7781931648294,
+        "windSpeed": 15.28165428772861,
+        "windDirection": 335.0,
+        "waterTemp": 21.92082019956166,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 128,
+            "weight": 0.583
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 151,
+            "weight": 0.417
+          }
+        ],
+        "observedAt": "2026-10-03T04:20:00.000Z"
+      }
+    },
+    {
+      "name": "random 12",
+      "request": {
+        "target": {
+          "lat": 48.730714,
+          "lon": -131.496841
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 50.121126,
+            "lon": -132.669514,
+            "observedAt": "2026-10-09T22:11:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 5.904622,
+            "waveDirection": 265.0,
+            "windSpeed": 4.704421,
+            "windDirection": 142.0,
+            "waterTemp": 21.78215
+          },
+          {
+            "stationId": "S1",
+            "lat": 48.143325,
+            "lon": -132.41906,
+            "observedAt": "2026-10-23T15:29:00.000Z",
+            "waveHeight": 4.06328,
+            "dominantPeriod": null,
+            "avgPeriod": 7.757254,
+            "waveDirection": 211.0,
+            "windSpeed": 16.70202,
+            "windDirection": 257.0,
+            "waterTemp": 26.483225
+          },
+          {
+            "stationId": "S2",
+            "lat": 50.20082,
+            "lon": -132.693716,
+            "observedAt": "2026-10-23T04:45:00.000Z",
+            "waveHeight": 1.14069,
+            "dominantPeriod": null,
+            "avgPeriod": 5.770945,
+            "waveDirection": 77.0,
+            "windSpeed": 0.119297,
+            "windDirection": 24.0,
+            "waterTemp": null
+          }
+        ],
+        "facing": 281.0
+      },
+      "expected": {
+        "waveHeight": 4.06328,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 11.355338663133624,
+        "windDirection": 257.0,
+        "waterTemp": 24.38820999193804,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 176,
+            "weight": 0.446
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 94,
+            "weight": 0.554
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 185,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-09T22:11:00.000Z"
+      }
+    },
+    {
+      "name": "random 13",
+      "request": {
+        "target": {
+          "lat": 34.705482,
+          "lon": -176.324099
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 35.97235,
+            "lon": -177.274777,
+            "observedAt": "2026-10-08T02:09:00.000Z",
+            "waveHeight": 3.658484,
+            "dominantPeriod": null,
+            "avgPeriod": 16.918201,
+            "waveDirection": 42.0,
+            "windSpeed": 24.007504,
+            "windDirection": 348.0,
+            "waterTemp": 6.178994
+          },
+          {
+            "stationId": "S1",
+            "lat": 36.003107,
+            "lon": -175.948101,
+            "observedAt": "2026-10-27T15:23:00.000Z",
+            "waveHeight": 1.80232,
+            "dominantPeriod": 17.479869,
+            "avgPeriod": 2.461241,
+            "waveDirection": null,
+            "windSpeed": 3.768464,
+            "windDirection": 146.0,
+            "waterTemp": 22.284077
+          },
+          {
+            "stationId": "S2",
+            "lat": 35.133587,
+            "lon": -175.178478,
+            "observedAt": "2026-10-23T08:12:00.000Z",
+            "waveHeight": 0.463031,
+            "dominantPeriod": null,
+            "avgPeriod": 7.057097,
+            "waveDirection": null,
+            "windSpeed": 11.215962,
+            "windDirection": 163.0,
+            "waterTemp": 15.713328
+          }
+        ],
+        "facing": 157.0
+      },
+      "expected": {
+        "waveHeight": 0.9649546620644961,
+        "dominantPeriod": 17.479869,
+        "swellPower": 16.276161518190822,
+        "windSpeed": 8.424872497004,
+        "windDirection": 163.0,
+        "waterTemp": 18.175839377743436,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 165,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 148,
+            "weight": 0.375
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 115,
+            "weight": 0.625
+          }
+        ],
+        "observedAt": "2026-10-08T02:09:00.000Z"
+      }
+    },
+    {
+      "name": "random 14",
+      "request": {
+        "target": {
+          "lat": 22.826774,
+          "lon": -169.552812
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 21.596719,
+            "lon": -170.729781,
+            "observedAt": "2026-10-04T05:13:00.000Z",
+            "waveHeight": 0.175668,
+            "dominantPeriod": 3.012205,
+            "avgPeriod": 3.900135,
+            "waveDirection": 55.0,
+            "windSpeed": 19.93813,
+            "windDirection": 318.0,
+            "waterTemp": 20.224619
+          },
+          {
+            "stationId": "S1",
+            "lat": 24.186939,
+            "lon": -170.517507,
+            "observedAt": "2026-10-02T10:08:00.000Z",
+            "waveHeight": 2.742901,
+            "dominantPeriod": 4.79903,
+            "avgPeriod": null,
+            "waveDirection": 210.0,
+            "windSpeed": 20.10505,
+            "windDirection": 207.0,
+            "waterTemp": 15.19793
+          }
+        ],
+        "facing": 234.0
+      },
+      "expected": {
+        "waveHeight": 2.742901,
+        "dominantPeriod": 4.79903,
+        "swellPower": 36.10553049912587,
+        "windSpeed": 20.10505,
+        "windDirection": 207.0,
+        "waterTemp": 15.19793,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 183,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 180,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T10:08:00.000Z"
+      }
+    },
+    {
+      "name": "random 15",
+      "request": {
+        "target": {
+          "lat": -29.215911,
+          "lon": -139.668747
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -29.582301,
+            "lon": -140.434298,
+            "observedAt": "2026-10-20T21:25:00.000Z",
+            "waveHeight": 4.370604,
+            "dominantPeriod": 18.659219,
+            "avgPeriod": 15.442445,
+            "waveDirection": 270.0,
+            "windSpeed": 24.750607,
+            "windDirection": 252.0,
+            "waterTemp": 8.290614
+          },
+          {
+            "stationId": "S1",
+            "lat": -28.11618,
+            "lon": -140.822484,
+            "observedAt": "2026-10-26T19:01:00.000Z",
+            "waveHeight": 5.007016,
+            "dominantPeriod": 5.407013,
+            "avgPeriod": 15.278965,
+            "waveDirection": 47.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 1.670097
+          },
+          {
+            "stationId": "S2",
+            "lat": -29.156077,
+            "lon": -139.754102,
+            "observedAt": "2026-10-11T23:16:00.000Z",
+            "waveHeight": 3.557881,
+            "dominantPeriod": 5.924267,
+            "avgPeriod": 9.256261,
+            "waveDirection": 268.0,
+            "windSpeed": 9.416325,
+            "windDirection": 151.0,
+            "waterTemp": 26.053678
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.5762578816407777,
+        "dominantPeriod": 6.119133952385504,
+        "swellPower": 78.26140064803754,
+        "windSpeed": 9.654417020422208,
+        "windDirection": 151.0,
+        "waterTemp": 25.681244896566678,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 85,
+            "weight": 0.015
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 166,
+            "weight": 0.004
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 11,
+            "weight": 0.981
+          }
+        ],
+        "observedAt": "2026-10-11T23:16:00.000Z"
+      }
+    },
+    {
+      "name": "random 16",
+      "request": {
+        "target": {
+          "lat": -7.016447,
+          "lon": -65.951515
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -6.46668,
+            "lon": -65.314624,
+            "observedAt": "2026-10-06T18:45:00.000Z",
+            "waveHeight": 3.858681,
+            "dominantPeriod": 14.849917,
+            "avgPeriod": 5.11881,
+            "waveDirection": 42.0,
+            "windSpeed": 1.415407,
+            "windDirection": 162.0,
+            "waterTemp": null
+          }
+        ],
+        "facing": 277.0
+      },
+      "expected": {
+        "waveHeight": 3.858681,
+        "dominantPeriod": 14.849917,
+        "swellPower": 221.10663721566885,
+        "windSpeed": 1.415407,
+        "windDirection": 162.0,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 93,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-06T18:45:00.000Z"
+      }
+    },
+    {
+      "name": "random 17",
+      "request": {
+        "target": {
+          "lat": 37.774239,
+          "lon": 165.868085
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 36.693362,
+            "lon": 166.897594,
+            "observedAt": "2026-10-10T09:53:00.000Z",
+            "waveHeight": 2.076869,
+            "dominantPeriod": null,
+            "avgPeriod": 10.832994,
+            "waveDirection": 253.0,
+            "windSpeed": 3.027217,
+            "windDirection": 186.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": 38.72812,
+            "lon": 167.306022,
+            "observedAt": "2026-10-08T18:20:00.000Z",
+            "waveHeight": 5.710673,
+            "dominantPeriod": null,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 22.309308
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.7381007760450427,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 3.0272169999999994,
+        "windDirection": 186.0,
+        "waterTemp": 22.309308,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 151,
+            "weight": 0.543
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 164,
+            "weight": 0.457
+          }
+        ],
+        "observedAt": "2026-10-08T18:20:00.000Z"
+      }
+    },
+    {
+      "name": "random 18",
+      "request": {
+        "target": {
+          "lat": -3.13554,
+          "lon": -42.297557
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -2.694881,
+            "lon": -42.019589,
+            "observedAt": "2026-10-02T19:51:00.000Z",
+            "waveHeight": 2.923708,
+            "dominantPeriod": null,
+            "avgPeriod": null,
+            "waveDirection": 288.0,
+            "windSpeed": 24.087442,
+            "windDirection": 144.0,
+            "waterTemp": 4.928714
+          },
+          {
+            "stationId": "S1",
+            "lat": -2.327465,
+            "lon": -42.361387,
+            "observedAt": "2026-10-07T15:34:00.000Z",
+            "waveHeight": 2.153211,
+            "dominantPeriod": 19.354775,
+            "avgPeriod": 9.972216,
+            "waveDirection": 274.0,
+            "windSpeed": 6.413065,
+            "windDirection": 14.0,
+            "waterTemp": 26.626338
+          },
+          {
+            "stationId": "S2",
+            "lat": -1.852796,
+            "lon": -43.794211,
+            "observedAt": "2026-10-05T23:22:00.000Z",
+            "waveHeight": 1.471703,
+            "dominantPeriod": 18.893037,
+            "avgPeriod": 13.646452,
+            "waveDirection": 231.0,
+            "windSpeed": 18.655182,
+            "windDirection": 173.0,
+            "waterTemp": 17.444038
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.6407415019851856,
+        "dominantPeriod": 19.287923792580948,
+        "swellPower": 134.5046390081292,
+        "windSpeed": 18.910395883219394,
+        "windDirection": 144.0,
+        "waterTemp": 11.55979598921386,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 58,
+            "weight": 0.674
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 90,
+            "weight": 0.278
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 219,
+            "weight": 0.047
+          }
+        ],
+        "observedAt": "2026-10-02T19:51:00.000Z"
+      }
+    },
+    {
+      "name": "random 19",
+      "request": {
+        "target": {
+          "lat": 13.46411,
+          "lon": 66.692183
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 12.09678,
+            "lon": 66.126092,
+            "observedAt": "2026-10-18T15:25:00.000Z",
+            "waveHeight": 5.412474,
+            "dominantPeriod": 20.349505,
+            "avgPeriod": 3.392187,
+            "waveDirection": 172.0,
+            "windSpeed": 5.325652,
+            "windDirection": 80.0,
+            "waterTemp": 25.985734
+          },
+          {
+            "stationId": "S1",
+            "lat": 14.828851,
+            "lon": 67.549399,
+            "observedAt": "2026-10-26T15:04:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 18.938844,
+            "avgPeriod": 7.746989,
+            "waveDirection": 195.0,
+            "windSpeed": 8.154811,
+            "windDirection": 170.0,
+            "waterTemp": 26.88041
+          },
+          {
+            "stationId": "S2",
+            "lat": 12.610231,
+            "lon": 67.729135,
+            "observedAt": "2026-10-01T17:34:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 20.457188,
+            "avgPeriod": 12.718638,
+            "waveDirection": 125.0,
+            "windSpeed": 5.603699,
+            "windDirection": 25.0,
+            "waterTemp": 24.04783
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 5.412474,
+        "dominantPeriod": 20.004540458840566,
+        "swellPower": 586.0305081867918,
+        "windSpeed": 6.215904304273016,
+        "windDirection": 25.0,
+        "waterTemp": 25.45363932222806,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 164,
+            "weight": 0.323
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 178,
+            "weight": 0.275
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 147,
+            "weight": 0.402
+          }
+        ],
+        "observedAt": "2026-10-01T17:34:00.000Z"
+      }
+    },
+    {
+      "name": "random 20",
+      "request": {
+        "target": {
+          "lat": -26.802604,
+          "lon": 5.543841
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -27.399323,
+            "lon": 6.560184,
+            "observedAt": "2026-10-26T16:55:00.000Z",
+            "waveHeight": 3.355342,
+            "dominantPeriod": 9.095495,
+            "avgPeriod": 8.124805,
+            "waveDirection": 265.0,
+            "windSpeed": 3.620065,
+            "windDirection": 62.0,
+            "waterTemp": 25.612475
+          },
+          {
+            "stationId": "S1",
+            "lat": -27.76371,
+            "lon": 4.416424,
+            "observedAt": "2026-10-11T23:56:00.000Z",
+            "waveHeight": 2.734997,
+            "dominantPeriod": 20.279192,
+            "avgPeriod": 5.725148,
+            "waveDirection": null,
+            "windSpeed": 22.483318,
+            "windDirection": 133.0,
+            "waterTemp": 22.200759
+          }
+        ],
+        "facing": 175.0
+      },
+      "expected": {
+        "waveHeight": 2.734997,
+        "dominantPeriod": 20.279191999999995,
+        "swellPower": 151.69258619684175,
+        "windSpeed": 22.483317999999997,
+        "windDirection": 133.0,
+        "waterTemp": 22.200759,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 121,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 154,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-11T23:56:00.000Z"
+      }
+    },
+    {
+      "name": "random 21",
+      "request": {
+        "target": {
+          "lat": 26.072209,
+          "lon": -95.172921
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 26.401006,
+            "lon": -95.491224,
+            "observedAt": "2026-10-04T07:59:00.000Z",
+            "waveHeight": 5.16732,
+            "dominantPeriod": 9.978234,
+            "avgPeriod": 11.86,
+            "waveDirection": 276.0,
+            "windSpeed": 7.127166,
+            "windDirection": 239.0,
+            "waterTemp": 12.701258
+          },
+          {
+            "stationId": "S1",
+            "lat": 25.592371,
+            "lon": -95.46892,
+            "observedAt": "2026-10-12T22:49:00.000Z",
+            "waveHeight": 4.734924,
+            "dominantPeriod": 21.047955,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 5.813565,
+            "windDirection": 189.0,
+            "waterTemp": 17.310824
+          },
+          {
+            "stationId": "S2",
+            "lat": 26.165285,
+            "lon": -96.603045,
+            "observedAt": "2026-10-23T12:17:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 11.870146,
+            "waveDirection": 316.0,
+            "windSpeed": 14.811437,
+            "windDirection": null,
+            "waterTemp": 25.945545
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 5.000277570827863,
+        "dominantPeriod": 14.25466830119109,
+        "swellPower": 356.40627542884897,
+        "windSpeed": 7.157077581745423,
+        "windDirection": 239.0,
+        "waterTemp": 15.234026518257998,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 48,
+            "weight": 0.573
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 61,
+            "weight": 0.361
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 143,
+            "weight": 0.066
+          }
+        ],
+        "observedAt": "2026-10-04T07:59:00.000Z"
+      }
+    },
+    {
+      "name": "random 22",
+      "request": {
+        "target": {
+          "lat": -57.806064,
+          "lon": -153.855364
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -58.570364,
+            "lon": -155.161099,
+            "observedAt": "2026-10-13T16:49:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 20.176585,
+            "avgPeriod": null,
+            "waveDirection": 103.0,
+            "windSpeed": 5.929825,
+            "windDirection": null,
+            "waterTemp": 7.261232
+          },
+          {
+            "stationId": "S1",
+            "lat": -58.452952,
+            "lon": -154.105887,
+            "observedAt": "2026-10-10T13:51:00.000Z",
+            "waveHeight": 0.604936,
+            "dominantPeriod": null,
+            "avgPeriod": 10.619784,
+            "waveDirection": 209.0,
+            "windSpeed": 11.467944,
+            "windDirection": 128.0,
+            "waterTemp": 7.690414
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 0.604936,
+        "dominantPeriod": 20.176585,
+        "swellPower": 7.3835721325258925,
+        "windSpeed": 9.85172813907825,
+        "windDirection": 128.0,
+        "waterTemp": 7.565163756077448,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 114,
+            "weight": 0.292
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 73,
+            "weight": 0.708
+          }
+        ],
+        "observedAt": "2026-10-10T13:51:00.000Z"
+      }
+    },
+    {
+      "name": "random 23",
+      "request": {
+        "target": {
+          "lat": 53.334719,
+          "lon": -78.20152
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 53.312167,
+            "lon": -77.603185,
+            "observedAt": "2026-10-23T12:35:00.000Z",
+            "waveHeight": 0.769855,
+            "dominantPeriod": 3.480497,
+            "avgPeriod": 7.919669,
+            "waveDirection": 278.0,
+            "windSpeed": 23.643298,
+            "windDirection": 41.0,
+            "waterTemp": 5.352866
+          },
+          {
+            "stationId": "S1",
+            "lat": 53.102472,
+            "lon": -79.03548,
+            "observedAt": "2026-10-08T11:27:00.000Z",
+            "waveHeight": 4.350668,
+            "dominantPeriod": 9.997186,
+            "avgPeriod": 2.135522,
+            "waveDirection": null,
+            "windSpeed": 20.773635,
+            "windDirection": 329.0,
+            "waterTemp": 28.907746
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.8339500596475538,
+        "dominantPeriod": 5.4170339177780455,
+        "swellPower": 18.219504651013455,
+        "windSpeed": 22.79053237913307,
+        "windDirection": 41.0,
+        "waterTemp": 12.352570100323298,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 40,
+            "weight": 0.703
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 61,
+            "weight": 0.297
+          }
+        ],
+        "observedAt": "2026-10-08T11:27:00.000Z"
+      }
+    },
+    {
+      "name": "random 24",
+      "request": {
+        "target": {
+          "lat": -20.308123,
+          "lon": -105.801951
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -20.609621,
+            "lon": -106.150741,
+            "observedAt": "2026-10-06T11:56:00.000Z",
+            "waveHeight": 3.859509,
+            "dominantPeriod": null,
+            "avgPeriod": 14.462378,
+            "waveDirection": 331.0,
+            "windSpeed": 10.655124,
+            "windDirection": 337.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": -19.437312,
+            "lon": -105.524342,
+            "observedAt": "2026-10-10T19:58:00.000Z",
+            "waveHeight": 2.830963,
+            "dominantPeriod": 18.245151,
+            "avgPeriod": 8.467047,
+            "waveDirection": 3.0,
+            "windSpeed": 22.836477,
+            "windDirection": 259.0,
+            "waterTemp": 19.573853
+          }
+        ],
+        "facing": 280.0
+      },
+      "expected": {
+        "waveHeight": 3.813974307849887,
+        "dominantPeriod": 18.245151,
+        "swellPower": 265.40126488843566,
+        "windSpeed": 11.19440387550081,
+        "windDirection": 337.0,
+        "waterTemp": 19.573853,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 49,
+            "weight": 0.956
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 101,
+            "weight": 0.044
+          }
+        ],
+        "observedAt": "2026-10-06T11:56:00.000Z"
+      }
+    },
+    {
+      "name": "random 25",
+      "request": {
+        "target": {
+          "lat": 19.335744,
+          "lon": -16.37536
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 19.800126,
+            "lon": -15.040268,
+            "observedAt": "2026-10-18T11:56:00.000Z",
+            "waveHeight": 0.203497,
+            "dominantPeriod": 5.740888,
+            "avgPeriod": null,
+            "waveDirection": 190.0,
+            "windSpeed": 13.37117,
+            "windDirection": 270.0,
+            "waterTemp": 7.318355
+          }
+        ],
+        "facing": 328.0
+      },
+      "expected": {
+        "waveHeight": 0.203497,
+        "dominantPeriod": 5.740888,
+        "swellPower": 0.23773607950542003,
+        "windSpeed": 13.37117,
+        "windDirection": 270.0,
+        "waterTemp": 7.318355,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 149,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-18T11:56:00.000Z"
+      }
+    },
+    {
+      "name": "random 26",
+      "request": {
+        "target": {
+          "lat": 17.266123,
+          "lon": -155.392099
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 16.891034,
+            "lon": -156.697982,
+            "observedAt": "2026-10-25T17:46:00.000Z",
+            "waveHeight": 5.915326,
+            "dominantPeriod": 14.937759,
+            "avgPeriod": null,
+            "waveDirection": 178.0,
+            "windSpeed": 21.839551,
+            "windDirection": null,
+            "waterTemp": 28.439076
+          },
+          {
+            "stationId": "S1",
+            "lat": 17.093528,
+            "lon": -155.745155,
+            "observedAt": "2026-10-07T02:14:00.000Z",
+            "waveHeight": 2.101578,
+            "dominantPeriod": 21.816773,
+            "avgPeriod": 3.787529,
+            "waveDirection": 238.0,
+            "windSpeed": null,
+            "windDirection": 228.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S2",
+            "lat": 18.443931,
+            "lon": -154.622504,
+            "observedAt": "2026-10-08T17:24:00.000Z",
+            "waveHeight": 1.620784,
+            "dominantPeriod": 4.346736,
+            "avgPeriod": 5.946307,
+            "waveDirection": 299.0,
+            "windSpeed": 8.621445,
+            "windDirection": null,
+            "waterTemp": 17.69114
+          }
+        ],
+        "facing": 318.0
+      },
+      "expected": {
+        "waveHeight": 1.9626633833142964,
+        "dominantPeriod": 16.769198584886553,
+        "swellPower": 64.59575042839036,
+        "windSpeed": 8.621445,
+        "windDirection": 228.0,
+        "waterTemp": 17.69114,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 145,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 42,
+            "weight": 0.711
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 154,
+            "weight": 0.289
+          }
+        ],
+        "observedAt": "2026-10-07T02:14:00.000Z"
+      }
+    },
+    {
+      "name": "random 27",
+      "request": {
+        "target": {
+          "lat": 28.002096,
+          "lon": -175.91841
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 27.925298,
+            "lon": -176.901301,
+            "observedAt": "2026-10-06T02:19:00.000Z",
+            "waveHeight": 0.660358,
+            "dominantPeriod": 10.783189,
+            "avgPeriod": 12.388271,
+            "waveDirection": 31.0,
+            "windSpeed": 11.972548,
+            "windDirection": null,
+            "waterTemp": 2.667623
+          },
+          {
+            "stationId": "S1",
+            "lat": 27.516375,
+            "lon": -174.680794,
+            "observedAt": "2026-10-11T04:26:00.000Z",
+            "waveHeight": 4.460462,
+            "dominantPeriod": 20.256551,
+            "avgPeriod": 5.877946,
+            "waveDirection": 63.0,
+            "windSpeed": 20.292261,
+            "windDirection": 185.0,
+            "waterTemp": 8.04276
+          },
+          {
+            "stationId": "S2",
+            "lat": 29.029189,
+            "lon": -176.871148,
+            "observedAt": "2026-10-01T12:26:00.000Z",
+            "waveHeight": 2.129283,
+            "dominantPeriod": null,
+            "avgPeriod": 10.199083,
+            "waveDirection": 132.0,
+            "windSpeed": 20.706708,
+            "windDirection": null,
+            "waterTemp": 20.055405
+          }
+        ],
+        "facing": 19.0
+      },
+      "expected": {
+        "waveHeight": 1.7249256759926461,
+        "dominantPeriod": 13.437072937959869,
+        "swellPower": 39.980244730221905,
+        "windSpeed": 14.303246721228632,
+        "windDirection": null,
+        "waterTemp": 4.17342313184694,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 97,
+            "weight": 0.72
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 133,
+            "weight": 0.28
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 147,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-01T12:26:00.000Z"
+      }
+    },
+    {
+      "name": "random 28",
+      "request": {
+        "target": {
+          "lat": -39.521743,
+          "lon": -146.803052
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -38.94458,
+            "lon": -146.794906,
+            "observedAt": "2026-10-06T01:04:00.000Z",
+            "waveHeight": 0.687708,
+            "dominantPeriod": 14.938346,
+            "avgPeriod": 14.542695,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": 223.0,
+            "waterTemp": 24.937215
+          }
+        ],
+        "facing": 301.0
+      },
+      "expected": {
+        "waveHeight": 0.687708,
+        "dominantPeriod": 14.938346,
+        "swellPower": 7.064975614811101,
+        "windSpeed": null,
+        "windDirection": 223.0,
+        "waterTemp": 24.937215,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 64,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-06T01:04:00.000Z"
+      }
+    },
+    {
+      "name": "random 29",
+      "request": {
+        "target": {
+          "lat": -29.622982,
+          "lon": 126.64384
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -30.860139,
+            "lon": 127.974542,
+            "observedAt": "2026-10-09T11:12:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 5.227002,
+            "waveDirection": 354.0,
+            "windSpeed": 0.452537,
+            "windDirection": null,
+            "waterTemp": 28.265529
+          }
+        ],
+        "facing": 4.0
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 0.452537,
+        "windDirection": null,
+        "waterTemp": 28.265529,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 188,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-09T11:12:00.000Z"
+      }
+    },
+    {
+      "name": "random 30",
+      "request": {
+        "target": {
+          "lat": 47.449322,
+          "lon": -151.535547
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 48.166598,
+            "lon": -150.880927,
+            "observedAt": "2026-10-25T03:00:00.000Z",
+            "waveHeight": 0.950206,
+            "dominantPeriod": 16.750477,
+            "avgPeriod": 14.778459,
+            "waveDirection": null,
+            "windSpeed": 22.586228,
+            "windDirection": 198.0,
+            "waterTemp": 4.80395
+          },
+          {
+            "stationId": "S1",
+            "lat": 46.972275,
+            "lon": -151.036685,
+            "observedAt": "2026-10-21T10:55:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 7.526185,
+            "avgPeriod": 12.391812,
+            "waveDirection": 10.0,
+            "windSpeed": 24.126003,
+            "windDirection": null,
+            "waterTemp": 21.924748
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 0.950206,
+        "dominantPeriod": 10.533738492287192,
+        "swellPower": 9.510822341544799,
+        "windSpeed": 23.62396385395101,
+        "windDirection": null,
+        "waterTemp": 16.342561766558603,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 94,
+            "weight": 0.326
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 65,
+            "weight": 0.674
+          }
+        ],
+        "observedAt": "2026-10-21T10:55:00.000Z"
+      }
+    },
+    {
+      "name": "random 31",
+      "request": {
+        "target": {
+          "lat": 1.871776,
+          "lon": -56.481543
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 1.144596,
+            "lon": -55.160116,
+            "observedAt": "2026-10-19T07:46:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 5.370412,
+            "avgPeriod": 5.27227,
+            "waveDirection": 292.0,
+            "windSpeed": 22.407129,
+            "windDirection": 52.0,
+            "waterTemp": 23.583349
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 5.370412,
+        "swellPower": null,
+        "windSpeed": 22.407129,
+        "windDirection": 52.0,
+        "waterTemp": 23.583349,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 168,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-19T07:46:00.000Z"
+      }
+    },
+    {
+      "name": "random 32",
+      "request": {
+        "target": {
+          "lat": 58.467337,
+          "lon": 95.913763
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 58.553211,
+            "lon": 96.274908,
+            "observedAt": "2026-10-19T14:33:00.000Z",
+            "waveHeight": 4.508365,
+            "dominantPeriod": 21.449913,
+            "avgPeriod": null,
+            "waveDirection": 185.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 14.257136
+          },
+          {
+            "stationId": "S1",
+            "lat": 57.244043,
+            "lon": 94.931065,
+            "observedAt": "2026-10-21T00:46:00.000Z",
+            "waveHeight": 4.784418,
+            "dominantPeriod": null,
+            "avgPeriod": 8.981533,
+            "waveDirection": 12.0,
+            "windSpeed": 7.529939,
+            "windDirection": null,
+            "waterTemp": 3.568586
+          }
+        ],
+        "facing": 243.0
+      },
+      "expected": {
+        "waveHeight": 4.508365,
+        "dominantPeriod": 21.449913,
+        "swellPower": 435.97709586979363,
+        "windSpeed": null,
+        "windDirection": null,
+        "waterTemp": 14.257136,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 23,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 148,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-19T14:33:00.000Z"
+      }
+    },
+    {
+      "name": "random 33",
+      "request": {
+        "target": {
+          "lat": 20.2828,
+          "lon": -21.867248
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 19.745604,
+            "lon": -21.165673,
+            "observedAt": "2026-10-08T19:40:00.000Z",
+            "waveHeight": 1.004777,
+            "dominantPeriod": 5.967569,
+            "avgPeriod": 9.07905,
+            "waveDirection": 243.0,
+            "windSpeed": 0.121773,
+            "windDirection": null,
+            "waterTemp": 12.340656
+          },
+          {
+            "stationId": "S1",
+            "lat": 19.073849,
+            "lon": -22.669099,
+            "observedAt": "2026-10-11T01:39:00.000Z",
+            "waveHeight": 0.180848,
+            "dominantPeriod": 14.531612,
+            "avgPeriod": 7.059946,
+            "waveDirection": 355.0,
+            "windSpeed": 19.569757,
+            "windDirection": 152.0,
+            "waterTemp": 28.492092
+          },
+          {
+            "stationId": "S2",
+            "lat": 20.902787,
+            "lon": -21.146038,
+            "observedAt": "2026-10-27T22:30:00.000Z",
+            "waveHeight": 3.389272,
+            "dominantPeriod": 17.591496,
+            "avgPeriod": 11.647014,
+            "waveDirection": 81.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 11.617886
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.7983405597692466,
+        "dominantPeriod": 11.856170582023607,
+        "swellPower": 38.3431967513826,
+        "windSpeed": 5.226933197802503,
+        "windDirection": null,
+        "waterTemp": 14.65355992836939,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 95,
+            "weight": 0.451
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 158,
+            "weight": 0.161
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 102,
+            "weight": 0.388
+          }
+        ],
+        "observedAt": "2026-10-08T19:40:00.000Z"
+      }
+    },
+    {
+      "name": "random 34",
+      "request": {
+        "target": {
+          "lat": -50.861196,
+          "lon": -166.984903
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -52.190217,
+            "lon": -167.658599,
+            "observedAt": "2026-10-10T12:56:00.000Z",
+            "waveHeight": 5.573696,
+            "dominantPeriod": 5.533657,
+            "avgPeriod": 10.896966,
+            "waveDirection": 294.0,
+            "windSpeed": 17.57509,
+            "windDirection": 341.0,
+            "waterTemp": 13.792724
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 5.573696,
+        "dominantPeriod": 5.533657,
+        "swellPower": 171.90907034582668,
+        "windSpeed": 17.57509,
+        "windDirection": 341.0,
+        "waterTemp": 13.792723999999998,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 155,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-10T12:56:00.000Z"
+      }
+    },
+    {
+      "name": "random 35",
+      "request": {
+        "target": {
+          "lat": 59.068512,
+          "lon": 71.866689
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 59.679426,
+            "lon": 70.822235,
+            "observedAt": "2026-10-27T04:35:00.000Z",
+            "waveHeight": 0.277586,
+            "dominantPeriod": 3.847001,
+            "avgPeriod": 7.640944,
+            "waveDirection": null,
+            "windSpeed": 20.310667,
+            "windDirection": null,
+            "waterTemp": 24.065859
+          },
+          {
+            "stationId": "S1",
+            "lat": 58.629951,
+            "lon": 71.924966,
+            "observedAt": "2026-10-05T05:38:00.000Z",
+            "waveHeight": 5.28353,
+            "dominantPeriod": 10.966487,
+            "avgPeriod": 12.552275,
+            "waveDirection": null,
+            "windSpeed": 9.451522,
+            "windDirection": 279.0,
+            "waterTemp": 7.626447
+          }
+        ],
+        "facing": 201.0
+      },
+      "expected": {
+        "waveHeight": 4.14486764108624,
+        "dominantPeriod": 9.347074013555588,
+        "swellPower": 160.5820563401097,
+        "windSpeed": 11.921565544531573,
+        "windDirection": 279.0,
+        "waterTemp": 11.365789598933421,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 90,
+            "weight": 0.227
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 49,
+            "weight": 0.773
+          }
+        ],
+        "observedAt": "2026-10-05T05:38:00.000Z"
+      }
+    },
+    {
+      "name": "random 36",
+      "request": {
+        "target": {
+          "lat": -59.639378,
+          "lon": -152.590323
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -58.31942,
+            "lon": -153.225116,
+            "observedAt": "2026-10-17T14:49:00.000Z",
+            "waveHeight": 1.310032,
+            "dominantPeriod": 7.861606,
+            "avgPeriod": 10.157085,
+            "waveDirection": 212.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 8.444977
+          },
+          {
+            "stationId": "S1",
+            "lat": -59.639845,
+            "lon": -151.172426,
+            "observedAt": "2026-10-15T06:33:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 4.177543,
+            "avgPeriod": 7.199253,
+            "waveDirection": 175.0,
+            "windSpeed": 13.069814,
+            "windDirection": 160.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S2",
+            "lat": -59.70607,
+            "lon": -153.139293,
+            "observedAt": "2026-10-12T07:28:00.000Z",
+            "waveHeight": 5.936542,
+            "dominantPeriod": null,
+            "avgPeriod": 15.036982,
+            "waveDirection": 224.0,
+            "windSpeed": 10.482026,
+            "windDirection": 75.0,
+            "waterTemp": 18.597455
+          }
+        ],
+        "facing": 310.0
+      },
+      "expected": {
+        "waveHeight": 5.936542,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 10.482026,
+        "windDirection": 75.0,
+        "waterTemp": 18.597455,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 151,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 80,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 32,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-12T07:28:00.000Z"
+      }
+    },
+    {
+      "name": "random 37",
+      "request": {
+        "target": {
+          "lat": 19.463084,
+          "lon": 79.922685
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 18.123099,
+            "lon": 78.516493,
+            "observedAt": "2026-10-20T00:56:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 11.426883,
+            "waveDirection": 57.0,
+            "windSpeed": 8.98141,
+            "windDirection": null,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": 20.137253,
+            "lon": 78.61317,
+            "observedAt": "2026-10-03T02:49:00.000Z",
+            "waveHeight": 3.528914,
+            "dominantPeriod": 20.650037,
+            "avgPeriod": 5.078065,
+            "waveDirection": 105.0,
+            "windSpeed": 7.342393,
+            "windDirection": 227.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S2",
+            "lat": 18.113602,
+            "lon": 80.176058,
+            "observedAt": "2026-10-16T09:26:00.000Z",
+            "waveHeight": 2.828926,
+            "dominantPeriod": 8.952655,
+            "avgPeriod": 10.201069,
+            "waveDirection": 217.0,
+            "windSpeed": 13.661883,
+            "windDirection": 348.0,
+            "waterTemp": 8.995629
+          }
+        ],
+        "facing": 106.0
+      },
+      "expected": {
+        "waveHeight": 3.528914,
+        "dominantPeriod": 20.650037,
+        "swellPower": 257.15974327018614,
+        "windSpeed": 7.778713471713786,
+        "windDirection": 227.0,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 210,
+            "weight": 0.266
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 156,
+            "weight": 0.734
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 152,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-03T02:49:00.000Z"
+      }
+    },
+    {
+      "name": "random 38",
+      "request": {
+        "target": {
+          "lat": -37.700836,
+          "lon": -100.243491
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -39.181306,
+            "lon": -98.947952,
+            "observedAt": "2026-10-23T06:14:00.000Z",
+            "waveHeight": 4.338748,
+            "dominantPeriod": 3.134288,
+            "avgPeriod": 3.36767,
+            "waveDirection": 338.0,
+            "windSpeed": 13.760638,
+            "windDirection": 115.0,
+            "waterTemp": 13.54747
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.338748,
+        "dominantPeriod": 3.134288,
+        "swellPower": 59.00213852976929,
+        "windSpeed": 13.760638,
+        "windDirection": 115.0,
+        "waterTemp": 13.54747,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 200,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-23T06:14:00.000Z"
+      }
+    },
+    {
+      "name": "random 39",
+      "request": {
+        "target": {
+          "lat": -19.978895,
+          "lon": -171.625162
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -20.810017,
+            "lon": -171.468569,
+            "observedAt": "2026-10-02T12:06:00.000Z",
+            "waveHeight": 5.422483,
+            "dominantPeriod": 13.509603,
+            "avgPeriod": 4.351909,
+            "waveDirection": 134.0,
+            "windSpeed": 8.541367,
+            "windDirection": 7.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 5.422483,
+        "dominantPeriod": 13.509603000000002,
+        "swellPower": 397.22720555146594,
+        "windSpeed": 8.541367,
+        "windDirection": 7.0,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 94,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:06:00.000Z"
+      }
+    },
+    {
+      "name": "random 40",
+      "request": {
+        "target": {
+          "lat": 48.320259,
+          "lon": -28.942625
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 47.836838,
+            "lon": -29.343006,
+            "observedAt": "2026-10-16T19:35:00.000Z",
+            "waveHeight": 1.090399,
+            "dominantPeriod": 2.944875,
+            "avgPeriod": 13.171164,
+            "waveDirection": 338.0,
+            "windSpeed": 24.126532,
+            "windDirection": 24.0,
+            "waterTemp": 26.906375
+          },
+          {
+            "stationId": "S1",
+            "lat": 47.240348,
+            "lon": -28.232264,
+            "observedAt": "2026-10-21T14:48:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 15.674666,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 24.511508,
+            "windDirection": 183.0,
+            "waterTemp": 12.478659
+          },
+          {
+            "stationId": "S2",
+            "lat": 47.594072,
+            "lon": -28.956717,
+            "observedAt": "2026-10-15T03:23:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 2.340673,
+            "avgPeriod": 16.253518,
+            "waveDirection": 135.0,
+            "windSpeed": 9.875701,
+            "windDirection": 115.0,
+            "waterTemp": 16.866694
+          }
+        ],
+        "facing": 212.0
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 10.702811245236642,
+        "swellPower": null,
+        "windSpeed": 19.054245001380693,
+        "windDirection": 183.0,
+        "waterTemp": 14.114828501425269,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 61,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 131,
+            "weight": 0.627
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 81,
+            "weight": 0.373
+          }
+        ],
+        "observedAt": "2026-10-15T03:23:00.000Z"
+      }
+    },
+    {
+      "name": "random 41",
+      "request": {
+        "target": {
+          "lat": 11.27917,
+          "lon": 67.995651
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 12.385682,
+            "lon": 66.669041,
+            "observedAt": "2026-10-17T14:45:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 14.642403,
+            "avgPeriod": 5.036352,
+            "waveDirection": 268.0,
+            "windSpeed": 23.118554,
+            "windDirection": 324.0,
+            "waterTemp": 2.335696
+          },
+          {
+            "stationId": "S1",
+            "lat": 12.505672,
+            "lon": 67.464412,
+            "observedAt": "2026-10-09T14:26:00.000Z",
+            "waveHeight": 1.917465,
+            "dominantPeriod": 2.712474,
+            "avgPeriod": 16.169323,
+            "waveDirection": 115.0,
+            "windSpeed": 2.965317,
+            "windDirection": 353.0,
+            "waterTemp": 24.360001
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.9174649999999998,
+        "dominantPeriod": 7.231361278398178,
+        "swellPower": 26.587343723813227,
+        "windSpeed": 10.59907628707065,
+        "windDirection": 353.0,
+        "waterTemp": 16.017507789850857,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 190,
+            "weight": 0.379
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 148,
+            "weight": 0.621
+          }
+        ],
+        "observedAt": "2026-10-09T14:26:00.000Z"
+      }
+    },
+    {
+      "name": "random 42",
+      "request": {
+        "target": {
+          "lat": 10.582066,
+          "lon": 115.223923
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 9.787449,
+            "lon": 115.522747,
+            "observedAt": "2026-10-04T02:23:00.000Z",
+            "waveHeight": 2.816992,
+            "dominantPeriod": 14.478063,
+            "avgPeriod": null,
+            "waveDirection": 154.0,
+            "windSpeed": 9.833944,
+            "windDirection": 40.0,
+            "waterTemp": 17.921406
+          },
+          {
+            "stationId": "S1",
+            "lat": 10.385394,
+            "lon": 115.906165,
+            "observedAt": "2026-10-06T19:14:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 11.977852,
+            "avgPeriod": 3.656969,
+            "waveDirection": 141.0,
+            "windSpeed": 22.171782,
+            "windDirection": 164.0,
+            "waterTemp": 13.855317
+          },
+          {
+            "stationId": "S2",
+            "lat": 10.91133,
+            "lon": 115.916048,
+            "observedAt": "2026-10-14T06:48:00.000Z",
+            "waveHeight": 4.236192,
+            "dominantPeriod": 15.88916,
+            "avgPeriod": 8.889776,
+            "waveDirection": 6.0,
+            "windSpeed": 23.077124,
+            "windDirection": 237.0,
+            "waterTemp": 23.175521
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.607602466729031,
+        "dominantPeriod": 13.968789508376128,
+        "swellPower": 181.80093964354367,
+        "windSpeed": 19.166690470596603,
+        "windDirection": 164.0,
+        "waterTemp": 18.091909965187334,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 94,
+            "weight": 0.268
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 78,
+            "weight": 0.394
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 84,
+            "weight": 0.337
+          }
+        ],
+        "observedAt": "2026-10-04T02:23:00.000Z"
+      }
+    },
+    {
+      "name": "random 43",
+      "request": {
+        "target": {
+          "lat": -59.078996,
+          "lon": 155.770458
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -57.778534,
+            "lon": 155.676315,
+            "observedAt": "2026-10-22T19:50:00.000Z",
+            "waveHeight": 4.970184,
+            "dominantPeriod": 13.749989,
+            "avgPeriod": 6.432889,
+            "waveDirection": 83.0,
+            "windSpeed": 24.882713,
+            "windDirection": null,
+            "waterTemp": 22.15272
+          },
+          {
+            "stationId": "S1",
+            "lat": -60.356651,
+            "lon": 154.876998,
+            "observedAt": "2026-10-07T13:17:00.000Z",
+            "waveHeight": 3.922867,
+            "dominantPeriod": 9.754546,
+            "avgPeriod": 9.39376,
+            "waveDirection": 354.0,
+            "windSpeed": 19.188784,
+            "windDirection": 101.0,
+            "waterTemp": 27.445747
+          },
+          {
+            "stationId": "S2",
+            "lat": -58.742697,
+            "lon": 156.494993,
+            "observedAt": "2026-10-04T15:02:00.000Z",
+            "waveHeight": 3.756488,
+            "dominantPeriod": null,
+            "avgPeriod": 3.237572,
+            "waveDirection": 260.0,
+            "windSpeed": 10.099336,
+            "windDirection": 234.0,
+            "waterTemp": 11.313292
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.915188628866754,
+        "dominantPeriod": 11.832511968844454,
+        "swellPower": 181.37704987720602,
+        "windSpeed": 12.788888084637424,
+        "windDirection": 234.0,
+        "waterTemp": 14.299427389849306,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 145,
+            "weight": 0.116
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 151,
+            "weight": 0.107
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 56,
+            "weight": 0.777
+          }
+        ],
+        "observedAt": "2026-10-04T15:02:00.000Z"
+      }
+    },
+    {
+      "name": "random 44",
+      "request": {
+        "target": {
+          "lat": -41.06256,
+          "lon": 38.84495
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -39.721667,
+            "lon": 37.957504,
+            "observedAt": "2026-10-14T00:08:00.000Z",
+            "waveHeight": 4.524488,
+            "dominantPeriod": null,
+            "avgPeriod": 2.642679,
+            "waveDirection": 133.0,
+            "windSpeed": null,
+            "windDirection": 216.0,
+            "waterTemp": 11.509712
+          },
+          {
+            "stationId": "S1",
+            "lat": -39.619691,
+            "lon": 37.412085,
+            "observedAt": "2026-10-12T21:49:00.000Z",
+            "waveHeight": 2.063388,
+            "dominantPeriod": 4.62853,
+            "avgPeriod": null,
+            "waveDirection": 246.0,
+            "windSpeed": 11.621833,
+            "windDirection": null,
+            "waterTemp": 25.473287
+          },
+          {
+            "stationId": "S2",
+            "lat": -41.612956,
+            "lon": 39.081736,
+            "observedAt": "2026-10-09T09:29:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 12.368894,
+            "avgPeriod": 5.745592,
+            "waveDirection": 187.0,
+            "windSpeed": null,
+            "windDirection": 217.0,
+            "waterTemp": 16.256496
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.520886335186809,
+        "dominantPeriod": 11.651419896664716,
+        "swellPower": 144.43846476742632,
+        "windSpeed": 11.621833,
+        "windDirection": 217.0,
+        "waterTemp": 16.44628944944335,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 167,
+            "weight": 0.119
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 201,
+            "weight": 0.082
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 64,
+            "weight": 0.8
+          }
+        ],
+        "observedAt": "2026-10-09T09:29:00.000Z"
+      }
+    },
+    {
+      "name": "random 45",
+      "request": {
+        "target": {
+          "lat": -29.658614,
+          "lon": -134.116601
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -30.369039,
+            "lon": -134.227355,
+            "observedAt": "2026-10-25T23:07:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 7.682558,
+            "avgPeriod": null,
+            "waveDirection": 257.0,
+            "windSpeed": 12.357319,
+            "windDirection": 4.0,
+            "waterTemp": 28.328773
+          },
+          {
+            "stationId": "S1",
+            "lat": -30.887833,
+            "lon": -133.316402,
+            "observedAt": "2026-10-10T07:59:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 13.681174,
+            "avgPeriod": 14.563721,
+            "waveDirection": 230.0,
+            "windSpeed": 14.266371,
+            "windDirection": 176.0,
+            "waterTemp": 14.182137
+          }
+        ],
+        "facing": 220.0
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 9.132186895122901,
+        "swellPower": null,
+        "windSpeed": 12.818661573268928,
+        "windDirection": 4.0,
+        "waterTemp": 24.91008903783509,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 80,
+            "weight": 0.758
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 157,
+            "weight": 0.242
+          }
+        ],
+        "observedAt": "2026-10-10T07:59:00.000Z"
+      }
+    },
+    {
+      "name": "random 46",
+      "request": {
+        "target": {
+          "lat": -13.116848,
+          "lon": 43.099582
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -12.272419,
+            "lon": 43.763486,
+            "observedAt": "2026-10-10T10:36:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 7.003115,
+            "avgPeriod": 15.731779,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": 319.0,
+            "waterTemp": 7.80883
+          },
+          {
+            "stationId": "S1",
+            "lat": -13.17964,
+            "lon": 44.410299,
+            "observedAt": "2026-10-27T07:32:00.000Z",
+            "waveHeight": 5.728936,
+            "dominantPeriod": null,
+            "avgPeriod": 14.59387,
+            "waveDirection": 323.0,
+            "windSpeed": 12.083431,
+            "windDirection": 179.0,
+            "waterTemp": 27.072464
+          }
+        ],
+        "facing": 212.0
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 7.003115,
+        "swellPower": null,
+        "windSpeed": null,
+        "windDirection": 319.0,
+        "waterTemp": 7.808830000000001,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 118,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 142,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-10T10:36:00.000Z"
+      }
+    },
+    {
+      "name": "random 47",
+      "request": {
+        "target": {
+          "lat": -39.318362,
+          "lon": -96.440968
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -38.761958,
+            "lon": -95.006999,
+            "observedAt": "2026-10-05T00:06:00.000Z",
+            "waveHeight": 0.73616,
+            "dominantPeriod": 7.681311,
+            "avgPeriod": 14.60285,
+            "waveDirection": 5.0,
+            "windSpeed": 6.324176,
+            "windDirection": 257.0,
+            "waterTemp": 24.626287
+          },
+          {
+            "stationId": "S1",
+            "lat": -39.156642,
+            "lon": -97.771768,
+            "observedAt": "2026-10-04T20:28:00.000Z",
+            "waveHeight": 5.231391,
+            "dominantPeriod": 12.800745,
+            "avgPeriod": null,
+            "waveDirection": 159.0,
+            "windSpeed": 3.054329,
+            "windDirection": 304.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.376865597868329,
+        "dominantPeriod": 10.68870217115838,
+        "swellPower": 121.88563590480575,
+        "windSpeed": 4.403317366245036,
+        "windDirection": 304.0,
+        "waterTemp": 24.626287,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 138,
+            "weight": 0.413
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 116,
+            "weight": 0.587
+          }
+        ],
+        "observedAt": "2026-10-04T20:28:00.000Z"
+      }
+    },
+    {
+      "name": "random 48",
+      "request": {
+        "target": {
+          "lat": 36.839534,
+          "lon": -106.479728
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 37.406217,
+            "lon": -106.235279,
+            "observedAt": "2026-10-15T05:50:00.000Z",
+            "waveHeight": 5.156409,
+            "dominantPeriod": 7.026796,
+            "avgPeriod": null,
+            "waveDirection": 125.0,
+            "windSpeed": 22.541648,
+            "windDirection": 54.0,
+            "waterTemp": 0.529835
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 5.156409,
+        "dominantPeriod": 7.026795999999999,
+        "swellPower": 186.8323433139294,
+        "windSpeed": 22.541648,
+        "windDirection": 54.0,
+        "waterTemp": 0.529835,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 67,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-15T05:50:00.000Z"
+      }
+    },
+    {
+      "name": "random 49",
+      "request": {
+        "target": {
+          "lat": 30.925855,
+          "lon": 83.663509
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 31.784952,
+            "lon": 84.902916,
+            "observedAt": "2026-10-19T12:07:00.000Z",
+            "waveHeight": 4.742307,
+            "dominantPeriod": 5.461812,
+            "avgPeriod": 12.739313,
+            "waveDirection": null,
+            "windSpeed": 23.879291,
+            "windDirection": 107.0,
+            "waterTemp": 4.25293
+          }
+        ],
+        "facing": 52.0
+      },
+      "expected": {
+        "waveHeight": 4.742307,
+        "dominantPeriod": 5.461812,
+        "swellPower": 122.83328815501578,
+        "windSpeed": 23.879291,
+        "windDirection": 107.0,
+        "waterTemp": 4.25293,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 152,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-19T12:07:00.000Z"
+      }
+    },
+    {
+      "name": "random 50",
+      "request": {
+        "target": {
+          "lat": 13.406726,
+          "lon": 1.507228
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 13.465403,
+            "lon": 1.837856,
+            "observedAt": "2026-10-20T22:26:00.000Z",
+            "waveHeight": 5.041588,
+            "dominantPeriod": 18.990715,
+            "avgPeriod": 6.830907,
+            "waveDirection": 219.0,
+            "windSpeed": null,
+            "windDirection": 229.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": 12.597688,
+            "lon": 1.904579,
+            "observedAt": "2026-10-10T20:07:00.000Z",
+            "waveHeight": 2.776397,
+            "dominantPeriod": 8.643702,
+            "avgPeriod": null,
+            "waveDirection": 34.0,
+            "windSpeed": 9.838209,
+            "windDirection": 82.0,
+            "waterTemp": 0.86366
+          }
+        ],
+        "facing": 267.0
+      },
+      "expected": {
+        "waveHeight": 5.041588,
+        "dominantPeriod": 18.990715,
+        "swellPower": 482.69857916835525,
+        "windSpeed": null,
+        "windDirection": 229.0,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 36,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 100,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-10T20:07:00.000Z"
+      }
+    },
+    {
+      "name": "random 51",
+      "request": {
+        "target": {
+          "lat": 28.752096,
+          "lon": 175.305786
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 28.551931,
+            "lon": 174.608428,
+            "observedAt": "2026-10-18T08:41:00.000Z",
+            "waveHeight": 3.652864,
+            "dominantPeriod": 8.907859,
+            "avgPeriod": 11.900733,
+            "waveDirection": 54.0,
+            "windSpeed": null,
+            "windDirection": 7.0,
+            "waterTemp": 3.96259
+          },
+          {
+            "stationId": "S1",
+            "lat": 29.017037,
+            "lon": 175.543468,
+            "observedAt": "2026-10-03T21:19:00.000Z",
+            "waveHeight": 0.057825,
+            "dominantPeriod": 8.70993,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 5.859937,
+            "windDirection": null,
+            "waterTemp": 18.785208
+          }
+        ],
+        "facing": 65.0
+      },
+      "expected": {
+        "waveHeight": 0.819359466421586,
+        "dominantPeriod": 8.751857154449327,
+        "swellPower": 5.875558733647567,
+        "windSpeed": 5.859937000000001,
+        "windDirection": null,
+        "waterTemp": 15.645343734382577,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 72,
+            "weight": 0.212
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 37,
+            "weight": 0.788
+          }
+        ],
+        "observedAt": "2026-10-03T21:19:00.000Z"
+      }
+    },
+    {
+      "name": "random 52",
+      "request": {
+        "target": {
+          "lat": -11.581154,
+          "lon": 12.154531
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -10.870477,
+            "lon": 11.265251,
+            "observedAt": "2026-10-25T20:49:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 2.558635,
+            "avgPeriod": 2.835946,
+            "waveDirection": 12.0,
+            "windSpeed": 0.636636,
+            "windDirection": 155.0,
+            "waterTemp": 6.72427
+          },
+          {
+            "stationId": "S1",
+            "lat": -11.25762,
+            "lon": 11.913436,
+            "observedAt": "2026-10-27T22:46:00.000Z",
+            "waveHeight": 4.381055,
+            "dominantPeriod": 2.245798,
+            "avgPeriod": 5.539416,
+            "waveDirection": 326.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 19.79311
+          },
+          {
+            "stationId": "S2",
+            "lat": -10.463908,
+            "lon": 12.582747,
+            "observedAt": "2026-10-11T07:24:00.000Z",
+            "waveHeight": 2.625986,
+            "dominantPeriod": 21.346641,
+            "avgPeriod": 11.937617,
+            "waveDirection": 262.0,
+            "windSpeed": 5.842025,
+            "windDirection": 131.0,
+            "waterTemp": 27.76861
+          }
+        ],
+        "facing": 273.0
+      },
+      "expected": {
+        "waveHeight": 4.108617466103554,
+        "dominantPeriod": 5.210801975492242,
+        "swellPower": 87.96218022299001,
+        "windSpeed": 5.842025,
+        "windDirection": null,
+        "waterTemp": 21.031138562746595,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 125,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 45,
+            "weight": 0.845
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 133,
+            "weight": 0.155
+          }
+        ],
+        "observedAt": "2026-10-11T07:24:00.000Z"
+      }
+    },
+    {
+      "name": "random 53",
+      "request": {
+        "target": {
+          "lat": -36.613977,
+          "lon": 93.338284
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -35.78381,
+            "lon": 92.501414,
+            "observedAt": "2026-10-19T05:33:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 8.580857,
+            "avgPeriod": 15.355338,
+            "waveDirection": 236.0,
+            "windSpeed": 19.648161,
+            "windDirection": null,
+            "waterTemp": 1.277816
+          },
+          {
+            "stationId": "S1",
+            "lat": -36.965788,
+            "lon": 94.400544,
+            "observedAt": "2026-10-13T19:47:00.000Z",
+            "waveHeight": 0.452006,
+            "dominantPeriod": null,
+            "avgPeriod": 16.045412,
+            "waveDirection": 215.0,
+            "windSpeed": 12.074841,
+            "windDirection": 84.0,
+            "waterTemp": null
+          }
+        ],
+        "facing": 19.0
+      },
+      "expected": {
+        "waveHeight": 0.452006,
+        "dominantPeriod": 8.580857,
+        "swellPower": 1.753149951405279,
+        "windSpeed": 15.295619194401006,
+        "windDirection": 84.0,
+        "waterTemp": 1.277816,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 119,
+            "weight": 0.425
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 102,
+            "weight": 0.575
+          }
+        ],
+        "observedAt": "2026-10-13T19:47:00.000Z"
+      }
+    },
+    {
+      "name": "random 54",
+      "request": {
+        "target": {
+          "lat": 18.358699,
+          "lon": -175.142888
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 18.997817,
+            "lon": -174.077526,
+            "observedAt": "2026-10-20T15:45:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 21.524068,
+            "avgPeriod": null,
+            "waveDirection": 41.0,
+            "windSpeed": 2.481205,
+            "windDirection": null,
+            "waterTemp": 19.855664
+          }
+        ],
+        "facing": 344.0
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 21.524068,
+        "swellPower": null,
+        "windSpeed": 2.481205,
+        "windDirection": null,
+        "waterTemp": 19.855664,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 133,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-20T15:45:00.000Z"
+      }
+    },
+    {
+      "name": "random 55",
+      "request": {
+        "target": {
+          "lat": 25.24482,
+          "lon": -73.916841
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 25.104447,
+            "lon": -72.931724,
+            "observedAt": "2026-10-10T14:46:00.000Z",
+            "waveHeight": 0.161976,
+            "dominantPeriod": 20.113033,
+            "avgPeriod": 15.157475,
+            "waveDirection": 337.0,
+            "windSpeed": 22.831568,
+            "windDirection": 7.0,
+            "waterTemp": 4.561685
+          },
+          {
+            "stationId": "S1",
+            "lat": 25.644716,
+            "lon": -72.514926,
+            "observedAt": "2026-10-02T03:00:00.000Z",
+            "waveHeight": 4.87419,
+            "dominantPeriod": 8.623369,
+            "avgPeriod": 16.95481,
+            "waveDirection": null,
+            "windSpeed": 1.706212,
+            "windDirection": 1.0,
+            "waterTemp": 5.900749
+          }
+        ],
+        "facing": 46.0
+      },
+      "expected": {
+        "waveHeight": 2.816124356125016,
+        "dominantPeriod": 13.641494819002963,
+        "swellPower": 108.1846438945443,
+        "windSpeed": 10.932738935794566,
+        "windDirection": 1.0,
+        "waterTemp": 5.315911042014686,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 100,
+            "weight": 0.437
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 148,
+            "weight": 0.563
+          }
+        ],
+        "observedAt": "2026-10-02T03:00:00.000Z"
+      }
+    },
+    {
+      "name": "random 56",
+      "request": {
+        "target": {
+          "lat": -24.675778,
+          "lon": -65.486389
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -23.615504,
+            "lon": -64.57798,
+            "observedAt": "2026-10-22T05:21:00.000Z",
+            "waveHeight": 2.217766,
+            "dominantPeriod": 7.376124,
+            "avgPeriod": 3.989598,
+            "waveDirection": 108.0,
+            "windSpeed": 20.750821,
+            "windDirection": 292.0,
+            "waterTemp": 13.666384
+          },
+          {
+            "stationId": "S1",
+            "lat": -23.872926,
+            "lon": -66.471082,
+            "observedAt": "2026-10-19T16:18:00.000Z",
+            "waveHeight": 3.04229,
+            "dominantPeriod": null,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 8.302469,
+            "windDirection": 107.0,
+            "waterTemp": 29.065597
+          },
+          {
+            "stationId": "S2",
+            "lat": -23.570811,
+            "lon": -66.315094,
+            "observedAt": "2026-10-09T03:50:00.000Z",
+            "waveHeight": 4.371931,
+            "dominantPeriod": 2.46319,
+            "avgPeriod": 13.360292,
+            "waveDirection": 240.0,
+            "windSpeed": 5.209092,
+            "windDirection": 17.0,
+            "waterTemp": 11.5711
+          }
+        ],
+        "facing": 354.0
+      },
+      "expected": {
+        "waveHeight": 3.04229,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 8.302469,
+        "windDirection": 107.0,
+        "waterTemp": 29.065597,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 150,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 134,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 149,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-09T03:50:00.000Z"
+      }
+    },
+    {
+      "name": "random 57",
+      "request": {
+        "target": {
+          "lat": -8.818834,
+          "lon": 140.68461
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -9.802282,
+            "lon": 139.489716,
+            "observedAt": "2026-10-24T01:17:00.000Z",
+            "waveHeight": 2.750624,
+            "dominantPeriod": null,
+            "avgPeriod": 6.096691,
+            "waveDirection": 6.0,
+            "windSpeed": 19.591639,
+            "windDirection": 162.0,
+            "waterTemp": 20.097609
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.750624,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 19.591639,
+        "windDirection": 162.0,
+        "waterTemp": 20.097609,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 171,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-24T01:17:00.000Z"
+      }
+    },
+    {
+      "name": "random 58",
+      "request": {
+        "target": {
+          "lat": 5.85031,
+          "lon": 89.761951
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 4.87013,
+            "lon": 89.857779,
+            "observedAt": "2026-10-10T07:28:00.000Z",
+            "waveHeight": 4.011346,
+            "dominantPeriod": 18.920286,
+            "avgPeriod": 10.363905,
+            "waveDirection": 225.0,
+            "windSpeed": 0.58073,
+            "windDirection": 102.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": 6.648308,
+            "lon": 89.628472,
+            "observedAt": "2026-10-22T06:37:00.000Z",
+            "waveHeight": 2.327628,
+            "dominantPeriod": null,
+            "avgPeriod": 6.270076,
+            "waveDirection": 343.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 2.713138
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.005988819770976,
+        "dominantPeriod": 18.920286,
+        "swellPower": 170.96311369147935,
+        "windSpeed": 0.58073,
+        "windDirection": null,
+        "waterTemp": 2.713138,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 110,
+            "weight": 0.403
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 90,
+            "weight": 0.597
+          }
+        ],
+        "observedAt": "2026-10-10T07:28:00.000Z"
+      }
+    },
+    {
+      "name": "random 59",
+      "request": {
+        "target": {
+          "lat": 53.234677,
+          "lon": -64.490741
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 53.906168,
+            "lon": -65.242671,
+            "observedAt": "2026-10-26T01:26:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 13.074595,
+            "waveDirection": 198.0,
+            "windSpeed": 23.263375,
+            "windDirection": 342.0,
+            "waterTemp": 19.278135
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 23.263375,
+        "windDirection": 342.0,
+        "waterTemp": 19.278135,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 90,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-26T01:26:00.000Z"
+      }
+    },
+    {
+      "name": "random 60",
+      "request": {
+        "target": {
+          "lat": 42.035233,
+          "lon": 171.457694
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 41.590481,
+            "lon": 171.00094,
+            "observedAt": "2026-10-03T17:15:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 15.567823,
+            "avgPeriod": null,
+            "waveDirection": 7.0,
+            "windSpeed": 18.529314,
+            "windDirection": 129.0,
+            "waterTemp": 25.918637
+          },
+          {
+            "stationId": "S1",
+            "lat": 42.060445,
+            "lon": 172.55932,
+            "observedAt": "2026-10-07T19:59:00.000Z",
+            "waveHeight": 2.734496,
+            "dominantPeriod": 13.087586,
+            "avgPeriod": 10.459586,
+            "waveDirection": 14.0,
+            "windSpeed": 19.882103,
+            "windDirection": 6.0,
+            "waterTemp": 12.597689
+          },
+          {
+            "stationId": "S2",
+            "lat": 41.816332,
+            "lon": 170.550531,
+            "observedAt": "2026-10-03T03:55:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 10.180444,
+            "avgPeriod": 13.56774,
+            "waveDirection": 3.0,
+            "windSpeed": 3.854141,
+            "windDirection": 245.0,
+            "waterTemp": 9.574883
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.734496,
+        "dominantPeriod": 13.407395134209981,
+        "swellPower": 100.25337309399114,
+        "windSpeed": 14.460112179834846,
+        "windDirection": 129.0,
+        "waterTemp": 18.06651867190537,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 62,
+            "weight": 0.478
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 91,
+            "weight": 0.224
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 79,
+            "weight": 0.298
+          }
+        ],
+        "observedAt": "2026-10-03T03:55:00.000Z"
+      }
+    },
+    {
+      "name": "random 61",
+      "request": {
+        "target": {
+          "lat": -50.467073,
+          "lon": -151.109385
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -51.445899,
+            "lon": -149.715464,
+            "observedAt": "2026-10-17T13:34:00.000Z",
+            "waveHeight": 2.297657,
+            "dominantPeriod": null,
+            "avgPeriod": 16.616851,
+            "waveDirection": null,
+            "windSpeed": 9.070821,
+            "windDirection": null,
+            "waterTemp": 25.645516
+          },
+          {
+            "stationId": "S1",
+            "lat": -51.335586,
+            "lon": -149.740072,
+            "observedAt": "2026-10-07T10:26:00.000Z",
+            "waveHeight": 3.162437,
+            "dominantPeriod": 10.932693,
+            "avgPeriod": 3.625549,
+            "waveDirection": 38.0,
+            "windSpeed": 0.093551,
+            "windDirection": 343.0,
+            "waterTemp": 22.331326
+          },
+          {
+            "stationId": "S2",
+            "lat": -51.120325,
+            "lon": -151.984297,
+            "observedAt": "2026-10-05T23:06:00.000Z",
+            "waveHeight": 2.430003,
+            "dominantPeriod": 10.493538,
+            "avgPeriod": null,
+            "waveDirection": 51.0,
+            "windSpeed": null,
+            "windDirection": 164.0,
+            "waterTemp": 20.450213
+          }
+        ],
+        "facing": 271.0
+      },
+      "expected": {
+        "waveHeight": 2.297657,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 9.070821,
+        "windDirection": null,
+        "waterTemp": 25.645516,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 146,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 136,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 95,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-05T23:06:00.000Z"
+      }
+    },
+    {
+      "name": "random 62",
+      "request": {
+        "target": {
+          "lat": -7.940971,
+          "lon": 38.715995
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -8.357031,
+            "lon": 40.150458,
+            "observedAt": "2026-10-09T18:35:00.000Z",
+            "waveHeight": 0.865215,
+            "dominantPeriod": 6.81743,
+            "avgPeriod": 4.338239,
+            "waveDirection": 283.0,
+            "windSpeed": 18.310765,
+            "windDirection": 283.0,
+            "waterTemp": 28.82526
+          },
+          {
+            "stationId": "S1",
+            "lat": -7.106252,
+            "lon": 37.710526,
+            "observedAt": "2026-10-22T23:36:00.000Z",
+            "waveHeight": 5.082144,
+            "dominantPeriod": 13.039718,
+            "avgPeriod": 14.362199,
+            "waveDirection": null,
+            "windSpeed": 23.255547,
+            "windDirection": null,
+            "waterTemp": 0.257737
+          },
+          {
+            "stationId": "S2",
+            "lat": -6.871915,
+            "lon": 39.082065,
+            "observedAt": "2026-10-12T06:44:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 14.82605,
+            "avgPeriod": 12.765405,
+            "waveDirection": 51.0,
+            "windSpeed": 14.127315,
+            "windDirection": 133.0,
+            "waterTemp": 22.208929
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.2448862698562655,
+        "dominantPeriod": 12.253762332026195,
+        "swellPower": 129.02337925102898,
+        "windSpeed": 18.116104510449333,
+        "windDirection": 133.0,
+        "waterTemp": 16.77258225211277,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 165,
+            "weight": 0.249
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 145,
+            "weight": 0.323
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 126,
+            "weight": 0.428
+          }
+        ],
+        "observedAt": "2026-10-09T18:35:00.000Z"
+      }
+    },
+    {
+      "name": "random 63",
+      "request": {
+        "target": {
+          "lat": -4.506021,
+          "lon": 77.79669
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -3.821077,
+            "lon": 78.309549,
+            "observedAt": "2026-10-23T14:23:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 21.243737,
+            "avgPeriod": 10.505678,
+            "waveDirection": null,
+            "windSpeed": 8.041056,
+            "windDirection": 308.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": -3.781627,
+            "lon": 77.130272,
+            "observedAt": "2026-10-04T09:22:00.000Z",
+            "waveHeight": 5.200104,
+            "dominantPeriod": 11.520225,
+            "avgPeriod": 6.264832,
+            "waveDirection": 224.0,
+            "windSpeed": 11.840335,
+            "windDirection": 355.0,
+            "waterTemp": 2.418143
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 5.200104,
+        "dominantPeriod": 17.057266892682406,
+        "swellPower": 461.24694610249475,
+        "windSpeed": 9.676840268365122,
+        "windDirection": 308.0,
+        "waterTemp": 2.418143,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 95,
+            "weight": 0.569
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 109,
+            "weight": 0.431
+          }
+        ],
+        "observedAt": "2026-10-04T09:22:00.000Z"
+      }
+    },
+    {
+      "name": "random 64",
+      "request": {
+        "target": {
+          "lat": -11.616953,
+          "lon": -23.480967
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -11.730095,
+            "lon": -22.711464,
+            "observedAt": "2026-10-10T08:26:00.000Z",
+            "waveHeight": 2.354848,
+            "dominantPeriod": 20.283425,
+            "avgPeriod": 2.438723,
+            "waveDirection": 40.0,
+            "windSpeed": 5.108655,
+            "windDirection": null,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": -10.357047,
+            "lon": -24.518935,
+            "observedAt": "2026-10-23T21:00:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 5.871251,
+            "waveDirection": 214.0,
+            "windSpeed": 9.302014,
+            "windDirection": null,
+            "waterTemp": 11.872401
+          },
+          {
+            "stationId": "S2",
+            "lat": -11.181522,
+            "lon": -23.47452,
+            "observedAt": "2026-10-13T17:03:00.000Z",
+            "waveHeight": 1.208088,
+            "dominantPeriod": 11.854145,
+            "avgPeriod": 5.562559,
+            "waveDirection": 53.0,
+            "windSpeed": 0.237599,
+            "windDirection": 84.0,
+            "waterTemp": 21.905774
+          }
+        ],
+        "facing": 314.0
+      },
+      "expected": {
+        "waveHeight": 2.354848,
+        "dominantPeriod": 20.283425,
+        "swellPower": 112.47786129462727,
+        "windSpeed": 5.108655,
+        "windDirection": null,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 85,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 180,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 48,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-10T08:26:00.000Z"
+      }
+    },
+    {
+      "name": "random 65",
+      "request": {
+        "target": {
+          "lat": 39.196753,
+          "lon": 3.30627
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 37.970182,
+            "lon": 2.63414,
+            "observedAt": "2026-10-16T18:47:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 6.012366,
+            "avgPeriod": null,
+            "waveDirection": 43.0,
+            "windSpeed": 9.632391,
+            "windDirection": 267.0,
+            "waterTemp": 16.115849
+          },
+          {
+            "stationId": "S1",
+            "lat": 40.213905,
+            "lon": 4.394964,
+            "observedAt": "2026-10-14T03:38:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 14.985637,
+            "avgPeriod": 2.065708,
+            "waveDirection": 299.0,
+            "windSpeed": 21.634293,
+            "windDirection": 90.0,
+            "waterTemp": 10.914346
+          },
+          {
+            "stationId": "S2",
+            "lat": 39.145997,
+            "lon": 4.322198,
+            "observedAt": "2026-10-12T15:40:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 4.321107,
+            "avgPeriod": 12.14101,
+            "waveDirection": 121.0,
+            "windSpeed": 19.568074,
+            "windDirection": 281.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": null,
+        "dominantPeriod": 6.906791998002571,
+        "swellPower": null,
+        "windSpeed": 17.967618209884897,
+        "windDirection": 281.0,
+        "waterTemp": 13.482265539790422,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 148,
+            "weight": 0.205
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 147,
+            "weight": 0.21
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 88,
+            "weight": 0.585
+          }
+        ],
+        "observedAt": "2026-10-12T15:40:00.000Z"
+      }
+    },
+    {
+      "name": "random 66",
+      "request": {
+        "target": {
+          "lat": -54.570633,
+          "lon": -76.710322
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -53.578898,
+            "lon": -76.568627,
+            "observedAt": "2026-10-23T17:14:00.000Z",
+            "waveHeight": 1.397809,
+            "dominantPeriod": 9.244579,
+            "avgPeriod": 8.937076,
+            "waveDirection": 56.0,
+            "windSpeed": 20.024571,
+            "windDirection": 241.0,
+            "waterTemp": 15.462744
+          },
+          {
+            "stationId": "S1",
+            "lat": -55.153875,
+            "lon": -75.714762,
+            "observedAt": "2026-10-25T01:04:00.000Z",
+            "waveHeight": 4.919079,
+            "dominantPeriod": 7.557256,
+            "avgPeriod": 10.264714,
+            "waveDirection": 296.0,
+            "windSpeed": null,
+            "windDirection": 258.0,
+            "waterTemp": 24.002013
+          },
+          {
+            "stationId": "S2",
+            "lat": -53.609584,
+            "lon": -77.077691,
+            "observedAt": "2026-10-07T02:08:00.000Z",
+            "waveHeight": 4.696813,
+            "dominantPeriod": 21.423095,
+            "avgPeriod": 7.803359,
+            "waveDirection": 306.0,
+            "windSpeed": 21.506566,
+            "windDirection": 291.0,
+            "waterTemp": 13.466854
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.848976960351516,
+        "dominantPeriod": 12.08091905567701,
+        "swellPower": 178.9742690510672,
+        "windSpeed": 20.77328241266274,
+        "windDirection": 258.0,
+        "waterTemp": 18.493046616780198,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 111,
+            "weight": 0.285
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 91,
+            "weight": 0.423
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 110,
+            "weight": 0.292
+          }
+        ],
+        "observedAt": "2026-10-07T02:08:00.000Z"
+      }
+    },
+    {
+      "name": "random 67",
+      "request": {
+        "target": {
+          "lat": 55.665463,
+          "lon": 35.326734
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 57.020532,
+            "lon": 34.527039,
+            "observedAt": "2026-10-20T17:55:00.000Z",
+            "waveHeight": 2.564417,
+            "dominantPeriod": 7.951634,
+            "avgPeriod": 8.011615,
+            "waveDirection": 26.0,
+            "windSpeed": 12.061774,
+            "windDirection": 153.0,
+            "waterTemp": 14.461765
+          },
+          {
+            "stationId": "S1",
+            "lat": 54.554666,
+            "lon": 34.350089,
+            "observedAt": "2026-10-03T09:32:00.000Z",
+            "waveHeight": 2.097334,
+            "dominantPeriod": null,
+            "avgPeriod": 6.323414,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": 165.0,
+            "waterTemp": 20.84031
+          },
+          {
+            "stationId": "S2",
+            "lat": 54.786474,
+            "lon": 34.868847,
+            "observedAt": "2026-10-25T14:30:00.000Z",
+            "waveHeight": 0.700511,
+            "dominantPeriod": 4.071618,
+            "avgPeriod": null,
+            "waveDirection": 157.0,
+            "windSpeed": null,
+            "windDirection": null,
+            "waterTemp": 29.958116
+          }
+        ],
+        "facing": 274.0
+      },
+      "expected": {
+        "waveHeight": 2.097334,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": null,
+        "windDirection": 165.0,
+        "waterTemp": 20.84031,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 159,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 138,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 102,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-03T09:32:00.000Z"
+      }
+    },
+    {
+      "name": "random 68",
+      "request": {
+        "target": {
+          "lat": 1.660683,
+          "lon": -151.266486
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 2.068613,
+            "lon": -150.165603,
+            "observedAt": "2026-10-03T14:29:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 10.056222,
+            "waveDirection": 176.0,
+            "windSpeed": 22.657939,
+            "windDirection": 140.0,
+            "waterTemp": 26.510607
+          },
+          {
+            "stationId": "S1",
+            "lat": 0.532647,
+            "lon": -151.307157,
+            "observedAt": "2026-10-16T11:11:00.000Z",
+            "waveHeight": 1.496367,
+            "dominantPeriod": 12.187474,
+            "avgPeriod": 15.76337,
+            "waveDirection": 4.0,
+            "windSpeed": 24.337633,
+            "windDirection": 96.0,
+            "waterTemp": 2.006539
+          },
+          {
+            "stationId": "S2",
+            "lat": 2.869189,
+            "lon": -151.396105,
+            "observedAt": "2026-10-18T10:16:00.000Z",
+            "waveHeight": 5.237778,
+            "dominantPeriod": null,
+            "avgPeriod": 16.194113,
+            "waveDirection": 272.0,
+            "windSpeed": 22.382248,
+            "windDirection": null,
+            "waterTemp": 19.662691
+          }
+        ],
+        "facing": 242.0
+      },
+      "expected": {
+        "waveHeight": 5.237778,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 22.47461322586218,
+        "windDirection": null,
+        "waterTemp": 21.95695997513958,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 130,
+            "weight": 0.335
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 126,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 135,
+            "weight": 0.665
+          }
+        ],
+        "observedAt": "2026-10-03T14:29:00.000Z"
+      }
+    },
+    {
+      "name": "random 69",
+      "request": {
+        "target": {
+          "lat": 10.184316,
+          "lon": -11.220666
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 8.926535,
+            "lon": -10.48053,
+            "observedAt": "2026-10-08T09:05:00.000Z",
+            "waveHeight": 2.915687,
+            "dominantPeriod": null,
+            "avgPeriod": 9.802787,
+            "waveDirection": null,
+            "windSpeed": null,
+            "windDirection": 100.0,
+            "waterTemp": 17.911704
+          },
+          {
+            "stationId": "S1",
+            "lat": 9.454119,
+            "lon": -10.514009,
+            "observedAt": "2026-10-23T10:51:00.000Z",
+            "waveHeight": 4.558717,
+            "dominantPeriod": 20.449493,
+            "avgPeriod": 10.664928,
+            "waveDirection": 139.0,
+            "windSpeed": 9.066063,
+            "windDirection": 312.0,
+            "waterTemp": 7.990915
+          },
+          {
+            "stationId": "S2",
+            "lat": 10.36619,
+            "lon": -10.58738,
+            "observedAt": "2026-10-11T00:04:00.000Z",
+            "waveHeight": 2.120729,
+            "dominantPeriod": 19.867365,
+            "avgPeriod": 6.637742,
+            "waveDirection": null,
+            "windSpeed": 6.195473,
+            "windDirection": 248.0,
+            "waterTemp": 13.385861
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.8444620883802725,
+        "dominantPeriod": 20.037776934484345,
+        "swellPower": 162.1249432832136,
+        "windSpeed": 7.0358084502985765,
+        "windDirection": 248.0,
+        "waterTemp": 12.56064562975882,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 162,
+            "weight": 0.124
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 112,
+            "weight": 0.257
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 72,
+            "weight": 0.62
+          }
+        ],
+        "observedAt": "2026-10-08T09:05:00.000Z"
+      }
+    },
+    {
+      "name": "random 70",
+      "request": {
+        "target": {
+          "lat": 48.674647,
+          "lon": 103.216531
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 49.865022,
+            "lon": 104.680173,
+            "observedAt": "2026-10-22T00:12:00.000Z",
+            "waveHeight": 5.934878,
+            "dominantPeriod": 3.235731,
+            "avgPeriod": 12.357143,
+            "waveDirection": 54.0,
+            "windSpeed": 3.841262,
+            "windDirection": 40.0,
+            "waterTemp": 2.925481
+          },
+          {
+            "stationId": "S1",
+            "lat": 49.94049,
+            "lon": 103.429881,
+            "observedAt": "2026-10-26T13:21:00.000Z",
+            "waveHeight": 0.045695,
+            "dominantPeriod": 16.675233,
+            "avgPeriod": 6.943423,
+            "waveDirection": 71.0,
+            "windSpeed": 4.527488,
+            "windDirection": 294.0,
+            "waterTemp": 8.499988
+          },
+          {
+            "stationId": "S2",
+            "lat": 48.720184,
+            "lon": 102.780852,
+            "observedAt": "2026-10-20T18:23:00.000Z",
+            "waveHeight": 2.501994,
+            "dominantPeriod": 9.558365,
+            "avgPeriod": 15.280966,
+            "waveDirection": 171.0,
+            "windSpeed": 15.333356,
+            "windDirection": 331.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.4988248378674944,
+        "dominantPeriod": 9.688693994144723,
+        "swellPower": 60.49742191207265,
+        "windSpeed": 14.430344205406183,
+        "windDirection": 331.0,
+        "waterTemp": 6.211769204807106,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 170,
+            "weight": 0.033
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 142,
+            "weight": 0.048
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 32,
+            "weight": 0.919
+          }
+        ],
+        "observedAt": "2026-10-20T18:23:00.000Z"
+      }
+    },
+    {
+      "name": "random 71",
+      "request": {
+        "target": {
+          "lat": 43.04008,
+          "lon": 22.957578
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 42.960524,
+            "lon": 23.471713,
+            "observedAt": "2026-10-08T16:13:00.000Z",
+            "waveHeight": 5.267812,
+            "dominantPeriod": 8.347124,
+            "avgPeriod": 5.942241,
+            "waveDirection": 162.0,
+            "windSpeed": 16.413874,
+            "windDirection": 65.0,
+            "waterTemp": 17.531773
+          },
+          {
+            "stationId": "S1",
+            "lat": 42.597618,
+            "lon": 23.221593,
+            "observedAt": "2026-10-09T18:16:00.000Z",
+            "waveHeight": 1.392032,
+            "dominantPeriod": 16.026472,
+            "avgPeriod": 15.410453,
+            "waveDirection": 34.0,
+            "windSpeed": null,
+            "windDirection": 234.0,
+            "waterTemp": 6.678217
+          },
+          {
+            "stationId": "S2",
+            "lat": 43.116664,
+            "lon": 23.289314,
+            "observedAt": "2026-10-05T15:53:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": 19.073247,
+            "avgPeriod": null,
+            "waveDirection": 209.0,
+            "windSpeed": 16.565262,
+            "windDirection": 63.0,
+            "waterTemp": null
+          }
+        ],
+        "facing": 18.0
+      },
+      "expected": {
+        "waveHeight": 1.392032,
+        "dominantPeriod": 16.026472,
+        "swellPower": 31.055345624156637,
+        "windSpeed": null,
+        "windDirection": 234.0,
+        "waterTemp": 6.678217000000001,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 43,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 54,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 28,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-05T15:53:00.000Z"
+      }
+    },
+    {
+      "name": "random 72",
+      "request": {
+        "target": {
+          "lat": 2.805857,
+          "lon": -93.646596
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 3.846784,
+            "lon": -92.839817,
+            "observedAt": "2026-10-03T07:29:00.000Z",
+            "waveHeight": 0.454372,
+            "dominantPeriod": 21.66759,
+            "avgPeriod": 12.351497,
+            "waveDirection": 135.0,
+            "windSpeed": 4.141368,
+            "windDirection": 282.0,
+            "waterTemp": 10.807837
+          },
+          {
+            "stationId": "S1",
+            "lat": 2.196876,
+            "lon": -94.957171,
+            "observedAt": "2026-10-05T10:04:00.000Z",
+            "waveHeight": 4.208301,
+            "dominantPeriod": 9.125392,
+            "avgPeriod": null,
+            "waveDirection": 291.0,
+            "windSpeed": 7.893875,
+            "windDirection": null,
+            "waterTemp": 15.320732
+          }
+        ],
+        "facing": 228.0
+      },
+      "expected": {
+        "waveHeight": 4.208301,
+        "dominantPeriod": 9.125392,
+        "swellPower": 161.60884266327827,
+        "windSpeed": 7.8938749999999995,
+        "windDirection": null,
+        "waterTemp": 15.320732,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 146,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 161,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-03T07:29:00.000Z"
+      }
+    },
+    {
+      "name": "random 73",
+      "request": {
+        "target": {
+          "lat": 45.762954,
+          "lon": -70.966583
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 44.724133,
+            "lon": -70.188981,
+            "observedAt": "2026-10-25T08:43:00.000Z",
+            "waveHeight": 1.729127,
+            "dominantPeriod": null,
+            "avgPeriod": 4.539752,
+            "waveDirection": 80.0,
+            "windSpeed": 18.087036,
+            "windDirection": 5.0,
+            "waterTemp": 25.993412
+          },
+          {
+            "stationId": "S1",
+            "lat": 46.60499,
+            "lon": -69.747117,
+            "observedAt": "2026-10-03T17:05:00.000Z",
+            "waveHeight": null,
+            "dominantPeriod": null,
+            "avgPeriod": 9.960158,
+            "waveDirection": 147.0,
+            "windSpeed": 15.768148,
+            "windDirection": 221.0,
+            "waterTemp": 13.052565
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.729127,
+        "dominantPeriod": null,
+        "swellPower": null,
+        "windSpeed": 16.94536847518343,
+        "windDirection": 5.0,
+        "waterTemp": 19.62219236217362,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 131,
+            "weight": 0.508
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 133,
+            "weight": 0.492
+          }
+        ],
+        "observedAt": "2026-10-03T17:05:00.000Z"
+      }
+    },
+    {
+      "name": "random 74",
+      "request": {
+        "target": {
+          "lat": -38.979608,
+          "lon": -154.5385
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -38.516451,
+            "lon": -153.348251,
+            "observedAt": "2026-10-15T19:15:00.000Z",
+            "waveHeight": 4.234293,
+            "dominantPeriod": 2.335918,
+            "avgPeriod": 11.895575,
+            "waveDirection": 306.0,
+            "windSpeed": 17.942122,
+            "windDirection": 356.0,
+            "waterTemp": null
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.234293,
+        "dominantPeriod": 2.335918,
+        "swellPower": 41.881227924756054,
+        "windSpeed": 17.942122,
+        "windDirection": 356.0,
+        "waterTemp": null,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 115,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-15T19:15:00.000Z"
+      }
+    },
+    {
+      "name": "random 75",
+      "request": {
+        "target": {
+          "lat": -36.155773,
+          "lon": 45.481745
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -36.738712,
+            "lon": 45.378876,
+            "observedAt": "2026-10-25T02:04:00.000Z",
+            "waveHeight": 0.439314,
+            "dominantPeriod": 14.886795,
+            "avgPeriod": 15.351112,
+            "waveDirection": 29.0,
+            "windSpeed": 23.346431,
+            "windDirection": 303.0,
+            "waterTemp": 12.73421
+          },
+          {
+            "stationId": "S1",
+            "lat": -37.635727,
+            "lon": 45.11047,
+            "observedAt": "2026-10-27T07:11:00.000Z",
+            "waveHeight": 5.192616,
+            "dominantPeriod": 20.192145,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 10.561115,
+            "windDirection": 23.0,
+            "waterTemp": null
+          }
+        ],
+        "facing": 351.0
+      },
+      "expected": {
+        "waveHeight": 1.2085651845177665,
+        "dominantPeriod": 15.745386937095798,
+        "swellPower": 22.998181455177022,
+        "windSpeed": 21.2773178913791,
+        "windDirection": 303.0,
+        "waterTemp": 12.734210000000001,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 65,
+            "weight": 0.838
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 168,
+            "weight": 0.162
+          }
+        ],
+        "observedAt": "2026-10-25T02:04:00.000Z"
+      }
+    },
+    {
+      "name": "random 76",
+      "request": {
+        "target": {
+          "lat": -29.740961,
+          "lon": 113.660475
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -29.604438,
+            "lon": 114.389828,
+            "observedAt": "2026-10-27T03:50:00.000Z",
+            "waveHeight": 2.812535,
+            "dominantPeriod": 20.29111,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 19.171455,
+            "windDirection": 235.0,
+            "waterTemp": 22.476439
+          },
+          {
+            "stationId": "S1",
+            "lat": -29.317341,
+            "lon": 113.287693,
+            "observedAt": "2026-10-11T21:33:00.000Z",
+            "waveHeight": 3.764354,
+            "dominantPeriod": 5.267759,
+            "avgPeriod": 5.604444,
+            "waveDirection": 308.0,
+            "windSpeed": 14.882558,
+            "windDirection": 217.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S2",
+            "lat": -29.211854,
+            "lon": 112.262571,
+            "observedAt": "2026-10-09T06:10:00.000Z",
+            "waveHeight": 5.989194,
+            "dominantPeriod": 9.77124,
+            "avgPeriod": null,
+            "waveDirection": 190.0,
+            "windSpeed": 19.262795,
+            "windDirection": 166.0,
+            "waterTemp": 2.631261
+          }
+        ],
+        "facing": 52.0
+      },
+      "expected": {
+        "waveHeight": 2.812535,
+        "dominantPeriod": 20.29111,
+        "swellPower": 160.50984542307535,
+        "windSpeed": 19.171455,
+        "windDirection": 235.0,
+        "waterTemp": 22.476439,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 72,
+            "weight": 1.0
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 59,
+            "weight": 0.0
+          },
+          {
+            "stationId": "S2",
+            "distanceKm": 148,
+            "weight": 0.0
+          }
+        ],
+        "observedAt": "2026-10-09T06:10:00.000Z"
+      }
+    },
+    {
+      "name": "random 77",
+      "request": {
+        "target": {
+          "lat": 48.661442,
+          "lon": 32.858762
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 47.619727,
+            "lon": 32.528498,
+            "observedAt": "2026-10-10T15:16:00.000Z",
+            "waveHeight": 0.621538,
+            "dominantPeriod": 14.076883,
+            "avgPeriod": 10.253408,
+            "waveDirection": 252.0,
+            "windSpeed": 2.101381,
+            "windDirection": 6.0,
+            "waterTemp": 15.851468
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 0.621538,
+        "dominantPeriod": 14.076883000000002,
+        "swellPower": 5.438033428385393,
+        "windSpeed": 2.101381,
+        "windDirection": 6.0,
+        "waterTemp": 15.851467999999999,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 118,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-10T15:16:00.000Z"
+      }
+    },
+    {
+      "name": "random 78",
+      "request": {
+        "target": {
+          "lat": -2.762378,
+          "lon": -54.82433
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": -3.022248,
+            "lon": -56.153905,
+            "observedAt": "2026-10-20T08:21:00.000Z",
+            "waveHeight": 5.965265,
+            "dominantPeriod": null,
+            "avgPeriod": 10.402014,
+            "waveDirection": 136.0,
+            "windSpeed": 16.758829,
+            "windDirection": 56.0,
+            "waterTemp": 26.296801
+          },
+          {
+            "stationId": "S1",
+            "lat": -1.947149,
+            "lon": -53.573841,
+            "observedAt": "2026-10-14T00:00:00.000Z",
+            "waveHeight": 3.227589,
+            "dominantPeriod": 5.938036,
+            "avgPeriod": null,
+            "waveDirection": null,
+            "windSpeed": 16.537618,
+            "windDirection": 299.0,
+            "waterTemp": 4.727334
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 4.729677157802216,
+        "dominantPeriod": 5.938036,
+        "swellPower": 132.8329509636167,
+        "windSpeed": 16.65899044271257,
+        "windDirection": 56.0,
+        "waterTemp": 16.561912288594307,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 150,
+            "weight": 0.549
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 166,
+            "weight": 0.451
+          }
+        ],
+        "observedAt": "2026-10-14T00:00:00.000Z"
+      }
+    },
+    {
+      "name": "random 79",
+      "request": {
+        "target": {
+          "lat": 59.551447,
+          "lon": -143.040012
+        },
+        "observations": [
+          {
+            "stationId": "S0",
+            "lat": 59.509217,
+            "lon": -142.295732,
+            "observedAt": "2026-10-06T15:24:00.000Z",
+            "waveHeight": 3.961456,
+            "dominantPeriod": null,
+            "avgPeriod": 6.591687,
+            "waveDirection": 26.0,
+            "windSpeed": 17.237917,
+            "windDirection": 50.0,
+            "waterTemp": null
+          },
+          {
+            "stationId": "S1",
+            "lat": 58.177206,
+            "lon": -141.540427,
+            "observedAt": "2026-10-08T04:12:00.000Z",
+            "waveHeight": 1.184271,
+            "dominantPeriod": 17.782818,
+            "avgPeriod": 13.742061,
+            "waveDirection": 157.0,
+            "windSpeed": 14.863827,
+            "windDirection": 191.0,
+            "waterTemp": 14.576839
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 3.8093925079479614,
+        "dominantPeriod": 17.782818,
+        "swellPower": 258.0548526775328,
+        "windSpeed": 17.107924789957877,
+        "windDirection": 50.0,
+        "waterTemp": 14.576839,
+        "weights": [
+          {
+            "stationId": "S0",
+            "distanceKm": 42,
+            "weight": 0.945
+          },
+          {
+            "stationId": "S1",
+            "distanceKm": 175,
+            "weight": 0.055
+          }
+        ],
+        "observedAt": "2026-10-06T15:24:00.000Z"
+      }
+    }
+  ]
+}

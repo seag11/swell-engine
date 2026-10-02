@@ -24,6 +24,10 @@ export interface TriangulatedConditions {
   waveHeight: number | null
   dominantPeriod: number | null
   swellPower: number | null
+  /** Breaking face height in metres — what surf reports describe. */
+  faceHeight: number | null
+  /** Highest tenth of breaking waves, for the upper end of a reported range. */
+  faceHeightMax: number | null
   windSpeed: number | null
   windDirection: number | null
   waterTemp: number | null

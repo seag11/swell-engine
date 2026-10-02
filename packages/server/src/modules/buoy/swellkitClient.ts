@@ -43,6 +43,8 @@ export interface ModelForecast {
   waveHeight: number | null;
   dominantPeriod: number | null;
   swellPower: number | null;
+  faceHeight: number | null;
+  faceHeightMax: number | null;
   windSpeed: number | null;
   windDirection: number | null;
   waterTemp: number | null;

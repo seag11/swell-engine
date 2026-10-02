@@ -21,6 +21,10 @@ export interface ConditionSource {
 
 export interface Conditions {
   waveHeight: number | null;
+  /** Breaking face height in metres — the figure surf reports describe. */
+  faceHeight: number | null;
+  /** Highest tenth of breaking waves, for the upper end of a range. */
+  faceHeightMax: number | null;
   dominantPeriod: number | null;
   swellPower: number | null;
   windSpeed: number | null;

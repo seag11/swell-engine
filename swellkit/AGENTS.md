@@ -6,10 +6,9 @@ pipelines — is delivery. This package is the part that has to get *good*.
 
 ## What this package is for
 
-The current model is deliberately crude: inverse-distance weighting across the
-three nearest buoys, and a power index of H²×T. It is a faithful port of the
-TypeScript original and produces identical output by design. That is the
-starting line, not the destination.
+The model blends the three nearest buoys by inverse distance, estimates the
+breaking face height, and bands it into a condition label. That is the starting
+line, not the destination.
 
 The reason this exists in Python is access to the scientific ecosystem. Do not
 reimplement spectral analysis, harmonic tidal fitting, or geospatial projection
@@ -40,9 +39,27 @@ These cost hours if you get them wrong, and nothing in the code will stop you.
 - **Significant wave height** (`WVHT`) is roughly the mean of the highest third
   of waves, not the largest wave and not the average. Individual waves reach
   well above it.
-- **Breaking height is not offshore height.** Shoaling and refraction transform
-  a swell as it reaches the bathymetry of a specific break. The current model
-  ignores this entirely.
+- **Breaking height is not offshore height.** A buoy reports significant height
+  in deep water; a surfer describes the face where it breaks, and the two differ
+  by roughly 1.25 to 2.0 depending on period. `breaking_height` closes that gap
+  with Komar & Gaughan (1972); refraction and bathymetry are still ignored.
+- **Face height is the reporting convention** — trough to crest of the breaking
+  wave, which is what NWS Honolulu publishes and Surfline reports outside
+  Australia and New Zealand. **The Hawaiian scale is roughly half of it** and is
+  the working convention in Hawaii, Australia and parts of South Africa.
+  swellkit does not express it, so a Hawaii reading understates by 2x in local
+  terms. Being wrong by a factor of two on a big-wave break is the worst error
+  this model can make; treat it as open rather than solved.
+- **Surf is reported as a range**, because significant height is already a
+  distribution. `face_height` is the mean of the highest third and
+  `face_height_max` the highest tenth, about 1.27x, from Rayleigh statistics.
+- **The breaking-height formula has a domain.** It is meaningful for swell, not
+  for a steep local storm sea: 4m at 6s has a deepwater steepness near 0.07 and
+  returns a face *smaller* than the offshore reading, because such a sea is
+  already whitecapping offshore. At the other end a 0.2m 24s forerunner
+  amplifies past 3x. Both are extrapolation. `test_bands.py` pins them so they
+  stay documented, and separating a storm sea from an underlying swell is what
+  spectral decomposition would fix.
 
 ## Data sources
 
@@ -107,17 +124,30 @@ observations; until then, prefer physics that needs no tuning.
 
 ## Validation
 
-**Equivalence first.** `tests/test_equivalence.py` asserts this port reproduces
-the TypeScript model exactly across 128 captured fixtures. Those fixtures are a
-baseline, not a convenience: regenerate them only when the TypeScript model
-changes on purpose, never to make a failing test pass. Once the two agree, any
-later difference in output is attributable to new physics rather than a
-translation bug.
+Tests are split by how stable the thing under test is. Putting them in one
+corpus made every threshold change invalidate everything, which is how a
+regression suite turns into a rubber stamp.
 
-**Then properties.** Physical invariants hold regardless of coefficients:
-output within the range of its inputs, no overshoot past the extremes,
-monotonic response to monotonic input, null in yields null out, and a weight set
-that sums to one. These catch what fixtures cannot.
+**`test_blend.py` — the stable mechanics.** Fixture-backed: weighting,
+directional clamping, weighted means over partial data, which timestamp wins.
+These do not move when coefficients do. Breaking height and the condition label
+are deliberately **excluded**, and a test asserts that exclusion so a future
+regeneration cannot quietly re-weld them.
+
+**`test_bands.py` — anchors and properties.** Vernacular anchors pin the parts
+that are facts about surfing rather than facts about today's constants: 6ft of
+face is head high, 12ft is double overhead, a chest-high wave is never the top
+label. Properties hold regardless of coefficients: monotonic in height and in
+period, shoaling amplifies, nulls propagate, a bigger wave never earns a smaller
+label. Both survive rebanding, which is the point.
+
+**Regenerating.** `tests/generate_fixtures.py`, and only when the blend changed
+on purpose. Read the diff. Regenerating without reading it records whatever the
+code happened to do, which is worse than having no fixture.
+
+**Bands are a table, not a branch.** `TONE_BANDS` is data, so adding a label is
+one row plus the enum in `contract.py`, `contract.schema.json`, and the client's
+tone colours — one commit across the boundary.
 
 **Cross-language numerics.** Achieving equivalence surfaced four hazards, all of
 which look like physics errors when they fail:

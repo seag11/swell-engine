@@ -11,7 +11,7 @@ from .contract import (
     ForecastRequest,
     ObservationWeight,
 )
-from .surf import classify_tone, compute_swell_power
+from .surf import breaking_height, classify_tone, compute_swell_power, highest_tenth
 
 EARTH_RADIUS_KM = 6371.0
 
@@ -124,6 +124,7 @@ def triangulate(request: ForecastRequest) -> Forecast:
     wave_height = field("wave_height")
     dominant_period = field("dominant_period")
     swell_power = compute_swell_power(wave_height, dominant_period)
+    face = breaking_height(wave_height, dominant_period)
 
     # Averaging compass bearings is meaningless across the 0/360 wrap, so wind
     # direction is taken from the single most influential observation instead.
@@ -146,12 +147,14 @@ def triangulate(request: ForecastRequest) -> Forecast:
         wave_height=wave_height,
         dominant_period=dominant_period,
         swell_power=swell_power,
+        face_height=face,
+        face_height_max=highest_tenth(face),
         wind_speed=field("wind_speed"),
         wind_direction=(
             observations[dominant].wind_direction if dominant is not None else None
         ),
         water_temp=field("water_temp"),
-        tone=classify_tone(wave_height, swell_power),
+        tone=classify_tone(face),
         weights=observation_weights,
         observed_at=observed_at,
     )

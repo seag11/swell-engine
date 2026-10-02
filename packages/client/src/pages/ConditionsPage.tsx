@@ -39,6 +39,7 @@ const TONE_COLORS: Record<string, string> = {
   small: 'text-sw-blue',
   solid: 'text-sw-green',
   large: 'text-sw-amber',
+  xl:    'text-sw-amber',
   xxl:   'text-sw-red',
 };
 

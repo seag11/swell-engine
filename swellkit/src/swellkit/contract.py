@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-ConditionTone = Literal["flat", "small", "solid", "large", "xxl"]
+ConditionTone = Literal["flat", "small", "solid", "large", "xl", "xxl"]
 
 
 @dataclass(frozen=True)
@@ -84,12 +84,18 @@ class ObservationWeight:
 
 @dataclass(frozen=True)
 class Forecast:
-    wave_height: float | None
-    dominant_period: float | None
-    swell_power: float | None
-    wind_speed: float | None
-    wind_direction: float | None
-    water_temp: float | None
+    # Blended offshore reading — provenance for the figures below.
+    wave_height: float | None  # metres, significant, in deep water
+    dominant_period: float | None  # seconds
+    swell_power: float | None  # dimensionless index
+    # Breaking face height, which is what surf reports describe. face_height is
+    # the significant figure and face_height_max the highest tenth, so a client
+    # can render the range conventionally ("6 to 8 ft").
+    face_height: float | None  # metres
+    face_height_max: float | None  # metres
+    wind_speed: float | None  # m/s
+    wind_direction: float | None  # degrees true
+    water_temp: float | None  # degrees C
     tone: ConditionTone
     weights: list[ObservationWeight]
     # Earliest observation in the set — a forecast is only as fresh as this.
@@ -100,6 +106,8 @@ class Forecast:
             "waveHeight": self.wave_height,
             "dominantPeriod": self.dominant_period,
             "swellPower": self.swell_power,
+            "faceHeight": self.face_height,
+            "faceHeightMax": self.face_height_max,
             "windSpeed": self.wind_speed,
             "windDirection": self.wind_direction,
             "waterTemp": self.water_temp,
