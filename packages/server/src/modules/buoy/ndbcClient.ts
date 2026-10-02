@@ -20,22 +20,50 @@ export async function fetchLatestReading(stationId: string): Promise<BuoyReading
   return parseStdMet(stationId, text);
 }
 
+// Rows are published every 10 minutes, but the wave sensor reports on a slower
+// cycle — roughly every 30 — so about two rows in three carry MM for WVHT, DPD
+// and MWD while wind and temperature are present. Taking the newest row
+// unconditionally therefore reports "no wave data" based on nothing but when
+// the request happened to land.
+//
+// Twelve rows is about two hours. Beyond that the sensor really is out, and a
+// met-only reading is the honest answer rather than a stale wave height dressed
+// up as current.
+const WAVE_LOOKBACK_ROWS = 12;
+
+const COLUMN = { waveHeight: 8, dominantPeriod: 9 } as const;
+
+const isMissing = (value: string | undefined) => value === undefined || value === 'MM';
+
+/**
+ * The newest row carrying both height and period, since the model needs the
+ * pair to estimate a breaking face. Falls back to the newest row of any kind.
+ */
+function pickReadingRow(rows: string[][]): string[] {
+  const withinLookback = rows.slice(0, WAVE_LOOKBACK_ROWS);
+  const usable = withinLookback.find(
+    (cols) =>
+      !isMissing(cols[COLUMN.waveHeight]) && !isMissing(cols[COLUMN.dominantPeriod]),
+  );
+  return usable ?? rows[0];
+}
+
 // NDBC Standard Meteorological Data format:
-// Row 0: column names  (#YY MM DD hh mm WDIR WSPD GST WVHT DPD APD MWD PRES ATMP WTMP ...)
-// Row 1: column units
-// Row 2+: data, missing values as "MM"
+// Two leading '#' rows (column names, then units), then data newest-first.
+// Missing values are "MM".
 function parseStdMet(stationId: string, text: string): BuoyReading | null {
-  const lines = text
+  const rows = text
     .trim()
     .split('\n')
-    .filter((l) => l.trim().length > 0);
-  const dataLine = lines[2];
-  if (!dataLine) {
-    console.warn(`NDBC ${stationId}: no data line found`);
+    .filter((l) => l.trim().length > 0 && !l.startsWith('#'))
+    .map((l) => l.trim().split(/\s+/));
+
+  if (rows.length === 0) {
+    console.warn(`NDBC ${stationId}: no data rows found`);
     return null;
   }
 
-  const cols = dataLine.trim().split(/\s+/);
+  const cols = pickReadingRow(rows);
   if (cols.length < 15) {
     console.warn(`NDBC ${stationId}: unexpected column count ${cols.length}`);
     return null;
@@ -51,7 +79,7 @@ function parseStdMet(stationId: string, text: string): BuoyReading | null {
     `${cols[0]}-${pad(cols[1])}-${pad(cols[2])}T${pad(cols[3])}:${pad(cols[4])}:00Z`,
   );
   if (isNaN(timestamp.getTime())) {
-    console.warn(`NDBC ${stationId}: unparseable timestamp in "${dataLine}"`);
+    console.warn(`NDBC ${stationId}: unparseable timestamp in "${cols.join(' ')}"`);
     return null;
   }
 
