@@ -39,7 +39,7 @@ export interface ModelRequest {
   facing?: number;
 }
 
-export interface ModelForecast {
+export interface ModelReading {
   waveHeight: number | null;
   dominantPeriod: number | null;
   swellPower: number | null;
@@ -71,7 +71,7 @@ const defaultSwellkitBin = fileURLToPath(
 
 export class ModelError extends Error {}
 
-export async function forecast(request: ModelRequest): Promise<ModelForecast> {
+export async function getReading(request: ModelRequest): Promise<ModelReading> {
   const bin = config.swellkitBin ?? defaultSwellkitBin;
 
   return new Promise((resolve, reject) => {
@@ -124,7 +124,7 @@ export async function forecast(request: ModelRequest): Promise<ModelForecast> {
         return;
       }
 
-      resolve(parsed as ModelForecast);
+      resolve(parsed as ModelReading);
     });
 
     child.stdin.on('error', () => fail('model closed its input before the request was written'));

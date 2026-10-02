@@ -2,7 +2,7 @@ import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-en
 import { sql } from '../../db/client.js';
 import { config } from '../../config.js';
 import { fetchLatestReading } from './ndbcClient.js';
-import { forecast } from './swellkitClient.js';
+import { getReading } from './swellkitClient.js';
 
 // How many buoys the model blends. Candidate selection happens here; the
 // weighting happens in swellkit.
@@ -200,7 +200,7 @@ export async function getTriangulatedConditions(
 
   // The model takes no station names and no Date objects, so it stays portable
   // across a JSON boundary. Attribution is rejoined here.
-  const { weights, ...blended } = await forecast({
+  const { weights, ...blended } = await getReading({
     target: { lat, lon },
     facing,
     observations: valid.map(({ station, reading }) => ({

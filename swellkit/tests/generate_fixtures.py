@@ -20,7 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from swellkit.contract import ForecastRequest  # noqa: E402
+from swellkit.contract import ReadingRequest  # noqa: E402
 from swellkit.triangulate import triangulate  # noqa: E402
 
 BLEND_FIELDS = (
@@ -149,11 +149,11 @@ def main() -> None:
     cases = build_cases()
     out = []
     for case in cases:
-        forecast = triangulate(ForecastRequest.from_json(case["request"])).to_json()
+        reading = triangulate(ReadingRequest.from_json(case["request"])).to_json()
         out.append({
             "name": case["name"],
             "request": case["request"],
-            "expected": {k: forecast[k] for k in BLEND_FIELDS},
+            "expected": {k: reading[k] for k in BLEND_FIELDS},
         })
 
     path = Path(__file__).parent / "fixtures" / "blend.json"

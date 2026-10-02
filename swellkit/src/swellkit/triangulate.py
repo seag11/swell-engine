@@ -1,4 +1,4 @@
-"""Blending buoy observations into a forecast for a point."""
+"""Blending buoy observations into a reading for a point."""
 
 from __future__ import annotations
 
@@ -7,9 +7,9 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 
 from .contract import (
-    Forecast,
-    ForecastRequest,
     ObservationWeight,
+    Reading,
+    ReadingRequest,
 )
 from .surf import breaking_height, classify_tone, compute_swell_power, highest_tenth
 
@@ -81,7 +81,7 @@ def _js_fixed(value: float, digits: int) -> float:
     return float(f"{value:.{digits}f}")
 
 
-def triangulate(request: ForecastRequest) -> Forecast:
+def triangulate(request: ReadingRequest) -> Reading:
     """Inverse-distance weighting, optionally narrowed by which way the break faces.
 
     Distance weights go as 1/d^2, so a buoy twice as far contributes a quarter as
@@ -143,7 +143,7 @@ def triangulate(request: ForecastRequest) -> Forecast:
         min(_parse_iso_ms(o.observed_at) for o in observations)
     )
 
-    return Forecast(
+    return Reading(
         wave_height=wave_height,
         dominant_period=dominant_period,
         swell_power=swell_power,

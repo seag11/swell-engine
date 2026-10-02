@@ -49,7 +49,7 @@ class BuoyObservation:
 
 
 @dataclass(frozen=True)
-class ForecastRequest:
+class ReadingRequest:
     target_lat: float
     target_lon: float
     observations: list[BuoyObservation] = field(default_factory=list)
@@ -57,8 +57,8 @@ class ForecastRequest:
     facing: float | None = None
 
     @staticmethod
-    def from_json(raw: dict[str, Any]) -> ForecastRequest:
-        return ForecastRequest(
+    def from_json(raw: dict[str, Any]) -> ReadingRequest:
+        return ReadingRequest(
             target_lat=raw["target"]["lat"],
             target_lon=raw["target"]["lon"],
             observations=[BuoyObservation.from_json(o) for o in raw["observations"]],
@@ -68,7 +68,7 @@ class ForecastRequest:
 
 @dataclass(frozen=True)
 class ObservationWeight:
-    """How much one observation contributed, for auditing a forecast."""
+    """How much one observation contributed, for auditing a reading."""
 
     station_id: str
     distance_km: int
@@ -83,7 +83,7 @@ class ObservationWeight:
 
 
 @dataclass(frozen=True)
-class Forecast:
+class Reading:
     # Blended offshore reading — provenance for the figures below.
     wave_height: float | None  # metres, significant, in deep water
     dominant_period: float | None  # seconds
@@ -98,7 +98,7 @@ class Forecast:
     water_temp: float | None  # degrees C
     tone: ConditionTone
     weights: list[ObservationWeight]
-    # Earliest observation in the set — a forecast is only as fresh as this.
+    # Earliest observation in the set — a reading is only as fresh as this.
     observed_at: str  # ISO 8601, UTC
 
     def to_json(self) -> dict[str, Any]:

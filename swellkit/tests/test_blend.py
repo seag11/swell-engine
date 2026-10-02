@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pytest
 
-from swellkit.contract import ForecastRequest
+from swellkit.contract import ReadingRequest
 from swellkit.triangulate import triangulate
 
 FIXTURES = json.loads((Path(__file__).parent / "fixtures" / "blend.json").read_text())
@@ -29,7 +29,7 @@ SCALARS = [f for f in ASSERTED if f not in ("weights", "observedAt")]
 
 @pytest.mark.parametrize("case", CASES, ids=[c["name"] for c in CASES])
 def test_blend_matches_baseline(case: dict) -> None:
-    actual = triangulate(ForecastRequest.from_json(case["request"])).to_json()
+    actual = triangulate(ReadingRequest.from_json(case["request"])).to_json()
     expected = case["expected"]
 
     for key in SCALARS:
@@ -61,20 +61,20 @@ def test_fixture_coverage() -> None:
 
 def test_weights_sum_to_one() -> None:
     for case in CASES:
-        forecast = triangulate(ForecastRequest.from_json(case["request"])).to_json()
-        total = sum(w["weight"] for w in forecast["weights"])
+        reading = triangulate(ReadingRequest.from_json(case["request"])).to_json()
+        total = sum(w["weight"] for w in reading["weights"])
         assert total == pytest.approx(1.0, abs=0.002), case["name"]
 
 
 def test_blend_stays_within_the_range_of_its_inputs() -> None:
     """A weighted mean cannot exceed the values it averages."""
     for case in CASES:
-        request = ForecastRequest.from_json(case["request"])
-        forecast = triangulate(request)
+        request = ReadingRequest.from_json(case["request"])
+        reading = triangulate(request)
         for attr, out in (
-            ("wave_height", forecast.wave_height),
-            ("dominant_period", forecast.dominant_period),
-            ("water_temp", forecast.water_temp),
+            ("wave_height", reading.wave_height),
+            ("dominant_period", reading.dominant_period),
+            ("water_temp", reading.water_temp),
         ):
             present = [getattr(o, attr) for o in request.observations]
             present = [v for v in present if v is not None]

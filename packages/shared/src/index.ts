@@ -19,7 +19,7 @@ export interface BuoyReading {
   waterTemp: number | null       // °C
 }
 
-/** The API response shape: a forecast plus the attribution the model omits. */
+/** The API response shape: a reading plus the attribution the model omits. */
 export interface TriangulatedConditions {
   waveHeight: number | null
   dominantPeriod: number | null

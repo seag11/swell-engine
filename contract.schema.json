@@ -81,7 +81,7 @@
         }
       }
     },
-    "forecast": {
+    "reading": {
       "type": "object",
       "required": [
         "waveHeight",
@@ -116,10 +116,10 @@
         "weights": { "type": "array", "items": { "$ref": "#/$defs/weight" } },
         "observedAt": {
           "$ref": "#/$defs/isoUtc",
-          "description": "Earliest observation in the set. A forecast is only as fresh as this."
+          "description": "Earliest observation in the set. A reading is only as fresh as this."
         }
       }
     }
   },
-  "oneOf": [{ "$ref": "#/$defs/request" }, { "$ref": "#/$defs/forecast" }]
+  "oneOf": [{ "$ref": "#/$defs/request" }, { "$ref": "#/$defs/reading" }]
 }

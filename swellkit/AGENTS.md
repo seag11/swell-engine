@@ -1,6 +1,6 @@
 # swellkit
 
-The surf model: buoy observations in, an actionable forecast out. Everything
+The surf model: buoy observations in, an actionable surf reading out. Everything
 else in this repository — the Fastify API, the React client, the NDBC and tide
 pipelines — is delivery. This package is the part that has to get *good*.
 
@@ -26,7 +26,7 @@ These cost hours if you get them wrong, and nothing in the code will stop you.
   direction from the single most influential buoy rather than blending. If you
   ever need a real directional mean, decompose into vector components.
 - **Null is not zero.** A missing instrument reading means "unknown", and a
-  forecast that treats it as 0 will report flat conditions rather than no data.
+  model that treats it as 0 will report flat conditions rather than no data.
   Every nullable field in the contract is nullable for this reason.
 - **Tide is relative to MLLW** (mean lower low water) and **goes negative**
   several times a year. It is an average of lower lows, not a floor.
@@ -191,7 +191,7 @@ works too.
 ## Boundaries
 
 This package does not know about HTTP, Postgres, Redis, station names, or
-authentication. It takes a `ForecastRequest` and returns a `Forecast`. If
+authentication. It takes a `ReadingRequest` and returns a `Reading`. If
 something here needs to fetch, cache, or persist, it belongs in the server
 instead — keeping this package pure is what allows it to be extracted into its
 own private repository later without untangling anything.

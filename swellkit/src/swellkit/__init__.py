@@ -3,9 +3,9 @@
 from .contract import (
     BuoyObservation,
     ConditionTone,
-    Forecast,
-    ForecastRequest,
     ObservationWeight,
+    Reading,
+    ReadingRequest,
 )
 from .surf import (
     TONE_BANDS,
@@ -19,10 +19,10 @@ from .triangulate import OBSERVATION_LIMIT, triangulate
 __all__ = [
     "BuoyObservation",
     "ConditionTone",
-    "Forecast",
-    "ForecastRequest",
     "ObservationWeight",
     "OBSERVATION_LIMIT",
+    "Reading",
+    "ReadingRequest",
     "TONE_BANDS",
     "breaking_height",
     "classify_tone",

@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import sys
 
-from .contract import ForecastRequest
+from .contract import ReadingRequest
 from .triangulate import triangulate
 
 __version__ = "0.1.0"
@@ -32,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     try:
-        request = ForecastRequest.from_json(raw)
+        request = ReadingRequest.from_json(raw)
     except (KeyError, TypeError) as err:
         json.dump({"error": f"request does not match the contract: {err}"}, sys.stdout)
         return 2
