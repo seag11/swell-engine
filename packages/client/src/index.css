@@ -3,10 +3,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  /* Mono carries every number, condensed carries labels — the density of a
+     chart sheet rather than an app. */
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-cond: "IBM Plex Sans Condensed", ui-sans-serif, system-ui, sans-serif;
+
   /* Light palette — warm off-white, nautical blue-gray text */
   --color-sw-bg:     #F5F0E8;
   --color-sw-card:   #EAE4D6;
   --color-sw-border: #CEC8B8;
+  /* Interior dividers, lighter than the outer rule */
+  --color-sw-rule:   #DED8C9;
   --color-sw-text:   #3D5260;
   --color-sw-muted:  #7A8F98;
   --color-sw-strong: #1E3440;
@@ -14,7 +21,8 @@
   /* Dark palette — deep ocean */
   --color-sw-dark-bg:     #0D2230;
   --color-sw-dark-card:   #152E3E;
-  --color-sw-dark-border: #1E3D50;
+  --color-sw-dark-border: #23485C;
+  --color-sw-dark-rule:   #1A3A4B;
   --color-sw-dark-text:   #9BAFB8;
   --color-sw-dark-muted:  #5C7A87;
   --color-sw-dark-strong: #D4E4EA;

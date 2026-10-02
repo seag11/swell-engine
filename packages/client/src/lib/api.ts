@@ -15,6 +15,9 @@ export interface Tide {
 export interface ConditionSource {
   stationId: string;
   stationName: string;
+  /** Position, so the plan view can place the station at its true bearing. */
+  lat: number;
+  lon: number;
   distanceKm: number;
   weight: number;
 }

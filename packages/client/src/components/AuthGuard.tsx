@@ -1,11 +1,13 @@
 import { useEffect, type ReactNode } from 'react';
 import { useAuth } from '@/lib/useAuth';
+import { rememberCurrentLocation } from '@/lib/returnTo';
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
   const auth = useAuth();
 
   useEffect(() => {
     if (auth === 'unauthenticated') {
+      rememberCurrentLocation();
       window.location.replace('/login');
     }
   }, [auth]);

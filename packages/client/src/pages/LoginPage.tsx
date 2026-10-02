@@ -1,5 +1,6 @@
 import { useState, type SubmitEvent } from 'react';
 import { apiFetch } from '@/lib/api';
+import { takeReturnLocation } from '@/lib/returnTo';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function LoginPage() {
@@ -22,7 +23,7 @@ export default function LoginPage() {
         setError(body.error ?? 'Invalid token');
         return;
       }
-      window.location.replace('/');
+      window.location.replace(takeReturnLocation());
     } catch {
       setError('Could not reach server');
     } finally {

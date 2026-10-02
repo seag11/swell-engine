@@ -35,6 +35,9 @@ export interface TriangulatedConditions {
   sources: Array<{
     stationId: string
     stationName: string
+    /** Position, so a client can draw the stations at their true bearing. */
+    lat: number
+    lon: number
     distanceKm: number
     weight: number
   }>

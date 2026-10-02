@@ -62,6 +62,8 @@ export async function buoyRoutes(app: FastifyInstance) {
                   properties: {
                     stationId: { type: 'string' },
                     stationName: { type: 'string' },
+                    lat: { type: 'number' },
+                    lon: { type: 'number' },
                     distanceKm: { type: 'number' },
                     weight: { type: 'number' },
                   },

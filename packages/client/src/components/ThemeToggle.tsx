@@ -6,10 +6,10 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="text-sw-muted dark:text-sw-dark-muted hover:text-sw-strong dark:hover:text-sw-dark-strong transition-colors text-lg"
-      aria-label="Toggle theme"
+      aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+      className="font-mono text-[10px] uppercase tracking-[0.08em] border border-sw-border dark:border-sw-dark-border text-sw-muted dark:text-sw-dark-muted hover:text-sw-strong dark:hover:text-sw-dark-strong px-2 py-0.5 leading-snug transition-colors"
     >
-      {theme === 'dark' ? '☀' : '☾'}
+      {theme === 'dark' ? 'Light' : 'Dark'}
     </button>
   );
 }

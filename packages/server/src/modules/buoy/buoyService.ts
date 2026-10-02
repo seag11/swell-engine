@@ -218,16 +218,21 @@ export async function getTriangulatedConditions(
     })),
   });
 
-  const stationNames = new Map(valid.map(({ station }) => [station.id, station.name]));
+  const stations = new Map(valid.map(({ station }) => [station.id, station]));
 
   return {
     ...blended,
-    sources: weights.map((w) => ({
-      stationId: w.stationId,
-      stationName: stationNames.get(w.stationId) ?? w.stationId,
-      distanceKm: w.distanceKm,
-      weight: w.weight,
-    })),
+    sources: weights.map((w) => {
+      const station = stations.get(w.stationId);
+      return {
+        stationId: w.stationId,
+        stationName: station?.name ?? w.stationId,
+        lat: station?.lat ?? 0,
+        lon: station?.lon ?? 0,
+        distanceKm: w.distanceKm,
+        weight: w.weight,
+      };
+    }),
     generatedAt: new Date().toISOString(),
   };
 }
