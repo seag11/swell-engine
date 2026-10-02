@@ -1,3 +1,4 @@
+import { bearingTo } from '@/lib/geo';
 import type { ConditionSource } from '@/lib/api';
 
 /**
@@ -25,16 +26,6 @@ function radiusFor(km: number): number {
 function point(bearingDeg: number, radius: number): [number, number] {
   const a = toRad(bearingDeg);
   return [CENTRE + radius * Math.sin(a), CENTRE - radius * Math.cos(a)];
-}
-
-/** Bearing from the break to a station, degrees true. */
-export function bearingTo(
-  from: { lat: number; lon: number },
-  to: { lat: number; lon: number },
-): number {
-  const dy = to.lat - from.lat;
-  const dx = (to.lon - from.lon) * Math.cos(toRad((from.lat + to.lat) / 2));
-  return (((Math.atan2(dx, dy) * 180) / Math.PI) + 360) % 360;
 }
 
 export default function TriangulationPlan({

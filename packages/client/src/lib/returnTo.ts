@@ -26,5 +26,7 @@ export function takeReturnLocation(): string {
   } catch {
     // fall through
   }
-  return '/';
+  // The instrument, not the landing page: someone who just entered a key wants
+  // the tool rather than the pitch for it.
+  return '/app';
 }

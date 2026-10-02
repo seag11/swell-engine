@@ -7,6 +7,9 @@
      chart sheet rather than an app. */
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-cond: "IBM Plex Sans Condensed", ui-sans-serif, system-ui, sans-serif;
+  /* Prose voice for the landing page. Condensed is for labels in tight space,
+     never for sentences. */
+  --font-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
 
   /* Light palette — warm off-white, nautical blue-gray text */
   --color-sw-bg:     #F5F0E8;

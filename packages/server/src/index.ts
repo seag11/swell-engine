@@ -8,7 +8,9 @@ import { seed } from './db/seed.js';
 import { authRoutes } from './api/auth.js';
 import { buoyRoutes } from './api/buoy.js';
 import { tideRoutes } from './api/tide.js';
+import { demoRoutes } from './api/demo.js';
 import { seedTideStations } from './modules/tide/index.js';
+import { warmDemoReading } from './modules/demo/index.js';
 import { requireAuth } from './plugins/requireAuth.js';
 import { startBuoyPoller, scheduleBuoyPoll, buoyPollQueue } from './workers/buoyPoller.js';
 
@@ -33,7 +35,10 @@ async function bootstrap() {
     verify: { allowedIss: JWT_ISSUER },
   });
 
+  // Public: the landing page needs a reading without a key.
   await app.register(authRoutes);
+  await app.register(demoRoutes);
+
   await app.register(async (instance) => {
     instance.addHook('onRequest', requireAuth);
     await instance.register(buoyRoutes);
@@ -42,6 +47,10 @@ async function bootstrap() {
 
   const worker = startBuoyPoller();
   await scheduleBuoyPoll();
+
+  // Not awaited: a cold demo cache should not hold up the listen, and the
+  // route recomputes on its own if this has not finished.
+  void warmDemoReading();
 
   await app.listen({ port: config.port, host: config.host });
 

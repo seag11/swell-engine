@@ -2,6 +2,13 @@ export function apiFetch(url: string, options?: RequestInit): Promise<Response> 
   return fetch(url, { ...options, credentials: 'include' });
 }
 
+/** The one public reading, from /api/demo/conditions. */
+export interface DemoReading {
+  spot: { label: string; lat: number; lon: number; facing: number };
+  conditions: Conditions;
+  computedAt: string;
+}
+
 export interface Tide {
   station: { id: string; name: string; distanceKm: number };
   datum: string;

@@ -17,7 +17,8 @@ import {
 } from '@/lib/units';
 import ThemeToggle from '@/components/ThemeToggle';
 import TideStrip from '@/components/TideStrip';
-import TriangulationPlan, { bearingTo } from '@/components/TriangulationPlan';
+import TriangulationPlan from '@/components/TriangulationPlan';
+import { bearingTo } from '@/lib/geo';
 
 const TONE_COLORS: Record<string, string> = {
   flat: 'text-sw-muted dark:text-sw-dark-muted',
