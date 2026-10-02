@@ -44,10 +44,9 @@ These cost hours if you get them wrong, and nothing in the code will stop you.
   by roughly 1.25 to 2.0 depending on period. `breaking_height` closes that gap
   with Komar & Gaughan (1972); refraction and bathymetry are still ignored.
 - **Face height is the reporting convention** — trough to crest of the breaking
-  wave, which is what NWS Honolulu publishes and Surfline reports outside
-  Australia and New Zealand. Other scales exist and differ by large factors;
-  which regions are reported in which convention is an open product question,
-  so do not encode an answer to it here.
+  wave, as published by the National Weather Service. Other scales exist and
+  differ by large factors; which regions are reported in which convention is an
+  open product question, so do not encode an answer to it here.
 - **Surf is reported as a range**, because significant height is already a
   distribution. `face_height` is the mean of the highest third and
   `face_height_max` the highest tenth, about 1.27x, from Rayleigh statistics.
