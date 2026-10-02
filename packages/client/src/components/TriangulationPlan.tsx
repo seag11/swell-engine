@@ -48,14 +48,15 @@ export default function TriangulationPlan({
       role="img"
       aria-label={`Plan view of ${sources.length} contributing buoys around the break`}
     >
-      {/* The half-plane the break can receive swell from, where
-          cos(direction − facing) stays positive. */}
+      {/* The half-plane the break receives swell from: facing ± 90°, where
+          cos(direction − facing) stays positive. sweep-flag is 1 because
+          increasing bearing runs clockwise on screen. */}
       {facing !== undefined && (
         <>
           <path
             d={`M${CENTRE},${CENTRE} L${w1x.toFixed(1)},${w1y.toFixed(1)} A${MAX_RADIUS + 8},${
               MAX_RADIUS + 8
-            } 0 0 0 ${w2x.toFixed(1)},${w2y.toFixed(1)} Z`}
+            } 0 0 1 ${w2x.toFixed(1)},${w2y.toFixed(1)} Z`}
             className="fill-sw-blue"
             opacity="0.07"
           />
