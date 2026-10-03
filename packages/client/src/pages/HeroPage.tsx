@@ -35,6 +35,11 @@ export default function HeroPage() {
   const offshore = c && spot ? isOffshore(c.windDirection, spot.facing) : false;
   // The chain's first step names the station that actually carried the reading.
   const lead = c?.sources.reduce((a, b) => (b.weight > a.weight ? b : a));
+  // The system the face came from, and the one it beat. Figure 2's middle panel
+  // is the partition, so it needs both: the number shown and what it was split
+  // away from.
+  const driving = c?.faceFrom === 'swell' ? c.swell : c?.faceFrom === 'windWave' ? c.windWave : null;
+  const other = c?.faceFrom === 'swell' ? c.windWave : c?.faceFrom === 'windWave' ? c.swell : null;
   const appLink = spot
     ? `/app?lat=${spot.lat}&lon=${spot.lon}&facing=${spot.facing}&label=${encodeURIComponent(spot.label)}`
     : '/app';
@@ -164,7 +169,8 @@ export default function HeroPage() {
                 body: (
                   <>
                     <b>Breaking face height</b>, as a range, the way a surf report is actually
-                    spoken — not the offshore figure that reads two feet small.
+                    spoken — not the offshore figure, which measures a wave in deep water
+                    rather than the one you paddle for.
                   </>
                 ),
               },
@@ -246,12 +252,25 @@ export default function HeroPage() {
                     unit: 'm offshore',
                     text: `Significant height at buoy ${lead.stationId}, ${lead.distanceKm} km out in deep water.`,
                   },
-                  {
-                    label: 'Transformed',
-                    val: c.swellPower?.toFixed(1) ?? '—',
-                    unit: 'index',
-                    text: 'Height squared times period — the energy the swell is carrying.',
-                  },
+                  // Reporting the partition rather than an energy index: the index
+                  // describes the whole sea at one period, which is the averaging
+                  // this step exists to undo.
+                  driving && driving.height !== null && driving.period !== null
+                    ? {
+                        label: 'Partitioned',
+                        val: driving.height.toFixed(1),
+                        unit: `m @ ${driving.period.toFixed(0)}s`,
+                        text:
+                          other && other.height !== null && other.period !== null
+                            ? `The ${c.faceFrom === 'swell' ? 'groundswell' : 'wind sea'}, separated from ${other.height.toFixed(1)} m at ${other.period.toFixed(0)} s riding on top of it.`
+                            : `The ${c.faceFrom === 'swell' ? 'groundswell' : 'wind sea'}, carrying the energy in this reading.`,
+                      }
+                    : {
+                        label: 'Partitioned',
+                        val: c.dominantPeriod?.toFixed(0) ?? '—',
+                        unit: 's, whole sea',
+                        text: 'These stations published no spectral split, so the sea is taken undivided at its dominant period.',
+                      },
                   {
                     label: 'Reported',
                     val: fmtSurfRange(c.faceHeight, c.faceHeightMax, 'imperial'),
@@ -282,9 +301,12 @@ export default function HeroPage() {
               </div>
               <Caption>
                 <b className="text-sw-text dark:text-sw-dark-text font-medium">Figure 2.</b> One
-                swell through all three stages. The breaking estimate uses Komar &amp; Gaughan
-                (1972), whose published fit takes exactly that energy index as its argument. A range
-                rather than a point, because significant height is already a distribution.
+                sea through all three stages. A buoy measures every wave train at once, so the
+                spectrum is split before anything is shoaled — a long groundswell and the chop on
+                top of it break at different heights, and averaging them describes neither. Each
+                system is then shoaled at its own period by Komar &amp; Gaughan (1972), and the
+                larger face is the surf. A range rather than a point, because significant height is
+                already a distribution.
               </Caption>
             </figure>
           )}
