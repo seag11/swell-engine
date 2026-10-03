@@ -3,6 +3,18 @@ import { getAllStations, getTriangulatedConditions } from '../modules/buoy/index
 
 const nullable = (type: 'number' | 'string') => ({ type: [type, 'null'] });
 
+// Fastify serialises responses against this schema and drops anything the
+// schema does not name, so a field missing here is a field the client never
+// sees however well the model fills it in.
+const waveSystem = {
+  type: ['object', 'null'],
+  properties: {
+    height: nullable('number'),
+    period: nullable('number'),
+    direction: nullable('number'),
+  },
+};
+
 export async function buoyRoutes(app: FastifyInstance) {
   app.get(
     '/api/buoy/stations',
@@ -51,6 +63,10 @@ export async function buoyRoutes(app: FastifyInstance) {
               swellPower: nullable('number'),
               faceHeight: nullable('number'),
               faceHeightMax: nullable('number'),
+              faceFrom: nullable('string'),
+              swell: waveSystem,
+              windWave: waveSystem,
+              steepness: nullable('string'),
               windSpeed: nullable('number'),
               windDirection: nullable('number'),
               waterTemp: nullable('number'),

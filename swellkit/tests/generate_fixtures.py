@@ -27,6 +27,9 @@ BLEND_FIELDS = (
     "waveHeight",
     "dominantPeriod",
     "swellPower",
+    "swell",
+    "windWave",
+    "steepness",
     "windSpeed",
     "windDirection",
     "waterTemp",
@@ -141,6 +144,78 @@ def build_cases() -> list[dict]:
         if rnd() < 0.55:
             request["facing"] = float(int(rnd() * 361))
         add(f"random {i}", request)
+
+    # Spectral partitions. Appended rather than grouped with the deterministic
+    # cases above because inserting them there would shift the rnd() sequence
+    # and regenerate all 80 random cases in the same commit, which is the
+    # unreviewable diff this module's docstring warns about.
+    #
+    # Values are shaped like real .spec rows. Directions are the degree
+    # equivalents of the compass points NDBC prints in SwD and WWD.
+    swell_nw = {"height": 1.3, "period": 10.0, "direction": 292.5}  # WNW
+    chop_sw = {"height": 2.0, "period": 7.7, "direction": 247.5}  # WSW
+
+    add("two systems, one station", {
+        "target": {"lat": 37.757, "lon": -122.51},
+        "observations": [observation(swell=swell_nw, windWave=chop_sw,
+                                     steepness="steep")],
+    })
+    add("two systems, facing splits them", {
+        "target": {"lat": 23.0, "lon": -162.0}, "facing": 45.0,
+        "observations": [observation(
+            lat=23.445, lon=-162.279, waveDirection=183.0,
+            swell={"height": 1.3, "period": 10.0, "direction": 45.0},
+            windWave={"height": 2.0, "period": 7.7, "direction": 180.0},
+            steepness="steep")],
+    })
+    add("partitions at one station, absent at the nearer one", {
+        "target": {"lat": 37.495, "lon": -122.497}, "facing": 310.0,
+        "observations": [
+            observation(stationId="46012", lat=37.363, lon=-122.882,
+                        waveHeight=1.2, dominantPeriod=9.0,
+                        waveDirection=290.0, steepness=None),
+            observation(stationId="46026", lat=37.759, lon=-122.833,
+                        waveHeight=1.2, dominantPeriod=11.0, waveDirection=295.0,
+                        swell=swell_nw, windWave=chop_sw, steepness="average"),
+        ],
+    })
+    add("no partitions anywhere, falls back to the whole sea", {
+        "target": {"lat": 40.0, "lon": -73.0},
+        "observations": [
+            observation(stationId="44025", lat=40.25, lon=-73.16,
+                        waveHeight=1.1, dominantPeriod=5.0),
+        ],
+    })
+    add("swell only, no wind sea reported", {
+        "target": {"lat": 37.757, "lon": -122.51}, "facing": 270.0,
+        "observations": [observation(swell=swell_nw, steepness="swell")],
+    })
+    add("partition height without a period is unusable", {
+        "target": {"lat": 37.757, "lon": -122.51},
+        "observations": [observation(
+            swell={"height": 1.3, "period": None, "direction": 292.5},
+            windWave=chop_sw)],
+    })
+    add("partitions blended across three stations", {
+        "target": {"lat": 46.89, "lon": -124.112}, "facing": 270.0,
+        "observations": [
+            observation(stationId="46041", lat=47.351, lon=-124.741,
+                        waveHeight=1.0, dominantPeriod=8.3, waveDirection=286.0,
+                        swell={"height": 1.0, "period": 8.3, "direction": 292.5},
+                        windWave={"height": 0.3, "period": 4.0, "direction": 247.5},
+                        steepness="swell"),
+            observation(stationId="46029", lat=46.148, lon=-124.508,
+                        waveHeight=1.0, dominantPeriod=8.3, waveDirection=288.0,
+                        swell={"height": 0.9, "period": 9.1, "direction": 292.5},
+                        windWave={"height": 0.3, "period": 3.8, "direction": 270.0},
+                        steepness="swell"),
+            observation(stationId="46089", lat=45.928, lon=-125.815,
+                        waveHeight=1.4, dominantPeriod=8.3, waveDirection=290.0,
+                        swell={"height": 1.4, "period": 8.3, "direction": 292.5},
+                        windWave={"height": 0.3, "period": 3.7, "direction": 270.0},
+                        steepness="average"),
+        ],
+    })
 
     return cases
 

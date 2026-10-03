@@ -24,6 +24,25 @@
       "maximum": 360,
       "description": "Degrees true."
     },
+    "steepness": {
+      "description": "NDBC's own sea-state classification, from the station's .spec file. A steep sea is already breaking offshore, which is where the breaking-height estimate loses its footing.",
+      "enum": ["swell", "average", "steep", "very_steep", null]
+    },
+    "systemKind": {
+      "description": "Which wave system a figure was derived from. 'total' means the station published no partition and the undecomposed sea was used.",
+      "enum": ["swell", "windWave", "total", null]
+    },
+    "waveSystem": {
+      "type": ["object", "null"],
+      "description": "One wave system — a groundswell train or a local wind sea — with its own height, period and direction. NDBC partitions the spectrum into exactly these two; a model would give more. Null means the station published no partition, not that the system is absent.",
+      "required": ["height", "period", "direction"],
+      "additionalProperties": false,
+      "properties": {
+        "height": { "$ref": "#/$defs/nullableNumber", "description": "Metres, significant height of this system alone. Systems combine in quadrature, so swell and wind wave squared sum to the total squared." },
+        "period": { "$ref": "#/$defs/nullableNumber", "description": "Seconds. The period of this system, which is the whole point of partitioning: a blended dominant period describes neither a 16s groundswell nor 5s chop." },
+        "direction": { "$ref": "#/$defs/bearing" }
+      }
+    },
     "observation": {
       "type": "object",
       "description": "One buoy reading. Wave direction is whence the swell comes, not where it goes.",
@@ -40,7 +59,10 @@
         "waveDirection": { "$ref": "#/$defs/bearing" },
         "windSpeed": { "$ref": "#/$defs/nullableNumber", "description": "Metres per second." },
         "windDirection": { "$ref": "#/$defs/bearing" },
-        "waterTemp": { "$ref": "#/$defs/nullableNumber", "description": "Degrees Celsius." }
+        "waterTemp": { "$ref": "#/$defs/nullableNumber", "description": "Degrees Celsius." },
+        "swell": { "$ref": "#/$defs/waveSystem", "description": "The groundswell partition, from SwH/SwP/SwD." },
+        "windWave": { "$ref": "#/$defs/waveSystem", "description": "The local wind-sea partition, from WWH/WWP/WWD." },
+        "steepness": { "$ref": "#/$defs/steepness" }
       }
     },
     "weight": {
@@ -89,6 +111,10 @@
         "swellPower",
         "faceHeight",
         "faceHeightMax",
+        "faceFrom",
+        "swell",
+        "windWave",
+        "steepness",
         "windSpeed",
         "windDirection",
         "waterTemp",
@@ -108,6 +134,16 @@
         "faceHeightMax": {
           "$ref": "#/$defs/nullableNumber",
           "description": "Metres. The highest tenth of breaking waves, about 1.27 times faceHeight. Pair with faceHeight to report a range, since significant height is already a distribution."
+        },
+        "faceFrom": {
+          "$ref": "#/$defs/systemKind",
+          "description": "Which system produced faceHeight. Each system is shoaled at its own period and the larger face wins, so a 2m 8s wind sea can outrank a 1.3m 10s groundswell and the client can say which it is."
+        },
+        "swell": { "$ref": "#/$defs/waveSystem", "description": "The blended groundswell partition. Weighted by distance and, when facing is given, by whether this system can reach the break." },
+        "windWave": { "$ref": "#/$defs/waveSystem", "description": "The blended wind-sea partition. Weighted independently of swell, because the two arrive from different directions." },
+        "steepness": {
+          "$ref": "#/$defs/steepness",
+          "description": "From the most influential station rather than blended, since the categories do not average."
         },
         "windSpeed": { "$ref": "#/$defs/nullableNumber", "description": "Metres per second." },
         "windDirection": { "$ref": "#/$defs/bearing" },

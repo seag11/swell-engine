@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { validateLat, validateLon } from '@/lib/validateCoords';
 import { PRESETS } from '@/lib/presets';
-import { apiFetch, type Conditions, type Tide } from '@/lib/api';
+import {
+  apiFetch,
+  type Conditions,
+  type SystemKind,
+  type Tide,
+  type WaveSystem,
+} from '@/lib/api';
 import { readSpotFromUrl, writeSpotToUrl } from '@/lib/spotUrl';
 import { useUnits } from '@/lib/useUnits';
 import {
@@ -27,6 +33,22 @@ const TONE_COLORS: Record<string, string> = {
   large: 'text-sw-amber',
   xl: 'text-sw-amber',
   xxl: 'text-sw-red',
+};
+
+// What the face height was derived from. NDBC partitions the spectrum into a
+// groundswell train and a local wind sea; 'total' means the stations in range
+// published no partition and the undecomposed sea was used instead.
+const SYSTEM_LABEL: Record<SystemKind, string> = {
+  swell: 'groundswell',
+  windWave: 'wind swell',
+  total: 'the undecomposed sea',
+};
+
+const STEEPNESS_NOTE: Record<string, string> = {
+  swell: 'clean, swell-dominated',
+  average: 'average steepness',
+  steep: 'steep — breaking offshore',
+  very_steep: 'very steep — whitecapping offshore',
 };
 
 const fmtTime = (iso: string) =>
@@ -125,6 +147,18 @@ export default function ConditionsPage() {
 
   const busy = loading || geolocating;
   const offshore = conditions ? isOffshore(conditions.windDirection, facing) : false;
+
+  // The system the face height came from, so the readout can name its period
+  // and direction rather than the blended dominant period, which describes the
+  // whole sea and therefore neither system in it.
+  const driving: WaveSystem | null =
+    conditions === null
+      ? null
+      : conditions.faceFrom === 'swell'
+        ? conditions.swell
+        : conditions.faceFrom === 'windWave'
+          ? conditions.windWave
+          : null;
 
   const unitBtn = (value: 'imperial' | 'metric', text: string) => (
     <button
@@ -300,6 +334,17 @@ export default function ConditionsPage() {
                         {surfUnit(units)}
                       </span>
                     </div>
+                    {conditions.faceFrom !== null && (
+                      <div className="font-mono text-[11px] text-sw-muted dark:text-sw-dark-muted mt-1">
+                        from {SYSTEM_LABEL[conditions.faceFrom]}
+                        {driving !== null && driving.period !== null && (
+                          <> · {fmtPeriod(driving.period)}s</>
+                        )}
+                        {driving !== null && driving.direction !== null && (
+                          <> {compass(driving.direction)}</>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <Cap>Dominant period</Cap>
@@ -378,6 +423,68 @@ export default function ConditionsPage() {
                   </div>
                 ))}
               </section>
+
+              {/* ---- wave systems ---- */}
+              {(conditions.swell !== null || conditions.windWave !== null) && (
+                <>
+                  <div className="flex items-baseline justify-between gap-3 flex-wrap px-4 pt-3 pb-2 border-b border-sw-rule dark:border-sw-dark-rule">
+                    <h2 className="font-cond text-[11px] uppercase tracking-[0.14em] font-bold">
+                      Wave systems
+                    </h2>
+                    <p className="font-mono text-[10.5px] text-sw-muted dark:text-sw-dark-muted text-right">
+                      NDBC spectral partition
+                      {conditions.steepness !== null &&
+                        ` · ${STEEPNESS_NOTE[conditions.steepness]}`}
+                    </p>
+                  </div>
+                  <section className="grid sm:grid-cols-2 border-b border-sw-border dark:border-sw-dark-border">
+                    {(
+                      [
+                        ['swell', 'Groundswell', conditions.swell],
+                        ['windWave', 'Wind sea', conditions.windWave],
+                      ] as const
+                    ).map(([kind, label, sys], i) => (
+                      <div
+                        key={kind}
+                        className={`px-4 py-2.5 min-w-0 ${
+                          i === 0
+                            ? 'border-b sm:border-b-0 sm:border-r border-sw-rule dark:border-sw-dark-rule'
+                            : ''
+                        }`}
+                      >
+                        <div className="flex items-baseline justify-between gap-2">
+                          <Cap>{label}</Cap>
+                          {conditions.faceFrom === kind && (
+                            <span className="font-cond text-[9.5px] uppercase tracking-[0.12em] font-semibold text-sw-green">
+                              driving the face
+                            </span>
+                          )}
+                        </div>
+                        {sys === null || sys.height === null ? (
+                          <div className="font-mono text-[17px] font-medium text-sw-muted dark:text-sw-dark-muted">
+                            not reported
+                          </div>
+                        ) : (
+                          <>
+                            <div className="font-mono text-[17px] font-medium tabular-nums tracking-tight">
+                              {fmtHeight(sys.height, units)}
+                              <span className="text-sw-muted dark:text-sw-dark-muted">
+                                {' at '}
+                              </span>
+                              {fmtPeriod(sys.period)}s
+                            </div>
+                            <div className="font-mono text-[11px] text-sw-muted dark:text-sw-dark-muted mt-px">
+                              {sys.direction === null
+                                ? 'direction not reported'
+                                : `from ${sys.direction.toFixed(0)}° ${compass(sys.direction)}`}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </section>
+                </>
+              )}
 
               {/* ---- triangulation ---- */}
               <div className="flex items-baseline justify-between gap-3 flex-wrap px-4 pt-3 pb-2 border-b border-sw-rule dark:border-sw-dark-rule">

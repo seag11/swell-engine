@@ -6,6 +6,9 @@ from .contract import (
     ObservationWeight,
     Reading,
     ReadingRequest,
+    Steepness,
+    SystemKind,
+    WaveSystem,
 )
 from .surf import (
     TONE_BANDS,
@@ -23,7 +26,10 @@ __all__ = [
     "OBSERVATION_LIMIT",
     "Reading",
     "ReadingRequest",
+    "Steepness",
+    "SystemKind",
     "TONE_BANDS",
+    "WaveSystem",
     "breaking_height",
     "classify_tone",
     "compute_swell_power",

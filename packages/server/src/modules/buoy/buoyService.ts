@@ -1,4 +1,10 @@
-import type { BuoyStation, BuoyReading, TriangulatedConditions } from '@swell-engine/shared';
+import type {
+  BuoyStation,
+  BuoyReading,
+  Steepness,
+  TriangulatedConditions,
+  WaveSystem,
+} from '@swell-engine/shared';
 import { sql } from '../../db/client.js';
 import { config } from '../../config.js';
 import { fetchLatestReading } from './ndbcClient.js';
@@ -48,6 +54,24 @@ export async function getNearestStations(
   `;
 }
 
+const dec = (v: string | null): number | null => (v === null ? null : parseFloat(v));
+
+/**
+ * Rebuild a partition from its columns. Postgres returns DECIMAL as a string to
+ * keep the precision it was stored with, so every one of these needs parsing.
+ *
+ * Height and period are both required to shoal a system, so a row with only one
+ * reads as no partition rather than half of one.
+ */
+function system(
+  height: string | null,
+  period: string | null,
+  direction: string | null,
+): WaveSystem | null {
+  if (height === null || period === null) return null;
+  return { height: dec(height), period: dec(period), direction: dec(direction) };
+}
+
 export async function getLatestReadingFromDb(stationId: string): Promise<BuoyReading | null> {
   const rows = await sql<
     Array<{
@@ -61,10 +85,19 @@ export async function getLatestReadingFromDb(stationId: string): Promise<BuoyRea
       wind_speed: string | null;
       wind_direction: number | null;
       water_temp: string | null;
+      swell_height: string | null;
+      swell_period: string | null;
+      swell_direction: string | null;
+      wind_wave_height: string | null;
+      wind_wave_period: string | null;
+      wind_wave_direction: string | null;
+      steepness: Steepness | null;
     }>
   >`
     SELECT station_id, observed_at, created_at, wave_height, dominant_period, avg_period,
-           wave_direction, wind_speed, wind_direction, water_temp
+           wave_direction, wind_speed, wind_direction, water_temp,
+           swell_height, swell_period, swell_direction,
+           wind_wave_height, wind_wave_period, wind_wave_direction, steepness
     FROM buoy_readings
     WHERE station_id = ${stationId}
       AND observed_at > NOW() - (${config.ndbcDataTtlHours} * INTERVAL '1 hour')
@@ -84,6 +117,9 @@ export async function getLatestReadingFromDb(stationId: string): Promise<BuoyRea
     windSpeed: r.wind_speed ? parseFloat(r.wind_speed) : null,
     windDirection: r.wind_direction,
     waterTemp: r.water_temp ? parseFloat(r.water_temp) : null,
+    swell: system(r.swell_height, r.swell_period, r.swell_direction),
+    windWave: system(r.wind_wave_height, r.wind_wave_period, r.wind_wave_direction),
+    steepness: r.steepness,
   };
 }
 
@@ -107,7 +143,9 @@ export async function storeReading(reading: BuoyReading): Promise<void> {
   await sql`
     INSERT INTO buoy_readings (
       station_id, observed_at, wave_height, dominant_period, avg_period,
-      wave_direction, wind_speed, wind_direction, water_temp
+      wave_direction, wind_speed, wind_direction, water_temp,
+      swell_height, swell_period, swell_direction,
+      wind_wave_height, wind_wave_period, wind_wave_direction, steepness
     ) VALUES (
       ${reading.stationId},
       ${reading.observedAt},
@@ -117,9 +155,29 @@ export async function storeReading(reading: BuoyReading): Promise<void> {
       ${reading.waveDirection},
       ${reading.windSpeed},
       ${reading.windDirection},
-      ${reading.waterTemp}
+      ${reading.waterTemp},
+      ${reading.swell?.height ?? null},
+      ${reading.swell?.period ?? null},
+      ${reading.swell?.direction ?? null},
+      ${reading.windWave?.height ?? null},
+      ${reading.windWave?.period ?? null},
+      ${reading.windWave?.direction ?? null},
+      ${reading.steepness}
     )
-    ON CONFLICT (station_id, observed_at) DO NOTHING
+    ON CONFLICT (station_id, observed_at) DO UPDATE SET
+      -- Fill gaps, never overwrite. What a station measured at a given instant
+      -- does not change, so a conflict means we already have this reading — but
+      -- possibly from before the partition columns existed, or from a fetch
+      -- where the .spec request failed while the summary succeeded. COALESCE
+      -- backfills those without letting a later empty response erase a good
+      -- partition.
+      swell_height        = COALESCE(buoy_readings.swell_height, EXCLUDED.swell_height),
+      swell_period        = COALESCE(buoy_readings.swell_period, EXCLUDED.swell_period),
+      swell_direction     = COALESCE(buoy_readings.swell_direction, EXCLUDED.swell_direction),
+      wind_wave_height    = COALESCE(buoy_readings.wind_wave_height, EXCLUDED.wind_wave_height),
+      wind_wave_period    = COALESCE(buoy_readings.wind_wave_period, EXCLUDED.wind_wave_period),
+      wind_wave_direction = COALESCE(buoy_readings.wind_wave_direction, EXCLUDED.wind_wave_direction),
+      steepness           = COALESCE(buoy_readings.steepness, EXCLUDED.steepness)
   `;
 }
 
@@ -215,6 +273,9 @@ export async function getTriangulatedConditions(
       windSpeed: reading.windSpeed,
       windDirection: reading.windDirection,
       waterTemp: reading.waterTemp,
+      swell: reading.swell,
+      windWave: reading.windWave,
+      steepness: reading.steepness,
     })),
   });
 

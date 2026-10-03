@@ -6,9 +6,14 @@ pipelines — is delivery. This package is the part that has to get *good*.
 
 ## What this package is for
 
-The model blends the three nearest buoys by inverse distance, estimates the
-breaking face height, and bands it into a condition label. That is the starting
-line, not the destination.
+The model blends the three nearest buoys by inverse distance, shoals each wave
+system at its own period to a breaking face height, and bands the larger of them
+into a condition label. That is the starting line, not the destination.
+
+Each system is weighted on its own direction, which is the part that only works
+with a partition: a groundswell from the northwest and a wind sea from the south
+are not equally relevant to a west-facing break, and before partitioning there
+was one direction to judge them both by.
 
 The reason this exists in Python is access to the scientific ecosystem. Do not
 reimplement spectral analysis, harmonic tidal fitting, or geospatial projection
@@ -31,7 +36,21 @@ These cost hours if you get them wrong, and nothing in the code will stop you.
 - **Tide is relative to MLLW** (mean lower low water) and **goes negative**
   several times a year. It is an average of lower lows, not a floor.
 - **NDBC uses `MM` as its missing-value sentinel** in the fixed-width text
-  files, not an empty field and not `-999`.
+  files, not an empty field and not `-999`. The `.spec` file adds `N/A` in the
+  steepness column, which means the same thing.
+- **`SwD` and `WWD` are compass points, not degrees.** The `.spec` header labels
+  both columns `degT` and then prints `WNW`. Every other direction in the feed is
+  numeric, so this is the one column needing a lookup, and the sixteen-point rose
+  lands on half degrees.
+- **Wave systems combine in quadrature.** Energy adds and energy goes as the
+  square, so a 1.3m swell under a 2.0m wind sea reads 2.4m total, not 3.3m. Every
+  station's `SwH` and `WWH` reproduce its `WVHT` to within the tenth of a metre
+  the files are rounded to, which makes the identity usable as a constraint and
+  not just a description.
+- **A partition is routinely absent.** Three of the seeded stations publish a
+  `.spec` file whose partition columns are entirely `MM` while their summary wave
+  data is fine, and one of them is the nearest buoy to a preset break. Code that
+  treats a partition as reliably present will be wrong somewhere real.
 - **Units are SI throughout the contract**: metres, seconds, m/s, °C. Feet and
   knots exist only for display, and only in the client. The one exception is
   `classify_tone`, whose thresholds are in feet for surf-reporting convention —
@@ -43,6 +62,22 @@ These cost hours if you get them wrong, and nothing in the code will stop you.
   in deep water; a surfer describes the face where it breaks, and the two differ
   by roughly 1.25 to 2.0 depending on period. `breaking_height` closes that gap
   with Komar & Gaughan (1972); refraction and bathymetry are still ignored.
+- **Never shoal a partitioned sea as a whole.** One dominant period standing in
+  for both a groundswell and the chop riding on it is the smear the partition
+  exists to remove. `_pick_face` shoals each system separately and keeps the
+  larger face, falling back to the undecomposed sea only when no station in the
+  set published a partition. Short-period wind sea is not discarded on principle
+  — two metres at eight seconds is rideable, and Komar & Gaughan already
+  penalises steepness, so the comparison is fair.
+- **Partition heights are rescaled to the blended total.** Partitions are
+  blended only over the stations that published them, while `wave_height` uses
+  all of them, so the two views disagree whenever the reporting stations are the
+  distant ones — a measured third more surf than the sea it came from, at a real
+  break. `_rescale_to_total` takes magnitude from every station and spectral
+  shape from those that reported it, by enforcing the quadrature identity above.
+  The assumption is that shape varies more smoothly across a buoy set than
+  amplitude does. Two swells crossing in a small area would break it, and
+  nothing here can yet detect that.
 - **Face height is the reporting convention** — trough to crest of the breaking
   wave, as published by the National Weather Service. Other scales exist and
   differ by large factors; which regions are reported in which convention is an
@@ -65,12 +100,18 @@ Fixed-width, newest row first, two header rows. Parsed today in
 `packages/server/src/modules/buoy/ndbcClient.ts`, which reads only the summary
 fields.
 
-**NDBC spectral** — the same station publishes far more than the summary. The
-`.spec`, `.swden`, and `.swdir` files carry spectral wave density and
-directional moments. **This is the largest available accuracy gain and it is
-not yet used.** A single `dominantPeriod` averaged across three buoys smears a
-clean 16-second groundswell together with local wind chop; the spectrum
-separates them.
+**NDBC spectral** — `https://www.ndbc.noaa.gov/data/realtime2/<station>.spec`,
+parsed alongside the summary in `ndbcClient.ts`. Carries NDBC's own partition of
+the spectrum into a swell train and a local wind sea, each with its own height,
+period and direction, plus a steepness classification. This is what lets the
+model shoal a 16-second groundswell separately from the 5-second chop on top of
+it instead of averaging the two into a mid-period wave that exists nowhere in the
+water.
+
+The `.swden` and `.swdir` files carry the underlying spectral density and
+directional moments and are **still unused**. They would allow more than two
+systems and a real directional spread; the two-way partition is NDBC's
+simplification, not the spectrum's.
 
 **NOAA CO-OPS** — tide predictions, already integrated. Note that the
 continuous 30-minute series exists only for *reference* stations; the 2,243
@@ -112,12 +153,18 @@ group velocity and travel time, refraction over known bathymetry. Improvements
 here can be justified from first principles and validated against published
 model output.
 
-**Fitted coefficients** are tuned to observed outcomes. `HIGH_POWER_THRESHOLD =
-16` is currently a guess, not a fit. Do **not** invent or adjust such constants
-to make output look better — there is no ground truth yet to fit against.
-Document any such value as provisional and say what data would justify it.
-Calibration becomes possible once real surfer feedback is paired with
+**Fitted coefficients** are tuned to observed outcomes. The band ceilings in
+`TONE_BANDS` are the live example: 6ft is head high because of how people are
+built, but the edge between `large` and `xl` is a judgement. Do **not** invent or
+adjust such constants to make output look better — there is no ground truth yet
+to fit against. Document any such value as provisional and say what data would
+justify it. Calibration becomes possible once real surfer feedback is paired with
 observations; until then, prefer physics that needs no tuning.
+
+Thresholds on an output are the wrong tool for a smooth relationship. The label
+is banded on breaking face height alone, and period enters continuously through
+`breaking_height`, where the physics puts it. Before reaching for a constant to
+tune, check whether the input is the thing that needs work.
 
 ## Validation
 
@@ -145,6 +192,14 @@ code happened to do, which is worse than having no fixture.
 **Bands are a table, not a branch.** `TONE_BANDS` is data, so adding a label is
 one row plus the enum in `contract.py`, `contract.schema.json`, and the client's
 tone colours — one commit across the boundary.
+
+**Partitions split the same way as everything else.** The blended system heights,
+periods and directions are mechanics and live in the fixtures. `faceFrom` does
+not: it names which system won a comparison of breaking heights, so it moves
+whenever those coefficients move, and `test_blend.py` asserts its exclusion
+alongside `tone` and `faceHeight`. The properties that matter — energy preserved
+across the rescale, the larger face winning regardless of which system it is, an
+unpartitioned sea still getting a face — are in `test_bands.py`.
 
 **Cross-language numerics.** Achieving equivalence surfaced four hazards, all of
 which look like physics errors when they fail:

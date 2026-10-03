@@ -24,7 +24,18 @@ FIXTURES = json.loads((Path(__file__).parent / "fixtures" / "blend.json").read_t
 CASES = FIXTURES["cases"]
 ASSERTED = FIXTURES["asserts"]
 
-SCALARS = [f for f in ASSERTED if f not in ("weights", "observedAt")]
+# Wave systems are nested objects, so they are compared field by field rather
+# than whole: height and period are blended floats needing a tolerance, while
+# direction is carried through from one station and compares exactly.
+SYSTEMS = [f for f in ASSERTED if f in ("swell", "windWave")]
+SCALARS = [f for f in ASSERTED if f not in ("weights", "observedAt", *SYSTEMS)]
+
+
+def _same(got: object, want: object, label: str) -> None:
+    if want is None or got is None or not isinstance(want, int | float):
+        assert got == want, f"{label}: {got!r} != {want!r}"
+    else:
+        assert got == pytest.approx(want, rel=1e-12), f"{label}: {got!r} != {want!r}"
 
 
 @pytest.mark.parametrize("case", CASES, ids=[c["name"] for c in CASES])
@@ -33,11 +44,15 @@ def test_blend_matches_baseline(case: dict) -> None:
     expected = case["expected"]
 
     for key in SCALARS:
+        _same(actual[key], expected[key], key)
+
+    for key in SYSTEMS:
         got, want = actual[key], expected[key]
         if want is None or got is None:
             assert got == want, f"{key}: {got!r} != {want!r}"
-        else:
-            assert got == pytest.approx(want, rel=1e-12), f"{key}: {got!r} != {want!r}"
+            continue
+        for part in ("height", "period", "direction"):
+            _same(got[part], want[part], f"{key}.{part}")
 
     assert actual["weights"] == expected["weights"]
     assert actual["observedAt"] == expected["observedAt"]
@@ -48,6 +63,10 @@ def test_fixtures_exclude_the_volatile_fields() -> None:
     assert "tone" not in ASSERTED
     assert "faceHeight" not in ASSERTED
     assert "faceHeightMax" not in ASSERTED
+    # faceFrom names the system the face came from, so it moves whenever the
+    # breaking-height coefficients move. The partitions themselves are blend
+    # mechanics and do belong here.
+    assert "faceFrom" not in ASSERTED
 
 
 def test_fixture_coverage() -> None:
@@ -57,6 +76,16 @@ def test_fixture_coverage() -> None:
     assert any(
         any(o["waveHeight"] is None for o in r["observations"]) for r in requests
     ), "no null-wave cases"
+    assert any(
+        any(o.get("swell") and o.get("windWave") for o in r["observations"])
+        for r in requests
+    ), "no two-system cases"
+    assert any(
+        len(r["observations"]) > 1
+        and any(o.get("swell") for o in r["observations"])
+        and any(not o.get("swell") for o in r["observations"])
+        for r in requests
+    ), "no mixed partition-coverage cases"
 
 
 def test_weights_sum_to_one() -> None:

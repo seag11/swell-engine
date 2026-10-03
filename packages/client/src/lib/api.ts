@@ -29,12 +29,32 @@ export interface ConditionSource {
   weight: number;
 }
 
+export type Steepness = 'swell' | 'average' | 'steep' | 'very_steep';
+
+export type SystemKind = 'swell' | 'windWave' | 'total';
+
+/** One wave system: a groundswell train or a local wind sea. */
+export interface WaveSystem {
+  height: number | null;
+  period: number | null;
+  direction: number | null;
+}
+
 export interface Conditions {
   waveHeight: number | null;
   /** Breaking face height in metres — the figure surf reports describe. */
   faceHeight: number | null;
   /** Highest tenth of breaking waves, for the upper end of a range. */
   faceHeightMax: number | null;
+  /**
+   * Which system the face came from. Each is shoaled at its own period and the
+   * larger wins, so this distinguishes real groundswell from a big wind sea
+   * that happens to break the same height.
+   */
+  faceFrom: SystemKind | null;
+  swell: WaveSystem | null;
+  windWave: WaveSystem | null;
+  steepness: Steepness | null;
   dominantPeriod: number | null;
   swellPower: number | null;
   windSpeed: number | null;

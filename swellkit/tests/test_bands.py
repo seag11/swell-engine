@@ -13,6 +13,7 @@ import math
 
 import pytest
 
+from swellkit.contract import Reading, ReadingRequest
 from swellkit.surf import (
     M_TO_FT,
     TONE_BANDS,
@@ -20,6 +21,7 @@ from swellkit.surf import (
     classify_tone,
     highest_tenth,
 )
+from swellkit.triangulate import triangulate
 
 FT_TO_M = 1 / M_TO_FT
 
@@ -209,3 +211,114 @@ def test_komar_gaughan_against_a_worked_value() -> None:
     assert hb == pytest.approx(1.94, abs=0.01)
     assert hb * M_TO_FT == pytest.approx(6.37, abs=0.02)
     assert classify_tone(hb) == "large"
+
+
+# ------------------------------------------------- partitioned seas
+# Properties of shoaling each wave system at its own period rather than
+# shoaling the sea as a whole. These hold regardless of where the bands sit,
+# which is why they live here and not in the blend fixtures.
+
+
+def _face(height: float, period: float, direction: float = 270.0) -> float:
+    request = ReadingRequest.from_json({
+        "target": {"lat": 37.757, "lon": -122.51},
+        "observations": [{
+            "stationId": "A", "lat": 37.759, "lon": -122.833,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": height, "dominantPeriod": period,
+            "waveDirection": direction,
+        }],
+    })
+    return triangulate(request).face_height
+
+
+def _partitioned(
+    total: float,
+    swell: tuple[float, float],
+    wind_wave: tuple[float, float],
+) -> Reading:
+    sh, sp = swell
+    wh, wp = wind_wave
+    return triangulate(ReadingRequest.from_json({
+        "target": {"lat": 37.757, "lon": -122.51},
+        "observations": [{
+            "stationId": "A", "lat": 37.759, "lon": -122.833,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": total, "dominantPeriod": wp, "waveDirection": 270.0,
+            "swell": {"height": sh, "period": sp, "direction": 270.0},
+            "windWave": {"height": wh, "period": wp, "direction": 270.0},
+        }],
+    }))
+
+
+def test_the_face_comes_from_a_system_not_the_whole_sea() -> None:
+    """The smear this replaces.
+
+    A 0.3m 14s forerunner under a 1.6m 5s sea has a blended dominant period
+    belonging to neither. Shoaling the pair as one sea invents a wave; shoaling
+    each at its own period does not, and the label says which one won.
+    """
+    reading = _partitioned(1.63, swell=(0.3, 14.0), wind_wave=(1.6, 5.0))
+    assert reading.face_from == "windWave", "the wind sea holds the energy here"
+    assert reading.swell is not None and reading.wind_wave is not None
+    # The long-period forerunner survives as its own system rather than being
+    # averaged into the chop and disappearing.
+    assert reading.swell.period == 14.0
+    assert reading.wind_wave.period == 5.0
+
+
+def test_a_small_long_period_swell_does_not_inflate_a_short_period_sea() -> None:
+    """Partitioning must not report more surf than the sea can hold.
+
+    The face from the partitioned view stays near the face the undecomposed sea
+    would give, because the rescale keeps total energy fixed. What changes is
+    the attribution, not the size.
+    """
+    reading = _partitioned(1.63, swell=(0.3, 14.0), wind_wave=(1.6, 5.0))
+    smeared = _face(1.63, 5.0)
+    assert reading.face_height == pytest.approx(smeared, rel=0.05)
+
+
+def test_the_larger_face_wins_regardless_of_which_system_it_is() -> None:
+    """A groundswell does not win by being a groundswell.
+
+    Two metres at eight seconds is rideable and outranks a metre at ten. The
+    comparison is on breaking height alone, which is what makes it fair: Komar
+    & Gaughan already penalises a steep sea.
+    """
+    swell_wins = _partitioned(2.3, swell=(2.2, 14.0), wind_wave=(0.7, 5.0))
+    chop_wins = _partitioned(2.3, swell=(0.7, 10.0), wind_wave=(2.2, 8.0))
+    assert swell_wins.face_from == "swell"
+    assert chop_wins.face_from == "windWave"
+
+
+def test_partitions_preserve_the_energy_of_the_blended_sea() -> None:
+    """Heights combine in quadrature, so the rescale must hold that identity.
+
+    This is what stops a distant station's partition from over-reporting a sea
+    that the nearer stations measured smaller.
+    """
+    for total, swell, chop in [
+        (2.4, (1.3, 10.0), (2.0, 7.7)),
+        (1.2, (0.9, 10.0), (0.8, 4.2)),
+        (1.63, (0.3, 14.0), (1.6, 5.0)),
+    ]:
+        reading = _partitioned(total, swell=swell, wind_wave=chop)
+        assert reading.swell is not None and reading.wind_wave is not None
+        combined = math.hypot(reading.swell.height, reading.wind_wave.height)
+        assert combined == pytest.approx(reading.wave_height, rel=1e-12)
+
+
+def test_an_unpartitioned_sea_still_gets_a_face() -> None:
+    """Several stations publish no partition at all. They must not go dark."""
+    reading = triangulate(ReadingRequest.from_json({
+        "target": {"lat": 40.0, "lon": -73.0},
+        "observations": [{
+            "stationId": "44025", "lat": 40.251, "lon": -73.164,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.2, "dominantPeriod": 6.0, "waveDirection": 197.0,
+        }],
+    }))
+    assert reading.face_from == "total"
+    assert reading.face_height is not None
+    assert reading.swell is None and reading.wind_wave is None

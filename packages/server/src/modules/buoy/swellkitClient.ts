@@ -1,3 +1,4 @@
+import type { Steepness, SystemKind, WaveSystem } from '@swell-engine/shared';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { config } from '../../config.js';
@@ -31,6 +32,9 @@ export interface ModelObservation {
   windSpeed: number | null;
   windDirection: number | null;
   waterTemp: number | null;
+  swell: WaveSystem | null;
+  windWave: WaveSystem | null;
+  steepness: Steepness | null;
 }
 
 export interface ModelRequest {
@@ -45,6 +49,10 @@ export interface ModelReading {
   swellPower: number | null;
   faceHeight: number | null;
   faceHeightMax: number | null;
+  faceFrom: SystemKind | null;
+  swell: WaveSystem | null;
+  windWave: WaveSystem | null;
+  steepness: Steepness | null;
   windSpeed: number | null;
   windDirection: number | null;
   waterTemp: number | null;

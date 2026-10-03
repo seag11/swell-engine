@@ -4,6 +4,9 @@
     "waveHeight",
     "dominantPeriod",
     "swellPower",
+    "swell",
+    "windWave",
+    "steepness",
     "windSpeed",
     "windDirection",
     "waterTemp",
@@ -39,6 +42,9 @@
         "waveHeight": 2.0,
         "dominantPeriod": 12.0,
         "swellPower": 48.0,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.0,
         "windDirection": 280.0,
         "waterTemp": 14.0,
@@ -79,6 +85,9 @@
         "waveHeight": null,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": null,
         "waterTemp": null,
@@ -120,6 +129,9 @@
         "waveHeight": 2.0,
         "dominantPeriod": 12.0,
         "swellPower": 48.0,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.0,
         "windDirection": 280.0,
         "waterTemp": 14.0,
@@ -161,6 +173,9 @@
         "waveHeight": 2.0,
         "dominantPeriod": 12.0,
         "swellPower": 48.0,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.0,
         "windDirection": 280.0,
         "waterTemp": 14.0,
@@ -215,6 +230,9 @@
         "waveHeight": null,
         "dominantPeriod": 12.0,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 4.999999999999999,
         "windDirection": 280.0,
         "waterTemp": null,
@@ -287,6 +305,9 @@
         "waveHeight": 2.014338473980386,
         "dominantPeriod": 12.052139905383221,
         "swellPower": 48.90227462087004,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.0,
         "windDirection": 280.0,
         "waterTemp": 14.0,
@@ -350,6 +371,9 @@
         "waveHeight": 2.0,
         "dominantPeriod": 12.0,
         "swellPower": 48.0,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.0,
         "windDirection": 280.0,
         "waterTemp": 14.0,
@@ -409,8 +433,11 @@
         "waveHeight": 1.515249,
         "dominantPeriod": 7.305476,
         "swellPower": 16.773223367524537,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 0.020636,
-        "windDirection": null,
+        "windDirection": 176.0,
         "waterTemp": null,
         "weights": [
           {
@@ -481,8 +508,11 @@
         "waveHeight": 3.968497,
         "dominantPeriod": 9.006797904960845,
         "swellPower": 141.84777594176074,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 20.66333309350457,
-        "windDirection": null,
+        "windDirection": 347.0,
         "waterTemp": 16.59244523582427,
         "weights": [
           {
@@ -558,6 +588,9 @@
         "waveHeight": 5.02298,
         "dominantPeriod": 12.242771,
         "swellPower": 308.88912894320674,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 17.269186,
         "windDirection": 191.0,
         "waterTemp": 20.490309,
@@ -634,6 +667,9 @@
         "waveHeight": 4.295931807628171,
         "dominantPeriod": 13.525612900866903,
         "swellPower": 249.6155931495237,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 20.380328446470156,
         "windDirection": 318.0,
         "waterTemp": 15.95921421956836,
@@ -697,6 +733,9 @@
         "waveHeight": null,
         "dominantPeriod": 9.547659644446583,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 21.297565,
         "windDirection": 322.0,
         "waterTemp": 9.259238810797685,
@@ -769,6 +808,9 @@
         "waveHeight": 3.044479,
         "dominantPeriod": 18.560969,
         "swellPower": 172.0388817175026,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 14.65758754314955,
         "windDirection": 305.0,
         "waterTemp": 13.3732791283409,
@@ -819,6 +861,9 @@
         "waveHeight": 4.124187,
         "dominantPeriod": 8.914136,
         "swellPower": 151.61981192828154,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 17.560587,
         "windDirection": 85.0,
         "waterTemp": 12.993173,
@@ -885,6 +930,9 @@
         "waveHeight": 4.236745393958288,
         "dominantPeriod": 15.56700574277163,
         "swellPower": 279.4279326205581,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 8.61395707713762,
         "windDirection": 336.0,
         "waterTemp": 9.900841575120669,
@@ -948,8 +996,11 @@
         "waveHeight": 0.454123,
         "dominantPeriod": 19.209412676018122,
         "swellPower": 3.961512977794664,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 14.94131862787409,
-        "windDirection": null,
+        "windDirection": 11.0,
         "waterTemp": 19.325319569763444,
         "weights": [
           {
@@ -1006,6 +1057,9 @@
         "waveHeight": 1.7020652787162271,
         "dominantPeriod": 2.833563,
         "swellPower": 8.208906287219074,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 16.94328,
         "windDirection": 99.0,
         "waterTemp": 11.074104,
@@ -1051,6 +1105,9 @@
         "waveHeight": 4.125492,
         "dominantPeriod": 19.280538,
         "swellPower": 328.1486687771162,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 1.193296,
         "windDirection": 119.0,
         "waterTemp": 25.5907,
@@ -1104,6 +1161,9 @@
         "waveHeight": 4.650472930357182,
         "dominantPeriod": 16.404487844560077,
         "swellPower": 354.7781931648294,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 15.28165428772861,
         "windDirection": 335.0,
         "waterTemp": 21.92082019956166,
@@ -1176,6 +1236,9 @@
         "waveHeight": 4.06328,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 11.355338663133624,
         "windDirection": 257.0,
         "waterTemp": 24.38820999193804,
@@ -1253,6 +1316,9 @@
         "waveHeight": 0.9649546620644961,
         "dominantPeriod": 17.479869,
         "swellPower": 16.276161518190822,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 8.424872497004,
         "windDirection": 163.0,
         "waterTemp": 18.175839377743436,
@@ -1317,6 +1383,9 @@
         "waveHeight": 2.742901,
         "dominantPeriod": 4.79903,
         "swellPower": 36.10553049912587,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 20.10505,
         "windDirection": 207.0,
         "waterTemp": 15.19793,
@@ -1388,6 +1457,9 @@
         "waveHeight": 3.5762578816407777,
         "dominantPeriod": 6.119133952385504,
         "swellPower": 78.26140064803754,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 9.654417020422208,
         "windDirection": 151.0,
         "waterTemp": 25.681244896566678,
@@ -1439,6 +1511,9 @@
         "waveHeight": 3.858681,
         "dominantPeriod": 14.849917,
         "swellPower": 221.10663721566885,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 1.415407,
         "windDirection": 162.0,
         "waterTemp": null,
@@ -1492,6 +1567,9 @@
         "waveHeight": 3.7381007760450427,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 3.0272169999999994,
         "windDirection": 186.0,
         "waterTemp": 22.309308,
@@ -1563,6 +1641,9 @@
         "waveHeight": 2.6407415019851856,
         "dominantPeriod": 19.287923792580948,
         "swellPower": 134.5046390081292,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 18.910395883219394,
         "windDirection": 144.0,
         "waterTemp": 11.55979598921386,
@@ -1639,6 +1720,9 @@
         "waveHeight": 5.412474,
         "dominantPeriod": 20.004540458840566,
         "swellPower": 586.0305081867918,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 6.215904304273016,
         "windDirection": 25.0,
         "waterTemp": 25.45363932222806,
@@ -1703,6 +1787,9 @@
         "waveHeight": 2.734997,
         "dominantPeriod": 20.279191999999995,
         "swellPower": 151.69258619684175,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 22.483317999999997,
         "windDirection": 133.0,
         "waterTemp": 22.200759,
@@ -1774,6 +1861,9 @@
         "waveHeight": 5.000277570827863,
         "dominantPeriod": 14.25466830119109,
         "swellPower": 356.40627542884897,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 7.157077581745423,
         "windDirection": 239.0,
         "waterTemp": 15.234026518257998,
@@ -1837,6 +1927,9 @@
         "waveHeight": 0.604936,
         "dominantPeriod": 20.176585,
         "swellPower": 7.3835721325258925,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 9.85172813907825,
         "windDirection": 128.0,
         "waterTemp": 7.565163756077448,
@@ -1895,6 +1988,9 @@
         "waveHeight": 1.8339500596475538,
         "dominantPeriod": 5.4170339177780455,
         "swellPower": 18.219504651013455,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 22.79053237913307,
         "windDirection": 41.0,
         "waterTemp": 12.352570100323298,
@@ -1954,6 +2050,9 @@
         "waveHeight": 3.813974307849887,
         "dominantPeriod": 18.245151,
         "swellPower": 265.40126488843566,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 11.19440387550081,
         "windDirection": 337.0,
         "waterTemp": 19.573853,
@@ -2000,6 +2099,9 @@
         "waveHeight": 0.203497,
         "dominantPeriod": 5.740888,
         "swellPower": 0.23773607950542003,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 13.37117,
         "windDirection": 270.0,
         "waterTemp": 7.318355,
@@ -2067,6 +2169,9 @@
         "waveHeight": 1.9626633833142964,
         "dominantPeriod": 16.769198584886553,
         "swellPower": 64.59575042839036,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 8.621445,
         "windDirection": 228.0,
         "waterTemp": 17.69114,
@@ -2144,8 +2249,11 @@
         "waveHeight": 1.7249256759926461,
         "dominantPeriod": 13.437072937959869,
         "swellPower": 39.980244730221905,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 14.303246721228632,
-        "windDirection": null,
+        "windDirection": 185.0,
         "waterTemp": 4.17342313184694,
         "weights": [
           {
@@ -2195,6 +2303,9 @@
         "waveHeight": 0.687708,
         "dominantPeriod": 14.938346,
         "swellPower": 7.064975614811101,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": 223.0,
         "waterTemp": 24.937215,
@@ -2236,6 +2347,9 @@
         "waveHeight": null,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 0.452537,
         "windDirection": null,
         "waterTemp": 28.265529,
@@ -2289,8 +2403,11 @@
         "waveHeight": 0.950206,
         "dominantPeriod": 10.533738492287192,
         "swellPower": 9.510822341544799,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 23.62396385395101,
-        "windDirection": null,
+        "windDirection": 198.0,
         "waterTemp": 16.342561766558603,
         "weights": [
           {
@@ -2334,6 +2451,9 @@
         "waveHeight": null,
         "dominantPeriod": 5.370412,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 22.407129,
         "windDirection": 52.0,
         "waterTemp": 23.583349,
@@ -2388,6 +2508,9 @@
         "waveHeight": 4.508365,
         "dominantPeriod": 21.449913,
         "swellPower": 435.97709586979363,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": null,
         "waterTemp": 14.257136,
@@ -2459,8 +2582,11 @@
         "waveHeight": 1.7983405597692466,
         "dominantPeriod": 11.856170582023607,
         "swellPower": 38.3431967513826,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.226933197802503,
-        "windDirection": null,
+        "windDirection": 152.0,
         "waterTemp": 14.65355992836939,
         "weights": [
           {
@@ -2509,6 +2635,9 @@
         "waveHeight": 5.573696,
         "dominantPeriod": 5.533657,
         "swellPower": 171.90907034582668,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 17.57509,
         "windDirection": 341.0,
         "waterTemp": 13.792723999999998,
@@ -2563,6 +2692,9 @@
         "waveHeight": 4.14486764108624,
         "dominantPeriod": 9.347074013555588,
         "swellPower": 160.5820563401097,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 11.921565544531573,
         "windDirection": 279.0,
         "waterTemp": 11.365789598933421,
@@ -2635,6 +2767,9 @@
         "waveHeight": 5.936542,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 10.482026,
         "windDirection": 75.0,
         "waterTemp": 18.597455,
@@ -2712,6 +2847,9 @@
         "waveHeight": 3.528914,
         "dominantPeriod": 20.650037,
         "swellPower": 257.15974327018614,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 7.778713471713786,
         "windDirection": 227.0,
         "waterTemp": null,
@@ -2762,6 +2900,9 @@
         "waveHeight": 4.338748,
         "dominantPeriod": 3.134288,
         "swellPower": 59.00213852976929,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 13.760638,
         "windDirection": 115.0,
         "waterTemp": 13.54747,
@@ -2802,6 +2943,9 @@
         "waveHeight": 5.422483,
         "dominantPeriod": 13.509603000000002,
         "swellPower": 397.22720555146594,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 8.541367,
         "windDirection": 7.0,
         "waterTemp": null,
@@ -2869,6 +3013,9 @@
         "waveHeight": null,
         "dominantPeriod": 10.702811245236642,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 19.054245001380693,
         "windDirection": 183.0,
         "waterTemp": 14.114828501425269,
@@ -2932,6 +3079,9 @@
         "waveHeight": 1.9174649999999998,
         "dominantPeriod": 7.231361278398178,
         "swellPower": 26.587343723813227,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 10.59907628707065,
         "windDirection": 353.0,
         "waterTemp": 16.017507789850857,
@@ -3003,6 +3153,9 @@
         "waveHeight": 3.607602466729031,
         "dominantPeriod": 13.968789508376128,
         "swellPower": 181.80093964354367,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 19.166690470596603,
         "windDirection": 164.0,
         "waterTemp": 18.091909965187334,
@@ -3079,6 +3232,9 @@
         "waveHeight": 3.915188628866754,
         "dominantPeriod": 11.832511968844454,
         "swellPower": 181.37704987720602,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 12.788888084637424,
         "windDirection": 234.0,
         "waterTemp": 14.299427389849306,
@@ -3155,6 +3311,9 @@
         "waveHeight": 3.520886335186809,
         "dominantPeriod": 11.651419896664716,
         "swellPower": 144.43846476742632,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 11.621833,
         "windDirection": 217.0,
         "waterTemp": 16.44628944944335,
@@ -3219,6 +3378,9 @@
         "waveHeight": null,
         "dominantPeriod": 9.132186895122901,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 12.818661573268928,
         "windDirection": 4.0,
         "waterTemp": 24.91008903783509,
@@ -3278,6 +3440,9 @@
         "waveHeight": null,
         "dominantPeriod": 7.003115,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": 319.0,
         "waterTemp": 7.808830000000001,
@@ -3336,6 +3501,9 @@
         "waveHeight": 3.376865597868329,
         "dominantPeriod": 10.68870217115838,
         "swellPower": 121.88563590480575,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 4.403317366245036,
         "windDirection": 304.0,
         "waterTemp": 24.626287,
@@ -3381,6 +3549,9 @@
         "waveHeight": 5.156409,
         "dominantPeriod": 7.026795999999999,
         "swellPower": 186.8323433139294,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 22.541648,
         "windDirection": 54.0,
         "waterTemp": 0.529835,
@@ -3422,6 +3593,9 @@
         "waveHeight": 4.742307,
         "dominantPeriod": 5.461812,
         "swellPower": 122.83328815501578,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 23.879291,
         "windDirection": 107.0,
         "waterTemp": 4.25293,
@@ -3476,6 +3650,9 @@
         "waveHeight": 5.041588,
         "dominantPeriod": 18.990715,
         "swellPower": 482.69857916835525,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": 229.0,
         "waterTemp": null,
@@ -3535,8 +3712,11 @@
         "waveHeight": 0.819359466421586,
         "dominantPeriod": 8.751857154449327,
         "swellPower": 5.875558733647567,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.859937000000001,
-        "windDirection": null,
+        "windDirection": 7.0,
         "waterTemp": 15.645343734382577,
         "weights": [
           {
@@ -3607,8 +3787,11 @@
         "waveHeight": 4.108617466103554,
         "dominantPeriod": 5.210801975492242,
         "swellPower": 87.96218022299001,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.842025,
-        "windDirection": null,
+        "windDirection": 131.0,
         "waterTemp": 21.031138562746595,
         "weights": [
           {
@@ -3671,6 +3854,9 @@
         "waveHeight": 0.452006,
         "dominantPeriod": 8.580857,
         "swellPower": 1.753149951405279,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 15.295619194401006,
         "windDirection": 84.0,
         "waterTemp": 1.277816,
@@ -3717,6 +3903,9 @@
         "waveHeight": null,
         "dominantPeriod": 21.524068,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 2.481205,
         "windDirection": null,
         "waterTemp": 19.855664,
@@ -3771,6 +3960,9 @@
         "waveHeight": 2.816124356125016,
         "dominantPeriod": 13.641494819002963,
         "swellPower": 108.1846438945443,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 10.932738935794566,
         "windDirection": 1.0,
         "waterTemp": 5.315911042014686,
@@ -3843,6 +4035,9 @@
         "waveHeight": 3.04229,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 8.302469,
         "windDirection": 107.0,
         "waterTemp": 29.065597,
@@ -3893,6 +4088,9 @@
         "waveHeight": 2.750624,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 19.591639,
         "windDirection": 162.0,
         "waterTemp": 20.097609,
@@ -3946,8 +4144,11 @@
         "waveHeight": 3.005988819770976,
         "dominantPeriod": 18.920286,
         "swellPower": 170.96311369147935,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 0.58073,
-        "windDirection": null,
+        "windDirection": 102.0,
         "waterTemp": 2.713138,
         "weights": [
           {
@@ -3991,6 +4192,9 @@
         "waveHeight": null,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 23.263375,
         "windDirection": 342.0,
         "waterTemp": 19.278135,
@@ -4057,6 +4261,9 @@
         "waveHeight": 2.734496,
         "dominantPeriod": 13.407395134209981,
         "swellPower": 100.25337309399114,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 14.460112179834846,
         "windDirection": 129.0,
         "waterTemp": 18.06651867190537,
@@ -4134,8 +4341,11 @@
         "waveHeight": 2.297657,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 9.070821,
-        "windDirection": null,
+        "windDirection": 343.0,
         "waterTemp": 25.645516,
         "weights": [
           {
@@ -4210,6 +4420,9 @@
         "waveHeight": 3.2448862698562655,
         "dominantPeriod": 12.253762332026195,
         "swellPower": 129.02337925102898,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 18.116104510449333,
         "windDirection": 133.0,
         "waterTemp": 16.77258225211277,
@@ -4273,6 +4486,9 @@
         "waveHeight": 5.200104,
         "dominantPeriod": 17.057266892682406,
         "swellPower": 461.24694610249475,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 9.676840268365122,
         "windDirection": 308.0,
         "waterTemp": 2.418143,
@@ -4345,8 +4561,11 @@
         "waveHeight": 2.354848,
         "dominantPeriod": 20.283425,
         "swellPower": 112.47786129462727,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 5.108655,
-        "windDirection": null,
+        "windDirection": 84.0,
         "waterTemp": null,
         "weights": [
           {
@@ -4421,6 +4640,9 @@
         "waveHeight": null,
         "dominantPeriod": 6.906791998002571,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 17.967618209884897,
         "windDirection": 281.0,
         "waterTemp": 13.482265539790422,
@@ -4497,6 +4719,9 @@
         "waveHeight": 3.848976960351516,
         "dominantPeriod": 12.08091905567701,
         "swellPower": 178.9742690510672,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 20.77328241266274,
         "windDirection": 258.0,
         "waterTemp": 18.493046616780198,
@@ -4574,6 +4799,9 @@
         "waveHeight": 2.097334,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": 165.0,
         "waterTemp": 20.84031,
@@ -4651,8 +4879,11 @@
         "waveHeight": 5.237778,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 22.47461322586218,
-        "windDirection": null,
+        "windDirection": 140.0,
         "waterTemp": 21.95695997513958,
         "weights": [
           {
@@ -4727,6 +4958,9 @@
         "waveHeight": 2.8444620883802725,
         "dominantPeriod": 20.037776934484345,
         "swellPower": 162.1249432832136,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 7.0358084502985765,
         "windDirection": 248.0,
         "waterTemp": 12.56064562975882,
@@ -4803,6 +5037,9 @@
         "waveHeight": 2.4988248378674944,
         "dominantPeriod": 9.688693994144723,
         "swellPower": 60.49742191207265,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 14.430344205406183,
         "windDirection": 331.0,
         "waterTemp": 6.211769204807106,
@@ -4880,6 +5117,9 @@
         "waveHeight": 1.392032,
         "dominantPeriod": 16.026472,
         "swellPower": 31.055345624156637,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": null,
         "windDirection": 234.0,
         "waterTemp": 6.678217000000001,
@@ -4944,8 +5184,11 @@
         "waveHeight": 4.208301,
         "dominantPeriod": 9.125392,
         "swellPower": 161.60884266327827,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 7.8938749999999995,
-        "windDirection": null,
+        "windDirection": 282.0,
         "waterTemp": 15.320732,
         "weights": [
           {
@@ -5002,6 +5245,9 @@
         "waveHeight": 1.729127,
         "dominantPeriod": null,
         "swellPower": null,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 16.94536847518343,
         "windDirection": 5.0,
         "waterTemp": 19.62219236217362,
@@ -5047,6 +5293,9 @@
         "waveHeight": 4.234293,
         "dominantPeriod": 2.335918,
         "swellPower": 41.881227924756054,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 17.942122,
         "windDirection": 356.0,
         "waterTemp": null,
@@ -5101,6 +5350,9 @@
         "waveHeight": 1.2085651845177665,
         "dominantPeriod": 15.745386937095798,
         "swellPower": 22.998181455177022,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 21.2773178913791,
         "windDirection": 303.0,
         "waterTemp": 12.734210000000001,
@@ -5173,6 +5425,9 @@
         "waveHeight": 2.812535,
         "dominantPeriod": 20.29111,
         "swellPower": 160.50984542307535,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 19.171455,
         "windDirection": 235.0,
         "waterTemp": 22.476439,
@@ -5223,6 +5478,9 @@
         "waveHeight": 0.621538,
         "dominantPeriod": 14.076883000000002,
         "swellPower": 5.438033428385393,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 2.101381,
         "windDirection": 6.0,
         "waterTemp": 15.851467999999999,
@@ -5276,6 +5534,9 @@
         "waveHeight": 4.729677157802216,
         "dominantPeriod": 5.938036,
         "swellPower": 132.8329509636167,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 16.65899044271257,
         "windDirection": 56.0,
         "waterTemp": 16.561912288594307,
@@ -5334,6 +5595,9 @@
         "waveHeight": 3.8093925079479614,
         "dominantPeriod": 17.782818,
         "swellPower": 258.0548526775328,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
         "windSpeed": 17.107924789957877,
         "windDirection": 50.0,
         "waterTemp": 14.576839,
@@ -5350,6 +5614,488 @@
           }
         ],
         "observedAt": "2026-10-06T15:24:00.000Z"
+      }
+    },
+    {
+      "name": "two systems, one station",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.3,
+              "period": 10.0,
+              "direction": 292.5
+            },
+            "windWave": {
+              "height": 2.0,
+              "period": 7.7,
+              "direction": 247.5
+            },
+            "steepness": "steep"
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "swell": {
+          "height": 1.0899767011908281,
+          "period": 10.0,
+          "direction": 292.5
+        },
+        "windWave": {
+          "height": 1.676887232601274,
+          "period": 7.7,
+          "direction": 247.5
+        },
+        "steepness": "steep",
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "two systems, facing splits them",
+      "request": {
+        "target": {
+          "lat": 23.0,
+          "lon": -162.0
+        },
+        "facing": 45.0,
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 23.445,
+            "lon": -162.279,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 183.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.3,
+              "period": 10.0,
+              "direction": 45.0
+            },
+            "windWave": {
+              "height": 2.0,
+              "period": 7.7,
+              "direction": 180.0
+            },
+            "steepness": "steep"
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "swell": {
+          "height": 1.0899767011908281,
+          "period": 10.0,
+          "direction": 45.0
+        },
+        "windWave": {
+          "height": 1.676887232601274,
+          "period": 7.7,
+          "direction": 180.0
+        },
+        "steepness": "steep",
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 57,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "partitions at one station, absent at the nearer one",
+      "request": {
+        "target": {
+          "lat": 37.495,
+          "lon": -122.497
+        },
+        "facing": 310.0,
+        "observations": [
+          {
+            "stationId": "46012",
+            "lat": 37.363,
+            "lon": -122.882,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.2,
+            "dominantPeriod": 9.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 290.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "steepness": null
+          },
+          {
+            "stationId": "46026",
+            "lat": 37.759,
+            "lon": -122.833,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.2,
+            "dominantPeriod": 11.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 295.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.3,
+              "period": 10.0,
+              "direction": 292.5
+            },
+            "windWave": {
+              "height": 2.0,
+              "period": 7.7,
+              "direction": 247.5
+            },
+            "steepness": "average"
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.2,
+        "dominantPeriod": 9.895795010085935,
+        "swellPower": 14.249944814523746,
+        "swell": {
+          "height": 0.6539860207144969,
+          "period": 10.0,
+          "direction": 292.5
+        },
+        "windWave": {
+          "height": 1.0061323395607644,
+          "period": 7.7,
+          "direction": 247.5
+        },
+        "steepness": "average",
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "46012",
+            "distanceKm": 37,
+            "weight": 0.552
+          },
+          {
+            "stationId": "46026",
+            "distanceKm": 42,
+            "weight": 0.448
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "no partitions anywhere, falls back to the whole sea",
+      "request": {
+        "target": {
+          "lat": 40.0,
+          "lon": -73.0
+        },
+        "observations": [
+          {
+            "stationId": "44025",
+            "lat": 40.25,
+            "lon": -73.16,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.1,
+            "dominantPeriod": 5.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.1,
+        "dominantPeriod": 5.0,
+        "swellPower": 6.050000000000001,
+        "swell": null,
+        "windWave": null,
+        "steepness": null,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "44025",
+            "distanceKm": 31,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "swell only, no wind sea reported",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "facing": 270.0,
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.3,
+              "period": 10.0,
+              "direction": 292.5
+            },
+            "steepness": "swell"
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "swell": {
+          "height": 2.0,
+          "period": 10.0,
+          "direction": 292.5
+        },
+        "windWave": null,
+        "steepness": "swell",
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "partition height without a period is unusable",
+      "request": {
+        "target": {
+          "lat": 37.757,
+          "lon": -122.51
+        },
+        "observations": [
+          {
+            "stationId": "A",
+            "lat": 37.7,
+            "lon": -122.5,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 2.0,
+            "dominantPeriod": 12.0,
+            "avgPeriod": 8.0,
+            "waveDirection": 270.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.3,
+              "period": null,
+              "direction": 292.5
+            },
+            "windWave": {
+              "height": 2.0,
+              "period": 7.7,
+              "direction": 247.5
+            }
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 2.0,
+        "dominantPeriod": 12.0,
+        "swellPower": 48.0,
+        "swell": null,
+        "windWave": {
+          "height": 2.0,
+          "period": 7.7,
+          "direction": 247.5
+        },
+        "steepness": null,
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "A",
+            "distanceKm": 6,
+            "weight": 1.0
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "partitions blended across three stations",
+      "request": {
+        "target": {
+          "lat": 46.89,
+          "lon": -124.112
+        },
+        "facing": 270.0,
+        "observations": [
+          {
+            "stationId": "46041",
+            "lat": 47.351,
+            "lon": -124.741,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.0,
+            "dominantPeriod": 8.3,
+            "avgPeriod": 8.0,
+            "waveDirection": 286.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.0,
+              "period": 8.3,
+              "direction": 292.5
+            },
+            "windWave": {
+              "height": 0.3,
+              "period": 4.0,
+              "direction": 247.5
+            },
+            "steepness": "swell"
+          },
+          {
+            "stationId": "46029",
+            "lat": 46.148,
+            "lon": -124.508,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.0,
+            "dominantPeriod": 8.3,
+            "avgPeriod": 8.0,
+            "waveDirection": 288.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 0.9,
+              "period": 9.1,
+              "direction": 292.5
+            },
+            "windWave": {
+              "height": 0.3,
+              "period": 3.8,
+              "direction": 270.0
+            },
+            "steepness": "swell"
+          },
+          {
+            "stationId": "46089",
+            "lat": 45.928,
+            "lon": -125.815,
+            "observedAt": "2026-10-02T12:00:00.000Z",
+            "waveHeight": 1.4,
+            "dominantPeriod": 8.3,
+            "avgPeriod": 8.0,
+            "waveDirection": 290.0,
+            "windSpeed": 5.0,
+            "windDirection": 280.0,
+            "waterTemp": 14.0,
+            "swell": {
+              "height": 1.4,
+              "period": 8.3,
+              "direction": 292.5
+            },
+            "windWave": {
+              "height": 0.3,
+              "period": 3.7,
+              "direction": 270.0
+            },
+            "steepness": "average"
+          }
+        ]
+      },
+      "expected": {
+        "waveHeight": 1.0374209171120203,
+        "dominantPeriod": 8.3,
+        "swellPower": 8.932809921870827,
+        "swell": {
+          "height": 0.9939116550726551,
+          "period": 8.580689527276164,
+          "direction": 292.5
+        },
+        "windWave": {
+          "height": 0.2972907350932431,
+          "period": 3.896939842562708,
+          "direction": 247.5
+        },
+        "steepness": "swell",
+        "windSpeed": 5.0,
+        "windDirection": 280.0,
+        "waterTemp": 14.0,
+        "weights": [
+          {
+            "stationId": "46041",
+            "distanceKm": 70,
+            "weight": 0.557
+          },
+          {
+            "stationId": "46029",
+            "distanceKm": 88,
+            "weight": 0.349
+          },
+          {
+            "stationId": "46089",
+            "distanceKm": 169,
+            "weight": 0.094
+          }
+        ],
+        "observedAt": "2026-10-02T12:00:00.000Z"
       }
     }
   ]
